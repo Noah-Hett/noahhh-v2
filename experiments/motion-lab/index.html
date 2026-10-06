@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Motion Lab — noahhh-v2</title>
+<link rel="stylesheet" href="./lab.css" />
+</head>
+<body>
+<header class="lab-bar">
+  <p class="lab-brand">motion lab <span>experiments/motion-lab — throwaway, port winners into src/</span></p>
+  <nav aria-label="Prototypes">
+    <a href="#entry">01 entry</a>
+    <a href="#mask">02 mask-rise</a>
+    <a href="#morph-a">03 morph→hero</a>
+    <a href="#morph-b">04 morph→block</a>
+    <a href="#loading">05 skeletons</a>
+    <a href="./transition.html">02b full page demo →</a>
+  </nav>
+</header>
+
+<main>
+  <!-- 01 — entry assembly: page is there, content assembles on it -->
+  <section id="entry" class="lab-section" aria-label="Entry assembly prototype">
+    <div class="lab-head">
+      <h2>01 — Entry assembly</h2>
+      <p>Masked line-rise in the site's own language: 1s expo-out, 80ms staggers, <code>translateY(120%)</code> inside overflow-hidden masks. DotGrid fades in first, then copy lines, art, photo last.</p>
+      <button type="button" data-replay="entry">Replay</button>
+    </div>
+    <div class="stage stage-hero" id="entry-stage" aria-hidden="true">
+      <canvas class="fake-dots"></canvas>
+      <div class="fake-hero-grid">
+        <div class="fake-copy">
+          <span class="rv"><span class="rv-inner">Noah Hett is a design engineer,</span></span>
+          <span class="rv rv-d1"><span class="rv-inner">obsessed with visual comms</span></span>
+          <span class="rv rv-d2"><span class="rv-inner">LONDON</span></span>
+        </div>
+        <div class="fake-art rv rv-d2"><span class="rv-inner">／ line-art ／</span></div>
+        <div class="fake-photo rv rv-d3"><span class="rv-inner">portrait</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — default transition: bold mask rising from the bottom, becomes the bg -->
+  <section id="mask" class="lab-section" aria-label="Mask rise transition prototype">
+    <div class="lab-head">
+      <h2>02 — Mask-rise default transition</h2>
+      <p>Bold version: a full-viewport panel in the incoming page's bg colour rises from the bottom over ~700ms expo and <em>becomes</em> the new page background. Outgoing page holds still underneath while a grey panel leads the rise. Full two-page demo lives in <code>transition.html</code> (no lab.css dependency).</p>
+      <button type="button" data-replay="mask">Replay transition</button>
+    </div>
+    <div class="stage stage-pages" id="mask-stage" role="button" tabindex="0" aria-label="Run mask-rise transition demo">
+      <div class="page-out">
+        <p class="page-tag">outgoing — home</p>
+        <div class="sk-line w60"></div>
+        <div class="sk-card"></div>
+      </div>
+      <div class="page-in" aria-hidden="true">
+        <p class="page-tag">incoming — about</p>
+        <h3><span class="rv"><span class="rv-inner">About</span></span></h3>
+        <p><span class="rv rv-d1"><span class="rv-inner">New page content rises with its own background.</span></span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — morph A: card media -> project hero -->
+  <section id="morph-a" class="lab-section" aria-label="Morph to hero prototype">
+    <div class="lab-head">
+      <h2>03 — Morph A: card → project hero</h2>
+      <p>FLIP-shared-element: the clicked card image flies to a new hero slot at the top of the project page while the mask-rise panel sweeps behind it. Needs a hero slot adding to <code>ProjectLayout</code> to be real.</p>
+      <button type="button" data-replay="morph-a">Replay morph</button>
+    </div>
+    <div class="stage stage-morph" id="morph-a-stage">
+      <div class="m-home">
+        <p class="page-tag">home — selected card</p>
+        <div class="m-card"><div class="m-media" id="morph-a-source">800×600</div></div>
+      </div>
+      <div class="m-project" aria-hidden="true">
+        <p class="page-tag">project — new hero slot</p>
+        <div class="m-hero" id="morph-a-target">hero</div>
+        <div class="sk-line"></div>
+        <div class="sk-line w60"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — morph B: card media -> first body block -->
+  <section id="morph-b" class="lab-section" aria-label="Morph to first block prototype">
+    <div class="lab-head">
+      <h2>04 — Morph B: card → first body block</h2>
+      <p>Same FLIP flight, but the landing slot is the first image block in the body — no <code>ProjectLayout</code> change needed. Shorter flight, smaller target; compare the feel against A.</p>
+      <button type="button" data-replay="morph-b">Replay morph</button>
+    </div>
+    <div class="stage stage-morph" id="morph-b-stage">
+      <div class="m-home">
+        <p class="page-tag">home — selected card</p>
+        <div class="m-card"><div class="m-media" id="morph-b-source">800×600</div></div>
+      </div>
+      <div class="m-project" aria-hidden="true">
+        <p class="page-tag">project — title + first block</p>
+        <h3 class="m-title">Project 1</h3>
+        <div class="m-block" id="morph-b-target">first image block</div>
+        <div class="sk-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — loading: skeleton fallback (>600ms) + blur-up media -->
+  <section id="loading" class="lab-section" aria-label="Loading states prototype">
+    <div class="lab-head">
+      <h2>05 — Loading: skeletons + blur-up</h2>
+      <p>Skeleton blocks in page shape appear only if the route takes &gt;600ms (fast loads skip straight to assembly). Media boxes reserve aspect-ratio up front so layout never shifts; a tiny blurred placeholder sharpens into the real image. Toggle slow 3G to feel the fallback.</p>
+      <div class="lab-row">
+        <button type="button" data-replay="loading-fast">Fast load (no skeleton)</button>
+        <button type="button" data-replay="loading-slow">Slow load (skeleton)</button>
+      </div>
+    </div>
+    <div class="stage" id="loading-stage" aria-live="polite">
+      <div class="load-real" hidden>
+        <h3><span class="rv"><span class="rv-inner">Project 1</span></span></h3>
+        <div class="blurbox" data-blur>
+          <div class="blur-thumb" aria-hidden="true"></div>
+          <div class="blur-sharp" aria-label="Project image placeholder">1600w AVIF</div>
+        </div>
+        <div class="sk-line"></div>
+      </div>
+      <div class="load-sk" hidden>
+        <div class="sk-line w40 shimmer"></div>
+        <div class="sk-card shimmer"></div>
+        <div class="sk-line shimmer"></div>
+      </div>
+      <p class="load-note">press a button above</p>
+    </div>
+  </section>
+</main>
+
+<script src="./lab.js"></script>
+</body>
+</html>

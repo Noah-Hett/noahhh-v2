@@ -1,0 +1,543 @@
+/* Home layout pulled from Figma frames 28:12 / 40:3 (geometry + organisation only).
+   Canvas 1512, gutters 50. Colour via styles/tokens.css (Figma 155:12 light / 155:69 dark). */
+
+/* Single custom property driving the line-art intro (see .hero-art): the
+   rise distance and the reveal edge derive from the same value in the same
+   frame, so the wall edge cannot drift. Registered for transition. */
+@property --u {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+.home {
+  max-width: 1512px;
+  margin: 0 auto;
+}
+
+/* Hero: intro copy (narrow) / line-art (center) / portrait (right).
+   Figma layers these with overlaps; flow grid keeps the same left→right order
+   and proportions (357 / 670 / 564). */
+.hero {
+  position: relative;
+  /* visible: the portrait bleeds out and rides ON TOP of the transition band
+     (.hero-grid carries z-index so it paints above it). Horizontal page
+     overflow is still guarded by body overflow-x: clip. */
+  /* full-bleed band: breaks out of the 1512 container to the viewport edges,
+     pulled up under the transparent site header so the DotGrid spans both.
+     Bottom-anchored flex on desktop: copy ends ~60px above the fold,
+     photo bleeds ~70px below it (Figma 95:206/236/257).
+     Gutters track the container: 50 left / 60 right (portrait right edge
+     = viewport - 60, copy left = viewport + 50). */
+  width: 100vw;
+  margin: calc(-1 * var(--header-overlap)) 0 0 calc(50% - 50vw);
+  padding: 110px max(60px, calc((100vw - 1512px) / 2 + 60px)) 60px max(50px, calc((100vw - 1512px) / 2 + 50px));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 357px) minmax(0, 1fr) minmax(0, 564px);
+  gap: 24px;
+  align-items: end;
+}
+
+.hero-copy {
+  grid-column: 1;
+  max-width: 357px;
+}
+
+.hero-art {
+  /* decor on the stage: 670×260 fixed in Figma at every desktop width
+     (95:206 and 95:236 both 670 wide). Right edge sits 230px left of the
+     portrait's left edge (overlap 334), portrait is right-anchored, so the
+     offset is measured from the content gutter — tracks narrowing viewports
+     (95:236: 13px error vs 88px with left-%).
+     Only the portrait (later in DOM, grid above) obscures part of it.
+     Rise from behind a wall with no wall element and no paint: --u drives
+     BOTH the travel (translateY, % of own height — fully responsive) and
+     the reveal edge (mask gradient stop in matching %), so the blade is
+     locked to the page while the art moves. --u: 104% parks a full height
+     below home (mask all-transparent there); 0% lands home (mask
+     all-black = no-op). One transition on the var — firm cubic, no settle
+     tail. Nothing ever clips the art: at rest the mask is identity. */
+  position: absolute;
+  right: calc(max(60px, calc((100vw - 1512px) / 2 + 60px)) + 230px);
+  top: 24%;
+  width: 670px;
+  aspect-ratio: 669.801 / 260.194;
+  /* Author height beats the SVG's height attribute (presentational hint):
+     without this the attribute pins a definite 260px height, the
+     aspect-ratio above is ignored, and every breakpoint renders a tall box
+     (stretched art under preserveAspectRatio none, displaced art under
+     meet). The old <img> never hit this: its attrs map to an aspect-ratio
+     hint instead. */
+  height: auto;
+  display: block;
+  /* Inked from CSS: currentColor -> --artwork token (#fff light /
+     #e0dcdc dark). Presence per theme: 70% on light, 35% on dark. */
+  color: var(--artwork);
+  opacity: 0.7;
+  --u: 0%;
+  /* Figma composes this group with a vertical flip; the raw export lacks
+     it. Order matters — translate first, then the flip — so the parked
+     frame sits below home. Scroll parallax (see Home.tsx) uses the CSS
+     `translate` property, independent of this transform, so the two never
+     interfere; mask + travel stay glued, no re-clip on scroll. */
+  transform: translateY(var(--u)) scaleY(-1);
+  /* Edge leads travel 1.25×: the unmask completes a little before the
+     motion lands, so the art settles visibly into home. Same var, same
+     transition — still impossible for the two to drift. */
+  mask-image: linear-gradient(to bottom, black calc((100% - var(--u)) * 1.25), transparent calc((100% - var(--u)) * 1.25));
+  /* Softer expo landing, back in the portrait's family so the two read as
+     one gesture; the 1.25× edge lead keeps the settle from feeling like a
+     second motion. */
+  transition: --u 1.4s var(--hero-ease) 0.3s;
+}
+
+.home.intro-pending .hero-art {
+  --u: 104%;
+}
+
+/* Dark canvas (clay ink): the white line-art drops to 35% — the 0.7
+   base above is the light-mode value. */
+@media (prefers-color-scheme: dark) {
+  .hero-art {
+    opacity: 0.35;
+  }
+}
+
+.home {
+  /* Hero-only softer expo tail; the rest of the site stays on
+     cubic-bezier(0.16, 1, 0.3, 1). */
+  --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-photo-wrap {
+  grid-column: 3;
+  width: 100%;
+  aspect-ratio: 564 / 532;
+  display: block;
+  overflow: hidden;
+  /* hero padding-bottom (60) + this margin (-130) = -70 bleed below the fold */
+  margin-bottom: -130px;
+}
+
+.hero-photo-wrap .hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom;
+  display: block;
+}
+
+/* Fresh-load hero intro — once per document (see homeIntroPlayed in
+   Home.tsx). .intro-pending paints the hidden states; the double-rAF flip
+   to .intro-in runs the transitions. Cascade: portrait rises inside its
+   own mask (1.7s site expo from 0.05s), the line-art follows on one
+   variable (1.4s hero expo from 0.3s: parked a full height below home,
+   lands fully clear with the reveal edge locked to the page), the copy
+   wave starts overlapped at ~1.1s, header holds until the words are in
+   (from ~2.2s) and lands last. Layout never shifts. Scroll parallax (CSS
+   `translate` property) moves the art and the copy together as whole
+   assemblies, so the reveal edge stays glued and scrolling can never
+   re-clip the strokes. */
+.hero .dot-grid {
+  transition: opacity 0.8s ease-out;
+}
+
+.home.intro-pending .hero .dot-grid {
+  opacity: 0;
+}
+
+.hero-copy .rv {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin: 0 0 -0.08em;
+}
+
+.hero-copy .rv + .rv {
+  margin-top: 1em;
+}
+
+/* Adaptable word wave: the lead sentence is split into per-word masks in
+   Home.tsx (each word rides its own overflow-hidden mask, natural wrapping
+   still forms the visual lines). Per-word delay is set inline as
+   WORD_BASE + index * WORD_STEP (1.1s + 30ms steps) so any future copy
+   length just extends the wave; LONDON follows LONDON_GAP after the last
+   word. Static delays live only in the inline styles — no CSS fallback to
+   drift out of sync. */
+.hero-copy .rv-inner,
+.hero-copy .wmask-inner {
+  display: block;
+  transition: transform 1s var(--hero-ease);
+}
+
+.hero-copy .hero-lead-words {
+  display: block;
+}
+
+.hero-copy .wmask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.hero-copy .wmask-inner {
+  display: inline-block;
+}
+
+/* Layer promotion only while hidden — transitions self-promote during the
+   run, so a permanent will-change would pin ~19 compositor layers forever
+   for a one-shot wave. */
+.home.intro-pending .hero-copy .wmask-inner {
+  will-change: transform;
+}
+
+.home.intro-pending .hero-copy .rv-inner,
+.home.intro-pending .hero-copy .wmask-inner {
+  transform: translateY(120%);
+}
+
+.home.intro-in .hero-copy .rv-inner,
+.home.intro-in .hero-copy .wmask-inner {
+  transform: translateY(0);
+}
+
+/* Portrait slide: the photo rises the full mask height inside the wrap's
+   overflow mask — the art's move echoed on the same softer-expo curve
+   (portrait leads at 0.05s with a slower 1.7s duration, art follows at
+   0.3s over 1.4s) so the two images read as one upward gesture starting
+   out of the below-fold bleed. Mask-only, no curtain: one cut edge
+   mid-flight, never two. No fade, no scale settle. */
+.hero-photo-wrap .hero-photo {
+  transform: translateY(0);
+  /* Site expo — a touch softer than the hero expo, so this larger mass
+     lands as gently as the line-art. */
+  transition: transform 1.7s cubic-bezier(0.16, 1, 0.3, 1) 0.05s;
+}
+
+.home.intro-pending .hero-photo-wrap .hero-photo {
+  transform: translateY(101%);
+}
+
+/* Desktop stage: 100vh load composition + 45vh transition.
+   Portrait bottom lands ~70px below the fold (Figma 95:206 bleed 70). */
+@media (min-width: 1025px) {
+  .hero {
+    min-height: 100vh;
+  }
+
+  .transition-band {
+    height: 45vh;
+  }
+}
+
+/* Transition band: full-bleed end-to-end gradient between hero and WORK.
+   Breaks out of the 1512 container like the hero (same 50% - 50vw trick)
+   so the ramp spans the viewport instead of stopping at the gutters. */
+.transition-band {
+  width: 100vw;
+  margin: 0 0 0 calc(50% - 50vw);
+  height: 200px;
+  background: var(--hero-gradient);
+}
+
+/* WORK: full-bleed surface-wash block (heading + 3 Selected bands).
+   Gutters track the container: 50px each side at ≥1512, matching .page. */
+.work {
+  width: 100vw;
+  margin: 0 0 0 calc(50% - 50vw);
+  padding: 120px max(50px, calc((100vw - 1512px) / 2 + 50px)) 160px;
+  background: var(--surface-wash);
+}
+
+.work h2 {
+  margin: 0 0 48px;
+  font: inherit;
+  color: inherit;
+}
+
+.work-list {
+  display: grid;
+  gap: 72px;
+}
+
+/* View-all lives in the ViewMore dock (panel tile + floater pill). */
+
+/* Lower home sections share the page gutter rhythm — and the hero backdrop:
+   one small DotGrid per section (same gap/ink as the hero) with content
+   riding above the canvas. Deliberately NOT one shared canvas behind the
+   whole stack: a ~5000px canvas is a ~16M-px layer the compositor must
+   repaint on every scroll frame site-wide, with ~3000 dots re-integrated
+   per tick whenever it wakes. Per-section canvases stay at hero cost
+   (~500 dots each) and scroll like any other layer.
+   Full-viewport minimums: placeholders held empty until spec lands, but the
+   page needs enough length after the shrinking work block that its tail can
+   scroll fully out of view (shrink completes with the tail near the top,
+   so at least ~1 viewport of content must follow it). */
+.home-section {
+  position: relative;
+  padding: 180px 50px 80px;
+  min-height: 100vh;
+}
+
+/* Work → experience gets extra air so the grey (#f5f5f5) → white
+   background handoff reads as its own beat: empty grey below the dock
+   (via .work bottom padding above) + a deep white pause before the
+   experience heading. Targets only that junction — later sections keep
+   the base rhythm. */
+.home > .shrink-reveal + .home-section {
+  padding-top: clamp(200px, 24vh, 310px);
+}
+
+.home-section > :not(.dot-grid) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Professional summary: diagram + side copy side-by-side.
+   Ported from experiments/experience-diagram (Demo.css scaffolding,
+   adapted to v2 gutters): diagram left, copy right, stacks ≤1024px. */
+.exp-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 22rem);
+  align-items: center;
+  gap: clamp(2rem, 4vw, 4rem);
+}
+
+.exp-grid > * {
+  min-width: 0;
+}
+
+.exp-diagram-col {
+  min-width: 0;
+  display: grid;
+}
+
+/* Side copy uses the v2 masked line rise verbatim
+   (.fc-copy .rv/.rv-inner in FeaturedCard.css): mask clips the 120%
+   rise, 1s expo-out, 80ms staggers, .in fires once from useInView.
+   Type stays unstyled (font/color inherit) until style handoff. */
+.exp-copy {
+  max-width: 34rem;
+}
+
+.exp-copy .rv {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.exp-copy .rv-inner {
+  display: block;
+  transform: translateY(120%);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.exp-copy.in .rv-inner {
+  transform: translateY(0);
+}
+
+.exp-copy.in .rv-d1 .rv-inner {
+  transition-delay: 0.08s;
+}
+
+.exp-copy.in .rv-d2 .rv-inner {
+  transition-delay: 0.16s;
+}
+
+.exp-copy.in .rv-d3 .rv-inner {
+  transition-delay: 0.24s;
+}
+
+.exp-copy.in .rv-d4 .rv-inner {
+  transition-delay: 0.32s;
+}
+
+.exp-kicker {
+  font: inherit;
+  color: inherit;
+  margin: 0 0 0.75rem;
+}
+
+.exp-copy h2 {
+  font: inherit;
+  color: inherit;
+  margin: 0 0 1rem;
+}
+
+.exp-copy p {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exp-copy .rv-inner {
+    transform: none;
+    transition: none;
+  }
+
+  .hero .dot-grid,
+  .hero-copy .rv-inner,
+  .hero-copy .wmask-inner,
+  .hero-photo-wrap,
+  .hero-photo-wrap .hero-photo,
+  .hero-art {
+    transition: none;
+  }
+
+  .home.intro-pending .hero-art {
+    --u: 0%;
+  }
+
+  .home.intro-pending .hero .dot-grid {
+    opacity: 1;
+  }
+
+  .home.intro-pending .hero-copy .rv-inner,
+  .home.intro-pending .hero-copy .wmask-inner {
+    transform: none;
+  }
+
+  .home.intro-pending .hero-photo-wrap .hero-photo {
+    transform: none;
+  }
+}
+
+/* Stacked: full-width diagram first, copy after it. */
+@media (max-width: 1024px) {
+  .exp-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .exp-diagram {
+    width: 100%;
+  }
+
+  .exp-copy {
+    max-width: 40rem;
+  }
+}
+
+/* Tablet (Figma 82:175, 834×1194): copy top-left (56,333), art middle
+   (66,616,649×252), portrait bottom-right (321,813,466×439, bleed 58).
+   Top-anchored stack: copy → art → photo overlapping art by 55px. */
+@media (max-width: 1024px) and (min-width: 601px) {
+  .hero,
+  .work,
+  .home-section {
+    padding-left: 47px;
+    padding-right: 47px;
+  }
+
+  .hero {
+    justify-content: flex-start;
+    min-height: 100vh;
+    /* left 56 = Figma copy x; right 47 = portrait right gutter */
+    padding: max(180px, 27vh) 47px 47px 56px;
+  }
+
+  /* Dissolve the 3-col grid: copy/art/photo become flex items of .hero
+     and stack in Figma order. (grid-column 1/3 placements would otherwise
+     spawn implicit tracks and crush the copy into a sliver.) */
+  .hero-grid {
+    display: contents;
+  }
+
+  .hero-copy {
+    order: 1;
+    max-width: 357px;
+    /* fixed copy→art gap (80 vs Figma 83); any slack from the still-unset
+       type collects above the art, so art/photo positions stay put */
+    margin-bottom: 80px;
+  }
+
+  .hero-art {
+    order: 2;
+    position: relative;
+    z-index: 0;
+    right: auto;
+    top: auto;
+    width: min(649px, 100%);
+    /* auto collects all free space above; bottom -55 overlaps the photo */
+    margin: auto auto -55px 10px;
+  }
+
+  .hero-photo-wrap {
+    order: 3;
+    position: relative;
+    z-index: 1;
+    width: min(466px, 100%);
+    margin-left: auto;
+    margin-right: 0;
+    /* glued to the art (overlap -55); bleed 58 = padding 47 + margin -105 */
+    margin-top: 0;
+    margin-bottom: -105px;
+  }
+}
+
+/* Mobile (Figma 82:177, 390×844): copy top (28,315,30px), art (-28,554,
+   315×122, bleeds left), portrait bottom-right (80,630,284×268, bleed 54).
+   Same top-anchored stack, tighter gutters, art bleeds off-canvas left. */
+@media (max-width: 600px) {
+  .hero,
+  .work,
+  .home-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero {
+    justify-content: flex-start;
+    min-height: 100vh;
+    /* left 28 = Figma copy x; right/bleed per portrait gutters */
+    padding: max(200px, 36vh) 20px 26px 28px;
+  }
+
+  .hero-grid {
+    display: contents;
+  }
+
+  .hero-copy {
+    order: 1;
+    max-width: 357px;
+    /* fixed copy→art gap (80 vs Figma ~87); slack collects above the art */
+    margin-bottom: 80px;
+  }
+
+  .hero-art {
+    order: 2;
+    position: relative;
+    z-index: 0;
+    right: auto;
+    top: auto;
+    width: min(315px, 96%);
+    /* padding-left 28 + margin -56 = -28 viewport (Figma art left);
+       auto collects free space above; bottom -46 overlaps the photo */
+    margin: auto auto -46px -56px;
+  }
+
+  .hero-photo-wrap {
+    order: 3;
+    position: relative;
+    z-index: 1;
+    width: min(284px, 84%);
+    margin-left: auto;
+    /* padding 20 + margin 6 = 26 viewport right gutter */
+    margin-right: 6px;
+    /* glued to the art (overlap -46); bleed 54 = padding 26 + margin -80 */
+    margin-top: 0;
+    margin-bottom: -80px;
+  }
+}

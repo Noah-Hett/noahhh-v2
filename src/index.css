@@ -1,0 +1,104 @@
+/* Intentionally lean blank slate.
+   Structure first — colour comes from styles/tokens.css (single source).
+   Only rule: images never shift layout — width/height or aspect-ratio required. */
+
+/* Tailwind v4, theme + utilities only (no preflight — the plain-CSS stack
+   below owns resets). tokens.css carries @theme inline so utilities like
+   bg-surface-page resolve live to the OS-theme vars. */
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/utilities.css';
+@import './styles/fonts.css';
+@import './styles/tokens.css';
+@import './styles/xl.css';
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Hero pulls up under the transparent sticky header by exactly this.
+     Single source — SiteHeader padding and .hero margin must stay in sync. */
+  --header-overlap: 78px;
+}
+
+html, body {
+  /* full-bleed bands use 100vw (includes scrollbar width) — clip the
+     resulting sub-pixel horizontal overflow instead of scrolling it.
+     Must be on html (the scroll container), body alone doesn't stop it. */
+  overflow-x: clip;
+}
+
+/* Page canvas follows the OS theme via tokens: clay bg in light,
+   clay ink in dark. html and body both paint it so the viewport never
+   flashes an unthemed canvas while content loads (empty #root, Suspense
+   fallback, short pages). Overscroll bounce is off entirely via
+   overscroll-behavior so no edge can reveal a contrasting canvas.
+   Body text defaults to the primary token so dark mode flips copy too. */
+html {
+  background: var(--surface-page);
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 425;
+  font-stretch: 95%;
+  font-feature-settings:
+    "ss03", "ss04", "ss05", "ss08", "ss09", "ss10",
+    "tnum",
+    "liga" 0;
+  /* Grayscale AA on desktop so it renders closer to the lighter iOS look. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Per-Project theming (see projects.ts colors + ProjectPage).
+   ProjectPage sets --proj-light/--proj-dark + data-project on <html>;
+   these overrides retarget the same tokens (flip rule: light OS uses
+   light as canvas, dark OS flips). Header pills, overlay, footer chrome
+   and the overscroll canvas all consume the tokens, so the whole page
+   follows with no extra selectors. Colours originate ONLY from
+   projects.ts — the single sanctioned exception to the tokens.css
+   no-literals rule. */
+html[data-project] {
+  --surface-page: var(--proj-light);
+  --surface-wash: var(--proj-light);
+  --text-primary: var(--proj-dark);
+  --text-secondary: var(--proj-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-project] {
+    --surface-page: var(--proj-dark);
+    --surface-wash: var(--proj-dark);
+    --text-primary: var(--proj-light);
+    --text-secondary: var(--proj-light);
+  }
+}
+/* Shared page layout: 1512 container, 50px gutters, section rhythm.
+   Home's hero/work set their own padding; everything else uses .page. */
+.page {
+  max-width: 1512px;
+  margin: 0 auto;
+  padding: 110px 50px 80px;
+}
+
+.page > * + * {
+  margin-top: 48px;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 60px 20px;
+  }
+}

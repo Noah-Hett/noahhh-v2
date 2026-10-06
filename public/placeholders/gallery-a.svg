@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#D8CFC2"/>
+  <rect x="80" y="80" width="640" height="340" fill="none" stroke="#2d402f" stroke-width="8"/>
+  <line x1="80" y1="250" x2="720" y2="250" stroke="#2d402f" stroke-width="4"/>
+  <text x="400" y="510" font-family="sans-serif" font-size="36" text-anchor="middle" fill="#2d402f">GALLERY A · 800×600</text>
+</svg>

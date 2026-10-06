@@ -1,0 +1,287 @@
+/* ContactSection — reusable contact block (links + form).
+   Structure-first: neutral greys, page gutters, no type tokens.
+   Desktop: 50/50 split — links left (bottom-aligned with the form),
+   form right with name/email side-by-side over a full-width
+   message box. Mobile (≤600px): form first, links as a symbol row after.
+   DOM stays links-then-form so screen-reader and visual order agree
+   on desktop.
+   Fit budget: section + SiteFooter must share one viewport. Footer is
+   40vh desktop / 30vh mobile, so this section stays compact — slim
+   padding, tight gaps, 4-row message box. */
+
+.contact {
+  /* Generous run into the footer — deliberately more than the 50px side
+     margins so the section lands before the footer reads as a beat. */
+  padding: 64px 50px 72px;
+  /* Bottom-of-page buffer: with the 40vh footer this section is always
+     ≥60vh tall and bottom-pinned, so at max scroll the viewport holds
+     only contact + footer — earlier content scrolls fully out of view. */
+  min-height: calc(100vh - 40vh);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.contact-heading {
+  margin: 0 0 32px;
+  font: inherit;
+  color: inherit;
+}
+
+/* Inside the shared .page container (About, Project pages) the page
+   already supplies the side gutters — the section's own 50px/20px
+   gutters would double up, so drop them and align with sibling content.
+   Higher specificity than both the base rule and the mobile shorthand
+   below, so this holds at every width; top/bottom still come from those. */
+.page .contact {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* A .page ending with the contact block meets the footer directly: the
+   page's own bottom padding (80px desktop / 60px mobile) would stack on
+   the section's 72px/32px run-in and lift it higher above the footer
+   than on Home, breaking the shared contact+footer viewport composition. */
+.page:has(> .contact:last-child) {
+  padding-bottom: 0;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px 120px;
+  align-items: start;
+}
+
+.contact-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Desktop text links, bottom-aligned with the form block. Tracks the
+   form's bottom edge automatically (including when Send appears). */
+.contact-links--text {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  align-self: end;
+}
+
+.contact-links--text a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid #d4d4d4;
+  padding-bottom: 8px;
+}
+
+.contact-links--text a:hover .contact-link-label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.contact-links--text a:focus-visible {
+  outline: 2px solid #737373;
+  outline-offset: 4px;
+}
+
+.contact-link-hint {
+  color: #737373;
+  white-space: nowrap;
+}
+
+/* Symbol row — small screens only (display:none on desktop). */
+.contact-links--icons {
+  display: none;
+}
+
+/* Entrance: the site's masked rise verbatim (FeaturedCard / footer /
+   summary copy): mask clips the 120% rise, 1s expo-out, 80ms staggers,
+   .in fires once from useInView. Type stays unstyled until handoff. */
+.contact .rv {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.contact .rv-inner {
+  display: block;
+  transform: translateY(120%);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact.in .rv-inner {
+  transform: translateY(0);
+}
+
+.contact.in .rv-d1 .rv-inner {
+  transition-delay: 0.08s;
+}
+
+.contact.in .rv-d2 .rv-inner {
+  transition-delay: 0.16s;
+}
+
+.contact.in .rv-d3 .rv-inner {
+  transition-delay: 0.24s;
+}
+
+/* Form: name/email share a row, everything else spans full width. */
+.contact-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.contact-field {
+  min-width: 0;
+}
+
+/* The rise wrapper carries the field's grid (mask sits above it). */
+.contact-field > .rv-inner {
+  display: grid;
+  gap: 8px;
+}
+
+.contact-field--span,
+.contact-submit,
+.contact-status {
+  grid-column: 1 / -1;
+}
+
+.contact-field label {
+  font: inherit;
+  color: inherit;
+}
+
+/* Clean skin: no boxed web-default inputs — transparent fields with a
+   single underline hairline, focus darkens the line (border-color swap
+   only, so focus never shifts layout by a pixel). */
+.contact-field input,
+.contact-field textarea {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #d4d4d4;
+  border-radius: 0;
+  padding: 8px 0;
+  width: 100%;
+  /* Fixed size — a draggable corner breaks the fit budget and serves no
+     purpose on a 4-row message box. */
+  resize: none;
+}
+
+.contact-field input::placeholder,
+.contact-field textarea::placeholder {
+  color: #a3a3a3;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--text-primary);
+}
+
+.contact-field input:focus-visible,
+.contact-field textarea:focus-visible {
+  outline: none;
+  border-bottom-color: var(--text-primary);
+}
+
+.contact-submit {
+  justify-self: end;
+  font: inherit;
+  color: var(--surface-page);
+  background: var(--text-primary);
+  border: 0;
+  padding: 10px 24px;
+  cursor: pointer;
+}
+
+.contact-submit:focus-visible {
+  outline: 2px solid #737373;
+  outline-offset: 4px;
+}
+
+.contact-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.contact-status {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.contact-status--error a {
+  color: inherit;
+}
+
+/* Mobile: single column, form first, symbol links after. Name/email
+   stack — side-by-side would be cramped at 390px. */
+@media (max-width: 600px) {
+.contact {
+  /* Anchor target for the header Contact link — sticky header offset. */
+  scroll-margin-top: 40px;
+    padding: 40px 20px 32px;
+    /* Same buffer contract against the 30vh mobile footer. */
+    min-height: calc(100vh - 30vh);
+  }
+
+  .contact-heading {
+    margin-bottom: 24px;
+  }
+
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .contact-form {
+    grid-template-columns: minmax(0, 1fr);
+    order: -1;
+  }
+
+  .contact-links--text {
+    display: none;
+  }
+
+  .contact-links--icons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .contact-links--icons a {
+    color: inherit;
+    display: inline-flex;
+  }
+
+  .contact-links--icons a:hover {
+    color: #737373;
+  }
+
+  .contact-links--icons a:focus-visible {
+    outline: 2px solid #737373;
+    outline-offset: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact .rv-inner {
+    transform: none;
+    transition: none;
+  }
+
+  .contact-links a,
+  .contact-submit {
+    transition: none;
+  }
+}

@@ -1,0 +1,149 @@
+/* SiteFooter — shared 40vh dark footer. Full-bleed wordmark pinned to the
+   floor with ~15% bleeding past the bottom edge; top row holds © (left)
+   and back-to-top (right). Arrival is mask-only (no transforms on the
+   word block — translated elements extend the scrollable overflow area
+   and shortened the document mid-scroll). */
+
+.site-footer-dark {
+  /* Inverted chrome: clay ink in light mode, white in dark — the reverse
+     of the page tokens, per the Figma light/dark pairing. */
+  background: var(--text-primary);
+  color: var(--surface-page);
+  height: 40vh;
+  min-height: 280px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* clear the iPhone home indicator / transparent toolbar zone */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.sf-inner {
+  max-width: 1512px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 50px;
+}
+
+.sf-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 32px 0 0;
+  font-size: 13px;
+  color: #a3a3a3;
+}
+
+.sf-top-link {
+  font: inherit;
+  color: var(--surface-page);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sf-top-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sf-top-link:focus-visible {
+  outline: 2px solid var(--surface-page);
+  outline-offset: 4px;
+}
+
+/* Top-row masked slides — the site's .rv language verbatim. */
+.sf-top .rv {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.sf-top .rv-inner {
+  display: inline-block;
+  transform: translateY(120%);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-footer-dark.in .sf-top .rv-inner {
+  transform: translateY(0);
+}
+
+.site-footer-dark.in .sf-top .rv-d1 .rv-inner {
+  transition-delay: 0.08s;
+}
+
+/* Word: full viewport width, bottom-anchored; -2.6% margin pushes a
+   constant ~15% past the 40vh edge (% margins resolve against the same
+   width the svg scales with, so the bite holds at any viewport). */
+.sf-word {
+  width: 100%;
+  padding: 24px 0 0;
+  margin-top: auto;
+  margin-bottom: -2.6%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Arrival: slow bottom-to-top mask rise. Softened hold-and-whip — takes
+   off early instead of sitting dead, still lands with a swoop. Runs
+   long on purpose. */
+.sf-word .sf-reveal {
+  clip-path: inset(100% 0 0 0);
+  contain: paint;
+}
+
+.site-footer-dark.in-word .sf-word .sf-reveal {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 2s cubic-bezier(0.55, 0, 0.15, 1);
+}
+
+.sf-mount svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Reserve space while fonts load so the word doesn't pop from zero height. */
+.sf-mount:empty {
+  min-height: 12vw;
+}
+
+/* Font-load fallback: static type, same footprint as the word. */
+.sf-fallback {
+  display: block;
+  font-size: 13vw;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-align: center;
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .sf-inner {
+    padding: 0 20px;
+  }
+
+  /* 40vh eats a phone screen — 30vh keeps the wordmark present
+     without dominating. min-height drops to match. */
+  .site-footer-dark {
+    height: 30vh;
+    min-height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-top .rv-inner {
+    transform: none;
+    transition: none;
+  }
+
+  .sf-word .sf-reveal {
+    clip-path: none;
+  }
+}

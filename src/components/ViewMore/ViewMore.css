@@ -1,0 +1,231 @@
+/* ViewMore skeleton skin. Panel inherits the WORK gutter from Home.css;
+   only dock-owned nodes are namespaced here. No-JS renders nothing (SPA),
+   so hidden entrance state is unconditional; reduced-motion stays static. */
+
+.dock-panel {
+  background: transparent;
+  color: var(--text-primary);
+  margin-top: 72px;
+  padding: clamp(20px, 3vw, 36px) 0;
+}
+
+.dock-grid {
+  columns: 4;
+  column-gap: 12px;
+  /* No grid-level entrance: the thumbs carry their own staggered wipe via
+     .in below. (A rise + scale here was tried and cut — it added nothing.) */
+}
+
+.dock-cell {
+  display: block;
+  break-inside: avoid;
+  margin: 0 0 12px;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+}
+
+.dock-cell:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+/* TEMP placeholders: grey ratio boxes until real project media lands.
+   Swap for the FeaturedCard media pattern at that point. */
+.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: #737373;
+}
+
+.ph-r1 { background: #d4d4d4; aspect-ratio: 4 / 5; }
+.ph-r2 { background: #e5e5e5; aspect-ratio: 4 / 3; border: 1px solid #d4d4d4; }
+.ph-r3 { background: #d4d4d4; aspect-ratio: 1 / 1; }
+.ph-r4 { background: #e5e5e5; aspect-ratio: 3 / 4; border: 1px solid #d4d4d4; }
+
+.dock-tile {
+  break-inside: avoid;
+  background: var(--text-primary);
+  color: var(--surface-wash);
+  text-decoration: none;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: clamp(14px, 2vw, 24px);
+  clip-path: inset(0 100% 0 0);
+  transition:
+    clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-tile small {
+  color: #a3a3a3;
+  transition: color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-tile .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.dock-tile .arrow {
+  display: inline-block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-tile:hover {
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+.dock-tile:hover small {
+  color: #737373;
+}
+
+.dock-tile:hover .arrow {
+  transform: translateX(6px);
+}
+
+.dock-tile:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.tile-inner {
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .dock-grid {
+    columns: 3;
+  }
+}
+
+@media (max-width: 600px) {
+  .dock-grid {
+    columns: 3;
+  }
+}
+
+/* Rise + deblur, staggered, expo: each thumb gets its own beat inside one
+   smooth wave. Fired once via .in, fixed once in. */
+.dock-cell .ph {
+  clip-path: inset(0 100% 0 0);
+  filter: blur(12px);
+  transition:
+    clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-grid.in .dock-cell .ph {
+  clip-path: inset(0 0 0 0);
+  filter: blur(0);
+}
+
+.dock-grid.in .dock-tile {
+  clip-path: inset(0 0 0 0);
+  transition:
+    clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.64s,
+    background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tile-inner {
+  filter: blur(12px);
+  transition: filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-grid.in .tile-inner {
+  filter: blur(0);
+  transition-delay: 0.64s;
+}
+
+.dock-grid.in .dock-cell:nth-child(1) .ph { transition-delay: 0s; }
+.dock-grid.in .dock-cell:nth-child(2) .ph { transition-delay: 0.08s; }
+.dock-grid.in .dock-cell:nth-child(3) .ph { transition-delay: 0.16s; }
+.dock-grid.in .dock-cell:nth-child(4) .ph { transition-delay: 0.24s; }
+.dock-grid.in .dock-cell:nth-child(5) .ph { transition-delay: 0.32s; }
+.dock-grid.in .dock-cell:nth-child(6) .ph { transition-delay: 0.4s; }
+.dock-grid.in .dock-cell:nth-child(7) .ph { transition-delay: 0.48s; }
+.dock-grid.in .dock-cell:nth-child(8) .ph { transition-delay: 0.56s; }
+.dock-grid.in .dock-tile .tile-inner { transition-delay: 0.64s; }
+
+/* Floater: one black pill, portalled to body (never inside ShrinkReveal).
+   Mask-slide mirrors SiteHeader (.nav-mask) + FeaturedCard (.rv):
+   .dock-pill is a transparent overflow-hidden mask, .pill-inner slides
+   120% <-> 0 on the same 1.2s expo. Transform-only, no opacity. */
+.dock-pill {
+  position: fixed;
+  z-index: 50;
+  /* Viewport-centered, so the scroll-lock widens its containing block when
+     the classic scrollbar vanishes — 50% drifts right by half the lock gap.
+     --lock-gap (<html>, set by PageTransition while locked, 0 otherwise)
+     pulls it back by exactly that, the fixed-position twin of the body's
+     padding-right compensation. Overlay scrollbars measure 0: no-op. */
+  left: calc(50% - var(--lock-gap, 0px) / 2);
+  bottom: 24px;
+  width: 190px;
+  transform: translateX(-50%);
+  background: transparent;
+  padding: 0 0 0.08em;
+  margin-bottom: -0.08em;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.pill-inner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-primary);
+  color: var(--surface-wash);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 14px 22px;
+  width: 100%;
+  transform: translateY(0);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-pill.off {
+  pointer-events: none;
+}
+
+.dock-pill.off .pill-inner {
+  transform: translateY(120%);
+}
+
+.dock-pill .arrow {
+  display: inline-block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-pill:hover .arrow {
+  transform: translateX(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-grid,
+  .dock-cell .ph,
+  .dock-tile,
+  .tile-inner {
+    transform: none !important;
+    transition: none !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+
+  .pill-inner {
+    transition: none !important;
+  }
+}

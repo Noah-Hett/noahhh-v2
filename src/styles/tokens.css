@@ -1,0 +1,109 @@
+/* Colour tokens v1 — SINGLE SOURCE OF TRUTH for site colour.
+   Source: Figma noahhh.com-2 (1DNladUhdgvJVKtqUIlPcY)
+   Light frame 155:12 / dark frame 155:69, approved mapping:
+     bg:            #e0dcdc (light) <-> #262626 (dark)  [Figma var --bg-primary, light only]
+     gradient end:  #ffffff (light) <-> #000000 (dark) [stop 11.481% in Figma]
+     text primary:  #262626 (light) <-> #ffffff (dark)
+     text secondary:#000000 (light) <-> #ffffff (dark)
+   Rules:
+   - No hex/rgb/hsl colour literals outside this file, except structural
+     alpha masks (transparent→#000) and TEMP artwork placeholders flagged
+     to be replaced with real images (see PH notes in component CSS).
+   - Opacity variants (40%/50% secondary copy in Figma) reuse these tokens
+     with opacity / color-mix — never new hexes.
+   - Dark mode is system-only: prefers-color-scheme overrides below.
+     No toggle, no data-theme, no localStorage.
+   - Single exception: per-Project colours live in src/content/projects.ts
+     (colors.light/dark) and reach the page ONLY as --proj-light /
+     --proj-dark vars consumed by the html[data-project] overrides in
+     index.css. No other file may introduce colour literals. */
+
+:root {
+  color-scheme: light dark;
+
+  /* Primitives — exact Figma values, never used directly by components. */
+  --clay-bg: #e0dcdc;
+  --clay-ink: #262626;
+
+  /* Semantic roles — what components actually consume. */
+  --surface-page: var(--clay-bg);
+  --surface-wash: #ffffff;
+  --text-primary: var(--clay-ink);
+  --text-secondary: #000000;
+
+  /* Artwork ink — line-art SVG + DotGrid dots. White on light, clay on
+     dark: always a whisper above the page canvas in both modes. */
+  --artwork: #ffffff;
+
+  /* Hero transition band. End-to-end ramp across the band element itself —
+     the site stages hero → band → WORK as separate blocks, so there is no
+     Figma-style mid stop; the token only owns the colour endpoints. */
+  --hero-gradient: linear-gradient(to bottom, var(--surface-page), var(--surface-wash));
+
+  /* Type — Instrument Sans variable as the body face, system-ui
+     fallback while it loads (font-display: swap in fonts.css). */
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+
+  /* Project vertical rhythm v1 — fixed scale, every Project shares it.
+     Starting values measured from Figma noahhh.com-2 frame 236:91
+     (GIZMOPHONE): major-composition gaps 216–294, copy-to-copy pitch
+     256–294, tight gaps 59–94. Section (between groups) and block
+     (between Blocks within a group) stay separate tokens so they can
+     diverge. Tight survives only for the stacked image↔copy row-gap
+     inside a pair. */
+  --proj-space-section: 256px;
+  --proj-space-block: 100px;
+  --proj-space-tight: 64px;
+
+  /* Opening-composition lead: hero-like visual into its section's first
+     content (hero → challenge row). Intra-composition gear — tighter than
+     the inter-block section rhythm. 128px measured in Figma 236:91
+     (hero bottom 1100 → challenge 1228). */
+  --proj-space-lead: 128px;
+
+  /* Project body copy: 16px on phones (same as headers/UI — untouched),
+     stepping up to 30px at the 1512 canvas (Figma body 30 vs header 20).
+     The 1.5x lives as the desktop end-state, not a live ratio, so UI size
+     never moves. Body Blocks adopt this token in Phase 2. */
+  --proj-copy: clamp(1rem, 1.984vw, 1.875rem);
+
+  /* Project copy measure: readable line length for body text. 610px from
+     Figma body columns (609–639) — applied as 43.2% of the content width
+     (610/1412) so the proportion holds at every viewport, full width below
+     the pair-stacking breakpoint. Pairs consume the same proportion. */
+  --proj-copy-measure: 610px;
+}
+
+/* Narrow screens compress the rhythm proportionally — same tokens, same
+   ratios, no per-Block overrides. Tight stays clearly below block (32 vs
+   64) so intra-composition gaps never read as inter-block gaps. */
+@media (max-width: 800px) {
+  :root {
+    --proj-space-section: 128px;
+    --proj-space-block: 64px;
+    --proj-space-tight: 32px;
+    --proj-space-lead: 64px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-page: var(--clay-ink);
+    --surface-wash: #000000;
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --artwork: var(--clay-bg);
+  }
+}
+
+/* Tailwind v4 consumer — utilities like bg-surface-page / text-primary
+   resolve live to the vars above, so they follow the OS theme without
+   a rebuild. No colour literals here by design. */
+@theme inline {
+  --color-surface-page: var(--surface-page);
+  --color-surface-wash: var(--surface-wash);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-artwork: var(--artwork);
+  --font-sans: var(--font-sans);
+}

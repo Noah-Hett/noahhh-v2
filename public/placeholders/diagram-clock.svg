@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="700" viewBox="0 0 700 700">
+  <rect width="700" height="700" fill="#DCE5DC"/>
+  <circle cx="350" cy="320" r="200" fill="none" stroke="#2d402f" stroke-width="8"/>
+  <circle cx="350" cy="320" r="150" fill="none" stroke="#2d402f" stroke-width="3"/>
+  <line x1="350" y1="320" x2="350" y2="190" stroke="#2d402f" stroke-width="10" stroke-linecap="round"/>
+  <line x1="350" y1="320" x2="450" y2="360" stroke="#2d402f" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="350" cy="320" r="14" fill="#2d402f"/>
+  <text x="350" y="620" font-family="sans-serif" font-size="34" text-anchor="middle" fill="#2d402f">CLOCK DIAGRAM · 700×700</text>
+</svg>

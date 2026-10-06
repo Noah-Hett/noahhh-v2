@@ -1,0 +1,10 @@
+/* Site fonts — Instrument Sans variable (wdth + wght).
+   Self-hosted OFL face. One file covers weight 400–700, width 75–100%. */
+
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/InstrumentSans-Variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}

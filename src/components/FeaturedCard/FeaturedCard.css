@@ -1,0 +1,50 @@
+/* Blank-slate skin for FeaturedCard. Mechanics kept from experiments;
+   colors neutral grey so Figma tokens can land later without teardown. */
+.fc-track { padding: 0; background: #e5e5e5; border: 1px solid #d4d4d4; overflow: hidden; }
+/* Per-Project flip pair (see FeaturedCard colors prop): light OS uses the
+   light colour as canvas, dark OS flips. Colours come ONLY from
+   projects.ts via --card-light/--card-dark. */
+.fc-track.fc-themed {
+  background: var(--card-light);
+  color: var(--card-dark);
+  --track-accent: var(--card-dark);
+}
+@media (prefers-color-scheme: dark) {
+  .fc-track.fc-themed {
+    background: var(--card-dark);
+    color: var(--card-light);
+    --track-accent: var(--card-light);
+  }
+}
+.fc-inner { display: grid; grid-template-columns: 54% 1fr; min-height: 70vh; align-items: stretch; gap: 0; background: transparent; }
+.fc-track:nth-child(even) .fc-inner { grid-template-columns: 1fr 54%; }
+.fc-track:nth-child(even) .fc-media-wrap { order: 2; }
+.fc-track:nth-child(even) .fc-copy { order: 1; }
+@media (max-width: 860px) {
+  .fc-inner { grid-template-columns: 1fr; min-height: auto; }
+  .fc-track:nth-child(even) .fc-inner { grid-template-columns: 1fr; }
+  .fc-media-wrap { order: 0 !important; }
+  .fc-copy { order: 0 !important; }
+}
+.fc-media-wrap { position: relative; width: 100%; height: 100%; min-height: 52vh; background: transparent; overflow: hidden; }
+.fc-clip { position: absolute; inset: 0; width: 100%; height: 100%; will-change: clip-path; }
+.fc-clip img, .fc-clip video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fc-clip video { display: none; }
+.fc-clip.is-video img { display: none; }
+.fc-clip.is-video video { display: block; }
+.fc-copy { padding: 40px 36px 32px 48px; display: flex; flex-direction: column; justify-content: center; }
+.fc-copy h3 { margin: 0; font: inherit; color: inherit; }
+.fc-copy .rv { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.fc-copy .rv-inner { display: block; transform: translateY(120%); transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.fc-copy.in .rv-inner { transform: translateY(0); }
+.fc-copy.in .rv-d1 .rv-inner { transition-delay: 0.08s; }
+.fc-copy.in .rv-d2 .rv-inner { transition-delay: 0.16s; }
+.fc-copy.in .rv-d3 .rv-inner { transition-delay: 0.24s; }
+.fc-copy.in .rv-d4 .rv-inner { transition-delay: 0.32s; }
+.fc-copy p { margin: 10px 0 0; font: inherit; color: inherit; }
+.fc-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.fc-meta span { font: inherit; color: inherit; background: none; border: 0; padding: 0; }
+.fc-children { margin-top: 12px; }
+@media (prefers-reduced-motion: reduce) {
+  .fc-copy .rv-inner { transform: none; transition: none; }
+}

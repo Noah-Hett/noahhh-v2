@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Page transition demo — motion lab</title>
+<link rel="stylesheet" href="./transition.css" />
+</head>
+<body class="t-full">
+  <div class="t-chrome">
+    <nav class="t-fakeheader" aria-label="Demo site">
+      <a href="#/" data-nav="home" class="t-brand">noahhh</a>
+      <a href="#/" data-nav="home">Home</a>
+      <a href="#/project" data-nav="project">Project 1</a>
+    </nav>
+
+    <div class="t-stage" id="t-stage">
+      <div class="t-loadbar" id="t-loadbar" aria-hidden="true"><span></span></div>
+      <section class="t-page page-home" data-page="home" aria-label="Demo home page">
+        <h1><span class="rv"><span class="rv-inner">Noah Hett — design engineer</span></span></h1>
+        <p class="t-lede"><span class="rv rv-d1"><span class="rv-inner">Obsessed with visual comms. Based in London.</span></span></p>
+        <div class="t-card rv rv-d2"><div class="rv-inner">
+          <div class="t-card-media">800×600</div>
+          <p class="t-card-title">Project 1</p>
+          <a href="#/project">Open Project 1 →</a>
+        </div></div>
+        <div class="t-card rv rv-d3"><div class="rv-inner">
+          <div class="t-card-media">800×600</div>
+          <p class="t-card-title">Project 2</p>
+          <a href="#/project">Open Project 2 →</a>
+        </div></div>
+      </section>
+
+      <section class="t-page page-project" data-page="project" aria-label="Demo project page">
+        <h1><span class="rv"><span class="rv-inner">Project 1</span></span></h1>
+        <p class="t-lede"><span class="rv rv-d1"><span class="rv-inner">Selected placeholder — real project lands later.</span></span></p>
+        <div class="t-media-mask rv rv-d2"><div class="rv-inner">
+          <div class="t-hero"><span>project hero</span></div>
+        </div></div>
+        <p><span class="rv rv-d3"><span class="rv-inner">Body blocks go here. The mask panel you just watched rise is this page's background.</span></span></p>
+        <p><a href="#/">← Back home</a></p>
+      </section>
+
+      <div class="t-mask" id="t-mask" aria-hidden="true"></div>
+      <div class="t-mask2" id="t-mask2" aria-hidden="true"></div>
+    </div>
+
+    <footer class="t-fakefooter" id="t-fakefooter">
+      <p>contact — noahhh</p>
+    </footer>
+  </div>
+
+  <p class="sr-only" id="t-status" aria-live="polite"></p>
+
+<script src="./transition.js"></script>
+</body>
+</html>

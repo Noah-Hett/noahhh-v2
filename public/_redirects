@@ -1,0 +1,2 @@
+/* /index.html 200 — required for SPA deep links on Cloudflare Pages.
+   V1 was missing this; without it /project/:slug refresh 404s. */

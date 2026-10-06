@@ -1,0 +1,450 @@
+/* Site shell. Organisation mirrors Figma header row (brand left, link cluster right).
+   Link pills use the page token so they blend with the canvas; no type styling. */
+.site-header {
+  position: sticky;
+  top: 0;
+  /* Above page content and the ViewMore floater pill (z-50) so the open
+     takeover covers it; below the PageTransition masks (z-299+) so route
+     transitions still cover the header. */
+  z-index: 60;
+  max-width: 1512px;
+  margin: 0 auto;
+  padding: 60px 50px 0;
+}
+
+.site-nav {
+  position: relative;
+  z-index: 2;
+}
+
+.site-nav-list {
+  display: flex;
+  align-items: baseline;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav-list .brand {
+  margin-right: auto;
+}
+
+.site-nav-list a {
+  color: inherit;
+  /* plain rectangle under the text so each link floats readable over
+     scrolled content — unstyled placeholder until style handoff */
+  background: var(--surface-page);
+  padding: 4px 10px;
+}
+
+.site-nav-list a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Menu links render caps (visual only — source copy untouched).
+   The noahhh brand sits outside this: it is not a menu button. */
+.site-nav-list li:not(.brand) a,
+.overlay-list li:not(.brand) a {
+  text-transform: uppercase;
+}
+
+/* Card-style mask reveal for the header exit (mirrors .rv/.rv-inner):
+   each link rides in an overflow-hidden mask and slides up out of it.
+   Transform-only; no will-change — the 1.2s run promotes itself. */
+.nav-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.nav-mask > a {
+  display: inline-block;
+  transform: translateY(0);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The toggle rides the same mask language so it hides on scroll with the
+   rest of the bar. Delay is set per-breakpoint (mobile only — desktop and
+   tablet never show the toggle). */
+.nav-mask > .menu-toggle {
+  /* Block-level flex: an inline-level button would sit on the li's text
+     baseline, adding strut descender space below it and making this mask
+     ~5px taller than the link masks. */
+  display: flex;
+  transform: translateY(0);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-header.away .nav-mask > .menu-toggle {
+  transform: translateY(-120%);
+}
+
+/* stagger: exit runs brand → Archive, return runs Archive → brand.
+   Transition delay is read from the after-change style, so base delays
+   govern the return and .away delays govern the exit. Explicit delay
+   classes (not nth-child) so nav reorder can't silently break the wave. */
+.nav-d1 > a {
+  transition-delay: 0.32s;
+}
+
+.nav-d2 > a {
+  transition-delay: 0.24s;
+}
+
+.nav-d3 > a {
+  transition-delay: 0.16s;
+}
+
+.nav-d4 > a {
+  transition-delay: 0.08s;
+}
+
+.nav-d5 > a {
+  transition-delay: 0s;
+}
+
+.site-header.away .nav-mask > a {
+  transform: translateY(-120%);
+}
+
+.site-header.away .nav-d1 > a {
+  transition-delay: 0s;
+}
+
+.site-header.away .nav-d2 > a {
+  transition-delay: 0.08s;
+}
+
+.site-header.away .nav-d3 > a {
+  transition-delay: 0.16s;
+}
+
+.site-header.away .nav-d4 > a {
+  transition-delay: 0.24s;
+}
+
+.site-header.away .nav-d5 > a {
+  transition-delay: 0.32s;
+}
+
+/* Fresh-load entrance: same mask-rise language as the scroll return, but
+   as a one-shot *animation* (brand → Archive) so the scroll-hide
+   *transition* delays above are never disturbed. It lands LAST in the home
+   hero cascade (portrait → art → copy first): held until the copy wave is
+   in, base delay 2.2s, last link settles ~3.7s. Class drops off at 3.8s
+   (see SiteHeader.tsx) once the last stagger lands. */
+@keyframes header-load-rise {
+  from {
+    transform: translateY(-120%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.site-header.load-play .nav-mask > a,
+.site-header.load-play .nav-mask > .menu-toggle {
+  animation: header-load-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.site-header.load-play .nav-d1 > a {
+  animation-delay: 2.2s;
+}
+
+.site-header.load-play .nav-d2 > a {
+  animation-delay: 2.29s;
+}
+
+.site-header.load-play .nav-d3 > a {
+  animation-delay: 2.38s;
+}
+
+.site-header.load-play .nav-d4 > a {
+  animation-delay: 2.47s;
+}
+
+.site-header.load-play .nav-d5 > a {
+  animation-delay: 2.56s;
+}
+
+.site-header.load-play .nav-d6 > .menu-toggle {
+  animation-delay: 2.66s;
+}
+
+/* Mobile menu toggle + fullscreen overlay. Desktop/tablet never render
+   these — the full inline row fits there. */
+.nav-toggle-item {
+  display: none;
+  align-self: center;
+}
+
+.menu-toggle {
+  /* Same white-rectangle metrics as the links (font/padding) so the box
+     matches and baseline/center alignment just works. The 44px tap target
+     comes from the ::after hit area below, not the visual box. */
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background: var(--surface-page);
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  position: relative;
+}
+
+/* Invisible 44px-minimum hit area around the visual box. */
+.menu-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -10px -12px;
+}
+
+.menu-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Exactly one line tall, so the button box equals a link box. The icon is
+   geometrically centered in that box (labels without descenders sit
+   slightly high in theirs — accepted, box alignment wins). */
+.burger-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 1em;
+  height: 1lh;
+}
+
+.burger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menu-toggle[aria-expanded='true'] .burger-line:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded='true'] .burger-line:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+.mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) and (min-width: 601px) {
+  .site-header {
+    padding: 60px 47px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-header {
+    padding: 60px 20px 0;
+  }
+
+  /* Condensed bar: brand left, All work + toggle right. Center (not
+     baseline) alignment so the toggle's box shares the links' top edge —
+     baseline leaves the box 5px low even at equal heights. */
+  .site-nav-list {
+    gap: 20px;
+    align-items: center;
+  }
+
+  .site-nav-list .hide-mobile {
+    display: none;
+  }
+
+  .nav-toggle-item {
+    display: block;
+  }
+
+  /* Scroll-hide stagger on mobile: exit runs brand → All work → toggle,
+     return reverses. (Base delays govern the return.) */
+  .nav-d1 > a {
+    transition-delay: 0.16s;
+  }
+
+  .nav-d3 > a {
+    transition-delay: 0.08s;
+  }
+
+  .nav-d6 > .menu-toggle {
+    transition-delay: 0s;
+  }
+
+  .site-header.away .nav-d1 > a {
+    transition-delay: 0s;
+  }
+
+  .site-header.away .nav-d3 > a {
+    transition-delay: 0.08s;
+  }
+
+  .site-header.away .nav-d6 > .menu-toggle {
+    transition-delay: 0.16s;
+  }
+
+  /* The bar links are repeated in the overlay, so they slide away when the
+     menu opens — only the toggle (now Close) stays. Fast exit; the slow
+     base stagger governs the return as the panel lifts. Placed after the
+     .away rules so it wins if both classes ever coincide. */
+  .site-header.menu-open .site-nav-list .nav-mask > a {
+    transform: translateY(-120%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .site-header.menu-open .site-nav-list .nav-d1 > a {
+    transition-delay: 0s;
+  }
+
+  .site-header.menu-open .site-nav-list .nav-d3 > a {
+    transition-delay: 0.08s;
+  }
+
+  /* Fullscreen takeover. Choreography is two-phase so the motion reads:
+     OPEN — the sheet wipes down on a soft curve (expo would flash past on
+     844px of travel), then the links rise staggered once it lands.
+     CLOSE — the links tuck away fast first, then the sheet lifts; the
+     visibility flip waits until the sheet is gone. */
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: var(--surface-page);
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-100%);
+    transition:
+      transform 0.55s cubic-bezier(0.65, 0, 0.35, 1) 0.3s,
+      visibility 0s 0.9s;
+  }
+
+  .site-header.menu-open .mobile-overlay {
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition:
+      transform 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0s,
+      visibility 0s 0s;
+  }
+
+  .overlay-list {
+    list-style: none;
+    margin: 0;
+    padding: 140px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .overlay-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  /* Base = exit: fast tuck with a tight reverse stagger. */
+  .overlay-mask > a {
+    display: inline-block;
+    background: var(--surface-page);
+    padding: 4px 10px;
+    transform: translateY(-120%);
+    transition: transform 0.32s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  }
+
+  .overlay-mask > a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .od-1 > a {
+    transition-delay: 0.12s;
+  }
+
+  .od-2 > a {
+    transition-delay: 0.09s;
+  }
+
+  .od-3 > a {
+    transition-delay: 0.06s;
+  }
+
+  .od-4 > a {
+    transition-delay: 0.03s;
+  }
+
+  .od-5 > a {
+    transition-delay: 0s;
+  }
+
+  /* Entrance: slow expo rise, staggered brand → Archive, starting as the
+     sheet lands (~0.3s in). */
+  .site-header.menu-open .overlay-mask > a {
+    transform: translateY(0);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .site-header.menu-open .od-1 > a {
+    transition-delay: 0.3s;
+  }
+
+  .site-header.menu-open .od-2 > a {
+    transition-delay: 0.38s;
+  }
+
+  .site-header.menu-open .od-3 > a {
+    transition-delay: 0.46s;
+  }
+
+  .site-header.menu-open .od-4 > a {
+    transition-delay: 0.54s;
+  }
+
+  .site-header.menu-open .od-5 > a {
+    transition-delay: 0.62s;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Condensed bar shows brand → All work → toggle: tighten the entrance
+     stagger to the visible masks. */
+  .site-header.load-play .nav-d1 > a {
+    animation-delay: 2.2s;
+  }
+
+  .site-header.load-play .nav-d3 > a {
+    animation-delay: 2.29s;
+  }
+
+  .site-header.load-play .nav-d6 > .menu-toggle {
+    animation-delay: 2.38s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-overlay,
+  .overlay-mask > a,
+  .burger-line,
+  .site-header.menu-open .site-nav-list .nav-mask > a {
+    transition: none;
+  }
+
+  .site-header.load-play .nav-mask > a,
+  .site-header.load-play .nav-mask > .menu-toggle {
+    animation: none;
+  }
+}

@@ -1,0 +1,6 @@
+dist/
+node_modules/
+.media-tmp/
+_incoming/
+.DS_Store
+*.tsbuildinfo

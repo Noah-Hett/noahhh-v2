@@ -1,0 +1,3 @@
+# Mask-rise page transition (URL-first, chunk-gated)
+
+Every pathname change plays the motion-lab mask-rise (grey lead + bg chase, 700ms locked): the router commits immediately while the old route stays rendered under the rising mask, and the visual swap happens under full cover. Hash-only moves skip the theatre. The incoming lazy chunk is prefetched on link hover/focus and fetched at transition start — the cover duration is its loading budget, with a 600ms-grace hairline for slow loads. Code chunks only (no image gate); reduced-motion swaps instantly. Footer follows the displayed route so it swaps under cover.

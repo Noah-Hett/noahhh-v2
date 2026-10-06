@@ -1,0 +1,212 @@
+.project-layout {
+  background: transparent;
+  color: inherit;
+}
+
+/* Project pages skip the roomy shared `.page` top padding (built for Home's
+   hero pull-under) — the Back button sits ~32px below the header so the
+   title lands near the Figma measure instead of ~110px lower. */
+.page-project {
+  padding-top: 32px;
+}
+
+.project-title {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  /* Phase 1: always centered display title. Family stays per-Project
+     (inline style); size is one shared clamp — 200px at the 1512 canvas,
+     flooring at 56px on phones. */
+  text-align: center;
+  font-size: clamp(3.5rem, 13.23vw, 12.5rem);
+  line-height: 1.1;
+  overflow-wrap: break-word;
+  margin: 24px 0 0;
+}
+
+/* Phase 1 hero: capped at the Figma 1196 measure, centered, sharp corners.
+   Eager LCP — sizing comes from width/height attrs, never shifts.
+   Overlap: the hero rides up over the title's descenders per Figma 236:92/93.
+   Figma's 70px linebox overlap includes ~20px of half-leading slack, so the
+   true glyph overlap is descender-depth ≈ 48px at the 1512 canvas (3.17vw,
+   floored at 14px). Later in DOM so it paints above the title;
+   DOM/reading order unchanged. */
+.project-hero {
+  margin: calc(-1 * clamp(14px, 3.17vw, 48px)) auto 0;
+  padding: 0;
+  max-width: 1196px;
+}
+
+.project-hero img,
+.project-hero video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+/* Hero video controls: pause + mute toggles under the hero, same
+   underline-button language as the end nav (buttons reuse it). */
+.project-hero-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+/* Phase 1 challenge row: standalone summary left, meta stack right.
+   119px column gutter mirrors Figma 236:94/95 (639 + 639 + 119). */
+.project-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 119px;
+  align-items: start;
+  /* Opening composition: hero leads into the challenge row on the tighter
+     lead gear, not the inter-block section rhythm. */
+  margin-top: var(--proj-space-lead);
+  /* Challenge copy + meta share the project body token: 16px on phones,
+     30px at the canvas. Headers/UI stay small everywhere. */
+  font-size: var(--proj-copy);
+  line-height: 1.3;
+}
+
+.project-summary {
+  margin: 0;
+}
+
+.project-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  /* Right-aligned dimmed stack per Figma — flat 50% over the text token,
+     same dimmer-copy convention as the rest of the site, never a new hex. */
+  text-align: right;
+  opacity: 0.5;
+}
+
+.project-meta > div {
+  margin: 0;
+  min-width: 0;
+}
+
+/* No visible labels — Figma shows bare values (date/scope/role).
+   Terms stay in the DOM for screen readers. */
+.project-meta dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.project-meta dd {
+  margin: 0;
+}
+
+.project-collabs {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.project-collabs a,
+.project-collabs span {
+  color: inherit;
+}
+
+.project-collabs a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.project-collabs a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Screen-reader-only label inside collaborator initials links. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.project-end-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 48px;
+}
+
+.project-end-link {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #d4d4d4;
+  border-radius: 0;
+  padding: 0 0 8px;
+  cursor: pointer;
+}
+
+.project-end-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.project-end-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.project-body {
+  /* Gathers the challenge section + remaining groups. Zero top margin:
+     the intro's own lead sets the hero distance, section-to-section
+     rhythm carries challenge → process. */
+  margin-top: 0;
+}
+
+/* Challenge Blocks under the intro row (when any exist) sit on block
+   rhythm — same as any adjacent Blocks. */
+.project-challenge-blocks {
+  margin-top: var(--proj-space-block);
+}
+
+/* Narrow: challenge row stacks single-column, summary then meta,
+   both left-aligned. Meta keeps its 50% dimming. */
+@media (max-width: 800px) {
+  .project-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .project-meta {
+    text-align: left;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-project {
+    padding-top: 24px;
+  }
+}
+
+/* Mobile: stack like the contact links — full-width rows, left-aligned. */
+@media (max-width: 600px) {
+  .project-end-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .project-end-link {
+    text-align: left;
+  }
+}

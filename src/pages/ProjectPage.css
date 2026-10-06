@@ -1,0 +1,277 @@
+/* Phase 2: standalone body Blocks. Copy + visuals render correctly on
+   their own — right type, right spacing, no shift. `for`/`id` are
+   validated in content but visually ignored until Phase 3 pairing. */
+
+/* Body inherits the project copy token so text, video/pdf/3D/gallery
+   wrappers all share it. */
+.project-body {
+  font-size: var(--proj-copy);
+  line-height: 1.3;
+}
+
+/* The block list is semantic ordering only — visually invisible. */
+.project-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.project-body li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Groups are distinct compositions: section rhythm between them. */
+.project-body section + section {
+  margin-top: var(--proj-space-section);
+}
+
+/* Adjacent Blocks within a section share one rhythm (pairs and singles
+   alike); section rhythm is reserved for group-to-group gaps. */
+.project-body li + li {
+  margin-top: var(--proj-space-block);
+}
+
+/* Standalone copy: the measure as a proportion (610px at the canvas),
+   left-aligned, full width below the pair-stacking breakpoint. */
+.project-body li p {
+  margin: 0;
+  max-width: 43.2%;
+}
+
+/* Pair + showcase copy are sized by their tracks, never by this cap. */
+.project-body .pair-copy,
+.project-body .showcase-copy {
+  margin: 0;
+  max-width: none;
+}
+
+/* Standalone visual (explicit fallback — real visuals end up paired or in
+   a gallery): full column width, sharp corners, no-shift attrs intact. */
+.project-body li img,
+.project-body li video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+/* Phase 3 pairs: text leads, image takes the remainder. Copy holds its
+   proportion (43.2% = 610px at canvas, same as solo blocks) while the
+   visual track flexes to fill — air lives ONLY between copy and visual
+   (the 200 gap), never margin-side, so rows run full content width.
+   Pair 0 opens copy-right; `pair-flip` mirrors it. DOM order
+   is untouched — alternation is placement only. Rows center-align. */
+.pair {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 43.2%);
+  column-gap: clamp(48px, 13.23vw, 200px);
+  align-items: center;
+  /* Visual height cap as a multiple of copy height — bump to taste
+     (try 2 or 2.5). Single knob; the rule below consumes it. */
+  --pair-cap: 2;
+}
+
+.pair .pair-copy {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  text-align: right;
+}
+
+.pair .pair-visual {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  width: 100%;
+  /* Outer-flush pinning: shrunken (height-capped) drawings hug the
+     content edge; slack joins the middle gap, never margin-side. */
+  display: flex;
+  justify-content: flex-start;
+}
+
+.pair-flip {
+  grid-template-columns: minmax(0, 43.2%) minmax(240px, 1fr);
+}
+
+.pair-flip .pair-copy {
+  grid-column: 1;
+  justify-self: start;
+  text-align: left;
+}
+
+.pair-flip .pair-visual {
+  grid-column: 2;
+  justify-self: end;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pair-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+/* Height cap: at most --pair-cap x the copy's measured height
+   (--pair-copy-h, set by PairRow once measured). Width shrinks to fit
+   the cap while preserving aspect (never cropped, never squashed) via
+   the intrinsic ratio (--pair-ratio = w / h, always set):
+   w = min(track, cap * ratio). The shrunken box is sized to the drawing
+   itself — no letterboxing — and the flex wrapper above pins it
+   outer-flush. Scoped to data-measured rows so pre-measure keeps natural
+   full-width sizing (avoids invalid-var fallback wiping width to auto). */
+.pair[data-measured='true'] .pair-visual img {
+  max-height: calc(var(--pair-copy-h) * var(--pair-cap));
+  width: min(100%, calc(var(--pair-copy-h) * var(--pair-cap) * var(--pair-ratio)));
+  height: auto;
+}
+
+/* Phase 4 gallery: count-balanced rows on a 12-column grid (row of k
+   spans 12/k — 1 full, 2 halves, 3 thirds, 4 quarters), natural aspects,
+   bottoms aligned so weight sits low (Figma bottoms: 3535/3535/3554 —
+   already level). Spans arrive per-item as --span (desktop) and --span-m
+   (mobile halves); see balanceRows. Gutters ~60px at canvas. */
+.gallery {
+  margin: 0;
+  padding: 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 60px);
+  align-items: end;
+}
+
+.gallery-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  grid-column: span var(--span, 12);
+}
+
+/* Trailing caption (Figma-literal position): body token at the copy
+   proportion, left-aligned, tight below the images. */
+.gallery-caption {
+  margin: var(--proj-space-tight) 0 0;
+  max-width: 43.2%;
+}
+
+/* Mobile halves on the same 12 columns: desktop trios re-partition to
+   6+6+12 (odd one out goes full width, deliberate final image), pairs and
+   quartets to halves. Never single-column petite — the 2-column floor
+   holds. Caption goes full width with the stack zone. */
+@media (max-width: 800px) {
+  .gallery-grid img {
+    grid-column: span var(--span-m, 12);
+  }
+
+  .gallery-caption {
+    max-width: none;
+  }
+}
+
+/* Phase 5 showcase (graduated composition): wide visual + narrow copy +
+   optional uniform detail strip, one authoring unit. Main row: visual 1fr,
+   copy 19% (Figma 266/1412), gap ~51 at canvas. Tops aligned (Figma puts
+   both at y3981). No height cap — the tall visual stands as drawn. */
+.showcase-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 19%);
+  column-gap: clamp(24px, 3.6vw, 51px);
+  align-items: start;
+}
+
+.showcase-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+.showcase-copy {
+  margin: 0;
+}
+
+/* Detail strip: justified filmstrip. Uniform height derives from the
+   images (--strip-h, measured: row width minus gaps over summed aspects)
+   so the row fills exactly with constant gaps and natural aspects — no
+   letterboxing, no crop. Below the floor the fixed height holds and rows
+   wrap left-aligned instead of shrinking further. */
+.showcase-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: clamp(24px, 4vw, 60px);
+  margin-top: var(--proj-space-tight);
+}
+
+.showcase-cell {
+  /* Filmstrip cells size from the image itself (fixed height, auto width)
+     so every drawing renders whole with zero padding — the row height,
+     not the cell, does the work. */
+  flex: 0 0 auto;
+  height: var(--strip-h, clamp(120px, 17.4vw, 263px));
+}
+
+/* Specificity note: beats `.project-body li img` (standalone full-width
+   rule) so strip cells keep uniform height instead of inheriting it. */
+.showcase-strip .showcase-cell img {
+  display: block;
+  height: 100%;
+  width: auto;
+  border-radius: 0;
+}
+
+/* Narrow: pairs stack single-column, visual first (placement only — DOM
+   keeps source order), on the tight intra gap. Breaks at 1150px: the
+   protected proportion + visual minimum + gap need ~900px of content
+   before tracks start squeezing, so the grid yields early. Showcase stacks
+   visual → copy → strip the same way; the strip keeps its uniform height
+   (proportionally floored) and wraps. */
+@media (max-width: 1150px) {
+  .showcase-main {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--proj-space-tight);
+  }
+
+  .pair,
+  .pair-flip {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    justify-content: stretch;
+    row-gap: var(--proj-space-tight);
+  }
+
+  .pair .pair-copy,
+  .pair-flip .pair-copy {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    /* Stacked copy always resets left, regardless of side. */
+    text-align: left;
+  }
+
+  .pair .pair-visual,
+  .pair-flip .pair-visual {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  /* Stacked copy goes full width — the proportion only applies side by side. */
+  .project-body li p {
+    max-width: none;
+  }
+
+  /* No height cap when stacked — natural full-width visuals. */
+  .pair-visual img,
+  .pair[data-measured='true'] .pair-visual img {
+    width: 100%;
+    max-height: none;
+  }
+}

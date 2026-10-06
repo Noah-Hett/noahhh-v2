@@ -1,0 +1,223 @@
+/* XL layer — proportional scale-up above the 1512px design canvas.
+   ADDITIVE ONLY: everything in here sits inside min-width: 1513px, so at
+   1512px and under the browser never matches it and the dialed-in layout
+   renders byte-identical. No base file values were changed to add this.
+   Two-layer model (per review):
+   - Bands stay uncapped full-bleed (hero, transition-band, work,
+     shrink-reveal, footer bg) — the WORK white edge-mask depends on it.
+   - Only INNER content scales, capped at 2200px.
+   Clamp floors equal the base values (floor / 1512 = vw rate), so there is
+   no seam at 1513px — each rule computes to ~floor there, then grows. */
+
+@media (min-width: 1513px) {
+  /* Proportional type: all body copy is font: inherit, so one fluid root
+     on each top-level container scales text with the canvas. 16px at
+     1512 (16/1512 = 1.058vw), capped at ~23px near 2200px viewport. */
+  .home,
+  .page,
+  .site-header,
+  .site-footer-dark {
+    font-size: clamp(16px, 1.058vw, 23px);
+  }
+
+  /* Shared containers: widen the island, fluid gutters.
+     50px -> 3.307vw, 60px -> 3.968vw, 110px -> 7.275vw, 80px -> 5.291vw,
+     48px -> 3.175vw. */
+  .page {
+    max-width: 2200px;
+    padding:
+      clamp(110px, 7.275vw, 160px)
+      clamp(50px, 3.307vw, 120px)
+      clamp(80px, 5.291vw, 120px);
+  }
+
+  .page > * + * {
+    margin-top: clamp(48px, 3.175vw, 72px);
+  }
+
+  .home {
+    max-width: 2200px;
+  }
+
+  .site-header {
+    max-width: 2200px;
+    padding: clamp(60px, 3.968vw, 90px) clamp(50px, 3.307vw, 120px) 0;
+  }
+
+  .site-nav-list {
+    gap: clamp(32px, 2.116vw, 48px);
+  }
+
+  .sf-inner {
+    max-width: 2200px;
+    padding: 0 clamp(50px, 3.307vw, 120px);
+  }
+
+  .sf-top {
+    padding-top: clamp(32px, 2.116vw, 48px);
+  }
+
+  /* Hero: band stays 100vw full-bleed (base rule untouched). Only the
+     inner padding tracks the wider container, and the grid/art/photo
+     scale: 357px -> 23.61vw, 564px -> 37.30vw, 670px -> 44.31vw,
+     230px art offset -> 15.21vw, 24px gap -> 1.587vw. Grid is capped and
+     centered so it never drifts inside the full-bleed band. */
+  .hero {
+    padding-top: clamp(110px, 7.275vw, 170px);
+    padding-bottom: clamp(60px, 3.968vw, 90px);
+    padding-left: clamp(50px, 3.307vw, 120px);
+    padding-right: clamp(60px, 3.968vw, 130px);
+  }
+
+  .hero-grid {
+    max-width: 1960px;
+    margin: 0 auto;
+    grid-template-columns:
+      clamp(357px, 23.61vw, 560px)
+      minmax(0, 1fr)
+      clamp(564px, 37.3vw, 900px);
+    gap: clamp(24px, 1.587vw, 40px);
+  }
+
+  .hero-copy {
+    max-width: clamp(357px, 23.61vw, 560px);
+  }
+
+  .hero-art {
+    width: clamp(670px, 44.31vw, 1050px);
+    right: calc(clamp(60px, 3.968vw, 130px) + clamp(230px, 15.21vw, 360px));
+  }
+
+  /* WORK: band (.work + .shrink-reveal backgrounds) stays 100vw — only
+     inner padding/gaps scale. 120px -> 7.937vw, 160px -> 10.582vw,
+     72px -> 4.762vw. */
+  .work {
+    padding:
+      clamp(120px, 7.937vw, 180px)
+      clamp(50px, 3.307vw, 120px)
+      clamp(160px, 10.582vw, 240px);
+  }
+
+  .work h2 {
+    margin-bottom: clamp(48px, 3.175vw, 72px);
+  }
+
+  .work-list {
+    max-width: 1960px;
+    margin: 0 auto;
+    gap: clamp(72px, 4.762vw, 110px);
+  }
+
+  .fc-copy {
+    padding:
+      clamp(40px, 2.646vw, 64px)
+      clamp(36px, 2.381vw, 56px)
+      clamp(32px, 2.116vw, 48px)
+      clamp(48px, 3.175vw, 76px);
+  }
+
+  .dock-panel {
+    max-width: 1960px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: clamp(72px, 4.762vw, 110px);
+  }
+
+  .dock-grid {
+    column-gap: clamp(12px, 0.794vw, 20px);
+  }
+
+  .dock-cell {
+    margin-bottom: clamp(12px, 0.794vw, 20px);
+  }
+
+  /* Lower home sections: 180px -> 11.905vw. The work->experience
+     junction uses vh (already viewport-fluid); only its ceiling rises so
+     tall large screens keep the beat instead of clipping at 310px. */
+  .home-section {
+    padding:
+      clamp(180px, 11.905vw, 270px)
+      clamp(50px, 3.307vw, 120px)
+      clamp(80px, 5.291vw, 120px);
+  }
+
+  .home > .shrink-reveal + .home-section {
+    padding-top: clamp(310px, 24vh, 460px);
+  }
+
+  /* 22rem (352px) -> 23.28vw, 34rem (544px) -> 35.98vw. */
+  .exp-grid {
+    max-width: 1960px;
+    margin: 0 auto;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, clamp(22rem, 23.28vw, 32rem));
+  }
+
+  .exp-copy {
+    max-width: clamp(34rem, 35.98vw, 50rem);
+  }
+
+  /* Contact: 64px -> 4.233vw, 72px -> 4.762vw, 48px -> 3.175vw,
+     120px -> 7.937vw, 32px -> 2.116vw. */
+  .contact {
+    padding:
+      clamp(64px, 4.233vw, 96px)
+      clamp(50px, 3.307vw, 120px)
+      clamp(72px, 4.762vw, 110px);
+  }
+
+  .contact-grid {
+    max-width: 1960px;
+    margin: 0 auto;
+    width: 100%;
+    gap: clamp(48px, 3.175vw, 72px) clamp(120px, 7.937vw, 180px);
+  }
+
+  .contact-heading {
+    margin-bottom: clamp(32px, 2.116vw, 48px);
+  }
+
+  /* Project intro: body token keeps growing with the canvas past 1512
+     (30px -> 1.984vw, capped ~44px near 2200 — seamless, both compute to
+     30px at the boundary). Column gutter scales proportionally:
+     119px -> 7.87vw. */
+  .project-intro {
+    font-size: clamp(1.875rem, 1.984vw, 2.75rem);
+    column-gap: clamp(119px, 7.87vw, 173px);
+  }
+
+  /* Project body Blocks scale with the canvas past 1512: copy 30 -> 44px,
+     measure 610px -> 43.2% (capped 880px), seamless at the boundary. */
+  .project-body {
+    font-size: clamp(1.875rem, 1.984vw, 2.75rem);
+  }
+
+  .project-body li p {
+    max-width: min(43.2%, 880px);
+  }
+
+  .project-body .pair-copy {
+    max-width: none;
+  }
+
+  /* Pair grid past 1512: copy holds its proportion capped at 880px
+     (610 x 1.44, like the measure), visual takes the remainder, gap caps
+     at 290px. Seamless at the boundary (43.2% computes to 610 there). */
+  .pair {
+    grid-template-columns: minmax(240px, 1fr) minmax(0, min(43.2%, 880px));
+    column-gap: clamp(200px, 13.23vw, 290px);
+  }
+
+  .pair-flip {
+    grid-template-columns: minmax(0, min(43.2%, 880px)) minmax(240px, 1fr);
+  }
+
+  /* Gallery gutters scale past 1512 like everything else (60px -> 4vw,
+     capped ~88px near 2200). Caption follows the solo-copy rule above. */
+  .gallery-grid {
+    gap: clamp(60px, 4vw, 88px);
+  }
+
+  /* Showcase strip height is measured, not tokenized (see ShowcaseStrip)
+     — it scales with the real row width past 1512 automatically. No XL
+     rule needed by construction. */
+}

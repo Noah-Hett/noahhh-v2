@@ -1,0 +1,13 @@
+/* ShrinkReveal skeleton skin. Mechanics only.
+   The outgoing block paints the wash token so the edge-only mask reads
+   against the incoming summary section behind it. */
+.shrink-reveal {
+  background: var(--surface-wash);
+  will-change: clip-path;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shrink-reveal {
+    clip-path: none !important;
+  }
+}
