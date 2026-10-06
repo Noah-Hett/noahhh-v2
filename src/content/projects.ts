@@ -337,10 +337,158 @@ function proofGroups(): ProjectGroup[] {
   ];
 }
 
+// GIZMOPHONE — first real Project (added via add-project-content skill).
+// Cover is a video hero (R2 mp4 + local poster). Body SVGs ride as-is
+// on R2; raster bodies are 1600w AVIF (cad: 800w, source narrower).
+const gizmophone: Project = {
+  slug: 'gizmophone',
+  title: 'GIZMOPHONE',
+  tags: [],
+  selected: true,
+  colors: { light: '#AFC8ED', dark: '#2D402F' },
+  font: {
+    family: 'Syne Mono',
+    src: '/fonts/projects/gizmophone/SyneMono-Regular.otf',
+    fallback: 'ui-monospace, monospace',
+  },
+  cover: {
+    kind: 'video',
+    src: 'https://media.noahhh.com/gizmophone/gizmophone.mp4',
+    poster: '/posters/gizmophone/gizmophone-poster-800.avif',
+    alt: 'GIZMOPHONE instrument in use',
+    width: 1920,
+    height: 1080,
+  },
+  groups: [
+    {
+      id: 'challenge',
+      heading: 'Challenge',
+      summary:
+        'Creating a more fluid musical experience by challenging traditional musical notation. A device which relies on visual, and spacial awareness, as well as pattern recognition rather than arbitrary leading lines or bars.',
+      meta: {
+        date: 'December 2025',
+        scope: 'interaction design, electronics, mechatronics',
+        role: 'TBD',
+        collaborators: [
+          { name: 'Dermot Mooney', url: 'https://www.linkedin.com/in/dermot-mooney-a1160b323/' },
+        ],
+      },
+      blocks: [],
+    },
+    {
+      id: 'process',
+      heading: 'Process',
+      blocks: [
+        {
+          kind: 'text',
+          for: 'clock-diagram',
+          body: 'A regular ‘clock tick’ creates an intuitive metronome, where the summative removal or replacement of these ‘ticks’ can be used to create complex rhythmic patterns. This replaces abstract, linear musical bars with a rotation around a circle.',
+        },
+        {
+          kind: 'image',
+          id: 'clock-diagram',
+          src: 'https://media.noahhh.com/gizmophone/Clock.svg',
+          alt: 'Circular diagram of a clock face representing musical rhythm',
+          width: 349,
+          height: 350,
+        },
+        {
+          kind: 'text',
+          for: 'speed-dial',
+          body: 'We can include speed by creating a manual interaction with the hand of our clock. When we spin the hand, we determine rotations per minute, and therefore the speed of the melody we play. If we need to rests or to change the tempo, we can manually grab the hand to reset it.',
+        },
+        {
+          kind: 'image',
+          id: 'speed-dial',
+          src: 'https://media.noahhh.com/gizmophone/speed.svg',
+          alt: 'Circular diagram representing rotational speed of GIZMOPHONE’s dial.',
+          width: 349,
+          height: 349,
+        },
+        {
+          kind: 'text',
+          for: 'colour-pegs',
+          body: 'By replacing our ‘ticks’ with coloured pegs,  we can now visualise pitch and timbre, transforming a rhythmic clock into a melodic instrument. With 4 distinct colours, we are able to represent a Kick, Snare, Hi-hat, and Cymbal, or any other sound set.',
+        },
+        {
+          kind: 'image',
+          id: 'colour-pegs',
+          src: 'https://media.noahhh.com/gizmophone/Colour.svg',
+          alt: 'Circular diagram of GIZMOPHONE’s dial with multiple coloured ‘pegs’ distributed around the circle.',
+          width: 349,
+          height: 349,
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'To detect physical pegs as it spins, a colour sensor was mounted to the rotating disk. A clutch was created to enable the free rotation required for backspin and modification of tempo.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/gizmophone/construct-1600.avif',
+              alt: 'GIZMOPHONE Clutch plates under construction',
+              width: 6240,
+              height: 4160,
+            },
+            {
+              src: 'https://media.noahhh.com/gizmophone/test-1600.avif',
+              alt: 'GIZMOPHONE prototype under test',
+              width: 6240,
+              height: 4160,
+            },
+            {
+              src: 'https://media.noahhh.com/gizmophone/cad-800.avif',
+              alt: 'cad model of an earlier iteration of the GIZMOPHONE internal assembly',
+              width: 1137,
+              height: 1896,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'outcome',
+      heading: 'Outcome',
+      blocks: [
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/gizmophone/in-use-1600.avif',
+            alt: 'GIZMOPHONE instrument in use',
+            width: 6240,
+            height: 4160,
+          },
+          body: 'A fully functional rotation-based synthesiser that responds to your touch. With a built-in speaker and volume tuning achieved through colour-coded dials, Gizmophone operates as a self-contained rhythmic jamming companion.',
+          strip: [
+            {
+              src: 'https://media.noahhh.com/gizmophone/detail-1600.avif',
+              alt: 'Close detail of the GIZMOPHONE Volume tuning knobs',
+              width: 6240,
+              height: 4160,
+            },
+            {
+              src: 'https://media.noahhh.com/gizmophone/technicaldrawings.svg',
+              alt: 'Technical drawings of the GIZMOPHONE',
+              width: 837,
+              height: 253,
+            },
+          ],
+        },
+        {
+          kind: 'pdf',
+          href: 'https://media.noahhh.com/gizmophone/gizmophonePDF.pdf',
+          label: 'Full report',
+        },
+      ],
+    },
+  ],
+};
+
 export const projects: Project[] = [
   { ...placeholder('project-1', 'Project 1', '#E8E2D9', '#1E2A32'), groups: demoGroups() },
-  { ...placeholder('project-2', 'Project 2', '#DCE5DC', '#232B23'), groups: proofGroups() },
+  gizmophone,
   placeholder('project-3', 'Project 3', '#E3DDEE', '#241F33'),
+  // Demoted from Selected to hold 3/3 (gizmophone takes its slot).
+  { ...placeholder('project-2', 'Project 2', '#DCE5DC', '#232B23'), groups: proofGroups(), selected: false },
 ];
 
 export function getProject(slug: string | undefined): Project | undefined {
