@@ -1,9 +1,0 @@
-# SPA deep links: serve index.html for app routes. Explicit list (not a /*
-// splat — the splat trips Workers' loop detector). `/` needs no rule
-// (index.html serves directly). Unknown paths fall through to the
-// platform 404; in-app bad routes still render the branded NotFound.
-// Pages Functions are exempt from _redirects, so /api/contact is unaffected.
-/about /index.html 200
-/projects /index.html 200
-/project/* /index.html 200
-/archive /index.html 200
