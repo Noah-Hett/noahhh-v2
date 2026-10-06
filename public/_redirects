@@ -1,0 +1,5 @@
+# SPA deep links on Cloudflare Pages: serve index.html for all routes,
+# so deep links and refreshes (e.g. /project/:slug) render the app
+# instead of 404ing. In-app bad routes still show the branded NotFound.
+# Pages Functions are exempt from _redirects, so /api/contact is unaffected.
+/* /index.html 200
