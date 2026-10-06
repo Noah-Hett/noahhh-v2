@@ -1,2 +1,4 @@
-/* /index.html 200 — required for SPA deep links on Cloudflare Pages.
-   V1 was missing this; without it /project/:slug refresh 404s. */
+# SPA deep links on Cloudflare Pages: serve index.html for all routes.
+# (V1 lacked this — /project/:slug refresh 404'd.)
+# Pages Functions are exempt from _redirects, so /api/contact is unaffected.
+/* /index.html 200
