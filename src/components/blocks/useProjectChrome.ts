@@ -48,7 +48,12 @@ export function useProjectFont(
     const id = 'project-font-face';
     const prev = document.getElementById(id);
     const prevCss = prev?.textContent ?? null;
-    const format = src.endsWith('.woff2') ? 'woff2' : src.endsWith('.woff') ? 'woff' : 'truetype';
+    const path = src.split(/[?#]/)[0].toLowerCase();
+    // Safari validates format() strictly: .otf must be "opentype",
+    // .ttf must be "truetype". Chrome/Firefox load either way, which is
+    // why the mismatch only showed up on Safari / iOS.
+    const format =
+      path.endsWith('.woff2') ? 'woff2' : path.endsWith('.woff') ? 'woff' : path.endsWith('.otf') ? 'opentype' : 'truetype';
     const style = document.createElement('style');
     style.id = id;
     style.textContent = `@font-face{font-family:"${family}";src:url("${src}") format("${format}");font-display:swap;font-weight:400;font-style:normal;}`;
