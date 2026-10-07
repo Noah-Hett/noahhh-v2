@@ -1,15 +1,17 @@
 import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { projects, challengeOf, type Project } from '../content/projects.ts';
+import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 
 function titleStyle(p: Project): CSSProperties {
   return { fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}` };
 }
 
 // Both views read the same manifest — a toggle, not two pages.
-// Titles render in each Project's own display face (local font, loaded
-// on demand by the Project page); rows themselves stay neutral.
+// Titles render in each Project's own display face (local fonts, loaded
+// on demand by this page via useProjectFonts); rows themselves stay neutral.
 export default function Projects() {
+  useProjectFonts(projects);
   const [view, setView] = useState<'gallery' | 'list'>('gallery');
   return (
     <main className="page">

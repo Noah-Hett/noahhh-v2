@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
 import { getSelected, challengeOf } from '../content/projects.ts';
 import { FeaturedCard } from '../components/FeaturedCard/FeaturedCard.tsx';
+import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { ExperienceDiagram } from '../components/ExperienceDiagram/ExperienceDiagram.tsx';
 import { useInView } from '../components/ExperienceDiagram/useInView.ts';
 import { DotGrid } from '../components/DotGrid/DotGrid.tsx';
@@ -80,6 +81,9 @@ function projectTitleStyle(p: { font: { family: string; fallback?: string } }): 
 // Copy words come from Figma; type styling stays unstyled until style handoff.
 export default function Home() {
   const selected = getSelected();
+  // Selected cards render titles in each Project's display face — the
+  // faces load with this page (ProjectPage only loads its own).
+  useProjectFonts(selected);
   const { hash } = useLocation();
   // Intro starts pending (hidden states in Home.css) unless this document
   // already played it or there's a reason to skip (reduced motion, hash

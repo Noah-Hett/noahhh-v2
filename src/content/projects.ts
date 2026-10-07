@@ -34,7 +34,7 @@ export interface ProjectColors {
 export interface ProjectFont {
   /** Display family for this Project's title (h1 + card/row titles). */
   family: string;
-  /** Always local: /fonts/projects/<slug>/Name.woff2 (never a Google URL). */
+  /** Always local: /fonts/projects/<slug>/<Family>.<woff2|woff|otf|ttf> (never a Google URL). */
   src: string;
   fallback?: string;
 }
