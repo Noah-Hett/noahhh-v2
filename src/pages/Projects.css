@@ -1,0 +1,318 @@
+/* All Projects page (/projects): gallery (tessellated masonry) + list
+   (big-type rows). Colours come only from tokens.css via the per-row
+   --pl/--pd flip pair (see .pw-row); no literal colours here. */
+
+/* Skip the roomy shared `.page` top padding so the toggle sits ~32px
+   below the header, exactly where Back sits on a Project page. */
+.page-projects {
+  padding-top: 32px;
+}
+
+.pw-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Centered GALLERY / LIST toggle; active view underlined. Type copies
+   the site header links exactly (body voice, caps, no extra styling).
+   Margins beat the .page rhythm so the toggle sits tight under the bar. */
+.pw-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 0;
+  margin-bottom: 32px;
+}
+
+.pw-toggle button {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 4px 2px;
+  font: inherit;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.pw-toggle button.is-active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.pw a:focus-visible,
+.pw button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* ---- Gallery: CSS-columns masonry keeps every tile at its native
+   aspect ratio with no defined rows — the tessellated feel. ---- */
+.pw-gallery {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 3;
+  column-gap: 12px;
+}
+
+.pw-cell {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+
+.pw-tile {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  /* Flip pair arrives inline per row/tile (--pl/--pd from projects.ts):
+     light OS -> light wash + dark ink, dark OS -> flipped. */
+  --row-bg: var(--pl);
+  --row-ink: var(--pd);
+}
+
+.pw-figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+
+.pw-figure img,
+.pw-figure video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Caption slides up onto the image bottom on a solid Project wash
+   (same flip pair as the list rows) with the Project ink. Dwell-gated:
+   a quick pass never triggers it. */
+.pw-cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 12px 16px;
+  background: var(--row-bg);
+  color: var(--row-ink);
+  transform: translateY(101%);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pw-cap-title {
+  display: block;
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.pw-tile:hover .pw-cap,
+.pw-tile:focus-visible .pw-cap,
+.pw-tile:focus-within .pw-cap {
+  transform: translateY(0);
+  /* Dwell: only a deliberate hover (350ms+) summons the caption. */
+  transition-delay: 0.35s;
+}
+
+/* Touch / no-hover: captions are always visible (stacked thumbs). */
+@media (hover: none) {
+  .pw-cap {
+    transform: none;
+  }
+}
+
+/* ---- List: big default-face rows. Hover runs one simultaneous
+   left-to-right gesture: the Project wash sweeps the full row box,
+   the title takes the Project ink, and the preview expands out from
+   the text edge — all on the same curve. ---- */
+.pw-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pw-row {
+  position: relative;
+  isolation: isolate;
+  /* Flex from the left: preview sits at the end of the words, never
+     pinned to the right edge. Title + preview sized to always fit one
+     line (see nowrap on .pw-name + the 10rem cap). fit-content so the
+     wash hugs title + preview instead of the full content width. */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  gap: 0.25em;
+  padding: 0.1em 0.15em;
+  font-size: clamp(3rem, 11vw, 10rem);
+  color: var(--text-primary);
+  text-decoration: none;
+  /* Flip pair arrives inline per row/tile (--pl/--pd from projects.ts):
+     light OS -> light wash + dark ink, dark OS -> flipped. */
+  --row-bg: var(--pl);
+  --row-ink: var(--pd);
+}
+
+/* Colour wash: hugs title + preview (+ padding), wipes in from the
+   left on a ramp-in curve — slow start, smooth arrival, no hard hit. */
+.pw-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--row-bg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.7, 0, 0.3, 1);
+  /* Linger on leave: collapse waits a beat; entrance stays instant. */
+  transition-delay: 0.15s;
+}
+
+/* Normal site styling — body weight/stretch/features inherited, only
+   uppercase + tight leading for the row scale. One line, locked: never
+   wraps, so the preview always trails the final word. */
+.pw-name {
+  flex: 0 0 auto;
+  text-transform: uppercase;
+  line-height: 0.95;
+  white-space: nowrap;
+  transition: color 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0.15s;
+}
+
+/* Preview box is exactly the text-row height; media keeps its native
+   ratio inside (height-capped, width auto, max-width guard). Expands
+   from the text edge: clipped from the right, sliding in leftwards. */
+.pw-preview {
+  display: flex;
+  flex: 0 0 auto;
+  height: 0.86em;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transform: translateX(-0.25em);
+  transition:
+    clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.5s ease;
+  transition-delay: 0.15s;
+  pointer-events: none;
+}
+
+.pw-preview img,
+.pw-preview video {
+  height: 100%;
+  width: auto;
+  max-width: 30vw;
+  object-fit: contain;
+  display: block;
+}
+
+.pw-row.is-active::before {
+  transform: scaleX(1);
+  transition-delay: 0s;
+}
+
+.pw-row.is-active .pw-name {
+  color: var(--row-ink);
+  transition-delay: 0s;
+}
+
+.pw-row.is-active .pw-preview {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transform: translateX(0);
+  /* Entrance trails the wash so the sweep reads cleanly; leave still
+     lingers on the base 0.3s delay. */
+  transition-delay: 0.15s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pw-row,
+  .pw-tile {
+    --row-bg: var(--pd);
+    --row-ink: var(--pl);
+  }
+}
+
+/* Phones: stacked thumbs + rows — preview always visible, small. */
+@media (max-width: 800px) {
+  .pw-gallery {
+    columns: 1;
+  }
+
+  .pw-toggle {
+    margin-bottom: 24px;
+  }
+
+  /* Inline: title + thumb share one line — type scales down so the
+     longest title still fits beside its preview. */
+  .pw-row {
+    font-size: clamp(1.75rem, 10vw, 4rem);
+    gap: 0.25em;
+  }
+
+  /* Touch rows stay neutral — no colour wash, no ink swap. */
+  .pw-row::before {
+    display: none;
+  }
+
+  .pw-preview {
+    height: 0.86em;
+    opacity: 1;
+    clip-path: none;
+    transform: none;
+    pointer-events: none;
+  }
+
+  .pw-preview img,
+  .pw-preview video {
+    max-width: 38vw;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1100px) {
+  .pw-gallery {
+    columns: 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-projects {
+    padding-top: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-cap {
+    transform: none;
+    transition: none;
+  }
+
+  /* Wash + recolour land instantly; preview fades without the wipe. */
+  .pw-row::before,
+  .pw-name {
+    transition: none;
+  }
+
+  .pw-preview {
+    transition: opacity 0.01s linear;
+    transform: none;
+    clip-path: none;
+  }
+
+  .pw-row:not(.is-active) .pw-preview {
+    opacity: 0;
+  }
+}
+
+/* Reduced-motion + phones: previews stay visible (stacked thumbs). */
+@media (prefers-reduced-motion: reduce) and (max-width: 800px) {
+  .pw-row:not(.is-active) .pw-preview {
+    opacity: 1;
+  }
+}
