@@ -483,10 +483,198 @@ const gizmophone: Project = {
   ],
 };
 
+// BUSK RADIO — added via add-project-content skill.
+// Cover is a video hero (R2 mp4 + local poster @00:13). Body PNGs are
+// 1600w AVIF (back-bw: 800w, source narrower); body SVGs ride as-is on R2.
+const buskRadio: Project = {
+  slug: 'busk-radio',
+  title: 'BUSK RADIO',
+  tags: [],
+  selected: true,
+  colors: { light: '#FFE9ED', dark: '#CF3168' },
+  font: {
+    family: 'Londrina Solid',
+    src: '/fonts/projects/busk-radio/LondrinaSolid-Black.ttf',
+    fallback: 'system-ui, sans-serif',
+  },
+  cover: {
+    kind: 'video',
+    src: 'https://media.noahhh.com/busk-radio/buskradio.mp4',
+    poster: '/posters/busk-radio/buskradio-poster-800.avif',
+    alt: 'Busk Radio advert and demonstration',
+    width: 1920,
+    height: 1080,
+  },
+  groups: [
+    {
+      id: 'challenge',
+      heading: 'Challenge',
+      summary:
+        'Fostering community connections amongst Buskers, Street Performers and their audiences.Creating a playful way to support buskers while minimising friction and enhancing audience experience.',
+      meta: {
+        date: 'June 2025',
+        scope: 'Human Centred Design',
+        role: 'User Research, UI/UX',
+        collaborators: [
+          { name: 'Joseph Birch', url: 'https://www.linkedin.com/in/joseph-birch-546683278/' },
+          { name: 'Timothy Spawforth', url: 'https://www.linkedin.com/in/timothy-spawforth-80a992332/' },
+          { name: 'Maxim Wolff', url: 'https://www.linkedin.com/in/maxim-wolff/' },
+          { name: 'Will Purcell', url: 'https://www.linkedin.com/in/wepurcell/' },
+        ],
+      },
+      blocks: [
+        {
+          kind: 'text',
+          for: 'barriers',
+          body: 'The problem: people don’t stop. We found that 52% of people said that they wouldn’t even interact with a busker due to these 3 key factors.',
+        },
+        {
+          kind: 'image',
+          id: 'barriers',
+          src: 'https://media.noahhh.com/busk-radio/Group-241.svg',
+          alt: 'Diagram listing 3 barriers to interaction: Social Barriers, Cash Decline and Time Constraints',
+          width: 594,
+          height: 530,
+        },
+        {
+          kind: 'gallery',
+          images: [
+            {
+              src: 'https://media.noahhh.com/busk-radio/quote1.svg',
+              alt: '“I love listening to buskers but i never get the chance to stop when I’m commuting”',
+              width: 422,
+              height: 262,
+            },
+            {
+              src: 'https://media.noahhh.com/busk-radio/quote2.svg',
+              alt: '“I think members of the public are often scared to come and chat because they are worried about interrupting me.”',
+              width: 427,
+              height: 262,
+            },
+            {
+              src: 'https://media.noahhh.com/busk-radio/quote3.svg',
+              alt: '“I rarely carry cash and the card machines most buskers use don’t let me choose how much I want to donate.”',
+              width: 419,
+              height: 262,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'process',
+      heading: 'Process',
+      blocks: [
+        {
+          kind: 'text',
+          for: 'research',
+          body: 'Over four months, we worked closely with buskers, street performers, and audience members through interviews, surveys, and co-design workshops. This gave us a deep understanding of the problems our users face.',
+        },
+        {
+          kind: 'image',
+          id: 'research',
+          src: 'https://media.noahhh.com/busk-radio/research-1600.avif',
+          alt: 'Image collage showing on-the-street research and co-design workshops for Busk Radio',
+          width: 2388,
+          height: 1818,
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'By mapping the journeys of our key stakeholders, we identified donation as the central pain point. We set out to develop a system that breaks down social barriers, responds to the decline of cash, and reduces the time pressure on audience-busker interactions.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/busk-radio/journeymap.svg',
+              alt: 'Busker and Audience Member journey map',
+              width: 1385,
+              height: 526,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'outcome',
+      heading: 'Outcome',
+      blocks: [
+        {
+          kind: 'gallery',
+          caption:
+            'Our solution: Busk Radio. A live music audio streaming device, that allows an audience member to tune in to a busker on the go. Busk Radio brings street performance to you, wherever you are going. A simple tap-in to connect, then On Air, Anywhere.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/busk-radio/app-hero-1600.avif',
+              alt: 'Mockup of Busk Radio app, collaged with images of UI elements used in wallet screens',
+              width: 2896,
+              height: 2716,
+            },
+            {
+              src: 'https://media.noahhh.com/busk-radio/devicehero-1600.avif',
+              alt: 'Exploded Render of Busk Radio Tap Point, showing the internal electronics',
+              width: 3024,
+              height: 2516,
+            },
+          ],
+        },
+        {
+          kind: 'text',
+          for: 'payment',
+          body: 'Busk Radio features a ‘gamified’ payment interface allowing users to have more control over their desired payment amount. Skeuomorphic elements feature heavily, creating a more personal and tangible experience, especially for a payment process.',
+        },
+        {
+          kind: 'image',
+          id: 'payment',
+          src: 'https://media.noahhh.com/busk-radio/group-240-1600.avif',
+          alt: 'Busk Radio App screens, demonstrating unique payment interface',
+          width: 2046,
+          height: 1972,
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/busk-radio/hero-1600.avif',
+            alt: 'Busk Radio App and Tap Point interaction',
+            width: 4084,
+            height: 2296,
+          },
+          body: 'Busk Radio enables social connection over distance, allowing users to send donations, like or message a busker directly and even see contributions to a buskers goals.',
+          strip: [
+            {
+              src: 'https://media.noahhh.com/busk-radio/frontgraphic.svg',
+              alt: 'Vector graphic used on the busk radio tap point which indicates where to interact. It says "tap to listen"',
+              width: 319,
+              height: 320,
+            },
+            {
+              src: 'https://media.noahhh.com/busk-radio/front-bw-1600.avif',
+              alt: 'Busk Radio Tap Point final device prototype - front angle',
+              width: 2400,
+              height: 1628,
+            },
+            {
+              src: 'https://media.noahhh.com/busk-radio/back-bw-800.avif',
+              alt: 'Busk Radio Tap Point final device prototype - rear angle',
+              width: 1396,
+              height: 1628,
+            },
+          ],
+        },
+        {
+          kind: 'pdf',
+          href: 'https://media.noahhh.com/busk-radio/buskradio.pdf',
+          label: 'Full report',
+        },
+      ],
+    },
+  ],
+};
+
 export const projects: Project[] = [
   { ...placeholder('project-1', 'Project 1', '#E8E2D9', '#1E2A32'), groups: demoGroups() },
   gizmophone,
-  placeholder('project-3', 'Project 3', '#E3DDEE', '#241F33'),
+  buskRadio,
+  // Demoted from Selected to hold 3/3 (busk-radio takes its slot).
+  { ...placeholder('project-3', 'Project 3', '#E3DDEE', '#241F33'), selected: false },
   // Demoted from Selected to hold 3/3 (gizmophone takes its slot).
   { ...placeholder('project-2', 'Project 2', '#DCE5DC', '#232B23'), groups: proofGroups(), selected: false },
 ];
