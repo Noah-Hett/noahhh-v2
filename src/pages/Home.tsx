@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
-import { getSelected, challengeOf } from '../content/projects.ts';
+import { getSelected, challengeOf, coverSrcSet } from '../content/projects.ts';
 import { FeaturedCard } from '../components/FeaturedCard/FeaturedCard.tsx';
 import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { ExperienceDiagram } from '../components/ExperienceDiagram/ExperienceDiagram.tsx';
@@ -247,7 +247,15 @@ export default function Home() {
                   media={
                     p.cover.kind === 'video'
                       ? { type: 'video', src: p.cover.src, thumb: p.cover.poster, alt: p.cover.alt }
-                      : { type: 'img', src: p.cover.src, alt: p.cover.alt }
+                      : {
+                          type: 'img',
+                          src: p.cover.src,
+                          alt: p.cover.alt,
+                          srcSet: coverSrcSet(p.cover),
+                          // Card media fills ~54% of the track (full-bleed
+                          // single column under 720px) with a cover crop.
+                          sizes: '(max-width: 720px) 100vw, 54vw',
+                        }
                   }
                   colors={p.colors}
                   titleStyle={projectTitleStyle(p)}

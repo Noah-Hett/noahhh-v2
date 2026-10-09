@@ -39,8 +39,26 @@ export interface ProjectFont {
   fallback?: string;
 }
 
+export interface CoverVariant {
+  /** One responsive variant of an image cover (local poster file). */
+  src: string;
+  /** Intrinsic width in px. Entries must strictly ascend; the first MUST
+      equal the cover `src` (the everywhere-safe fallback). */
+  width: number;
+}
+
 export type ProjectCover =
-  | { kind: 'image'; src: string; alt: string; width: number; height: number }
+  | {
+      kind: 'image';
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+      /** Responsive variants for large surfaces (hero, featured cards).
+          Thumbnails and gallery tiles keep using `src`. Explicit, never
+          derived — every entry must exist as a committed poster file. */
+      srcSet?: CoverVariant[];
+    }
   // Hero video (the ONLY video on a Project page): muted looping autoplay
   // with pause + unmute controls. Poster is local and load-bearing — LCP
   // image here, card thumbnail on Home / All Projects. MP4 lives on R2.
@@ -669,8 +687,199 @@ const buskRadio: Project = {
   ],
 };
 
+// IC HACK 26 — added via add-project-content skill.
+// Cover is an image hero (local poster). Body PNGs/JPGs are 1600w AVIF;
+// body SVGs ride as-is on R2 (spaces normalised to hyphens).
+const icHack26: Project = {
+  slug: 'ic-hack-26',
+  title: 'IC Hack 26',
+  tags: [],
+  selected: true,
+  colors: { light: '#FAD2D7', dark: '#7A1166' },
+  font: {
+    family: 'Junicode',
+    src: '/fonts/projects/ic-hack-26/Junicode-Bold.ttf',
+    fallback: 'Georgia, serif',
+  },
+  cover: {
+    kind: 'image',
+    src: '/posters/ic-hack-26/cover-800.avif',
+    alt: 'IC Hack 2026 Introduction Keynote',
+    width: 5443,
+    height: 3629,
+    srcSet: [
+      { src: '/posters/ic-hack-26/cover-800.avif', width: 800 },
+      { src: '/posters/ic-hack-26/cover-1600.avif', width: 1600 },
+      { src: '/posters/ic-hack-26/cover-2400.avif', width: 2400 },
+    ],
+  },
+  groups: [
+    {
+      id: 'challenge',
+      heading: 'Challenge',
+      summary:
+        'Building a cohesive identity for the UK’s largest student-run hackathon. Developing a thematic brand system designed to flex across 900+ attendees, two days, and the practical demands of a 48hr non-stop live event.',
+      meta: {
+        date: 'January 2026',
+        scope: 'Branding, Merchandise Design',
+        role: 'Graphic Design, Brand Kit Selection',
+        collaborators: [],
+      },
+      blocks: [
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/ic-hack-26/problem.svg',
+            alt: 'Diagram stating the design problem for IC Hack 26',
+            width: 1067,
+            height: 406,
+          },
+          body: 'IC Hack’s challenge was scale: a large, digital-first event where the branding had to hold together from early planning through to the live weekend. We chose Fantasy and Fairytale as our theme to bring fun and creativity to an otherwise technical event.',
+        },
+      ],
+    },
+    {
+      id: 'process',
+      heading: 'Process',
+      blocks: [
+        {
+          kind: 'text',
+          for: 'fonts',
+          body: 'We paired two typefaces, Junicode and Ysabeau. A texture was applied to the wordmark, giving the brand a more distinctive, older character. Ysabeau, as a common book typeface, evokes the look of printed fantasy while staying readable across formats.',
+        },
+        {
+          kind: 'image',
+          id: 'fonts',
+          src: 'https://media.noahhh.com/ic-hack-26/fonts-v2.svg',
+          alt: 'Selected fonts for IC Hack 26',
+          width: 509,
+          height: 384,
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'We selected four main colours: three representing the individual hackspaces, and a fourth marking the parts of the event outside them. Expanding these into a fuller palette gave us the range to theme each area more distinctively.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/colours-1.svg',
+              alt: 'IC Hack 26 colour palette: red and purple',
+              width: 610,
+              height: 260,
+            },
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/colours-2.svg',
+              alt: 'IC Hack 26 colour palette: blue and green',
+              width: 610,
+              height: 259,
+            },
+          ],
+        },
+        {
+          kind: 'text',
+          for: 'logo',
+          body: 'We kept the existing IC Hack logo and adapted it for each hackspace, colouring it to match its environment and decorating it with that space’s biome: enchanted forest, mountains, and underwater.',
+        },
+        {
+          kind: 'image',
+          id: 'logo',
+          src: 'https://media.noahhh.com/ic-hack-26/logo-1600.avif',
+          alt: 'IC Hack 26 logo colouration and environmental theming',
+          width: 2257,
+          height: 729,
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/ic-hack-26/tshirtgraphics-1600.avif',
+            alt: 'Front and back graphics for IC Hack 26 T-shirts, with colour variations for each ‘role’',
+            width: 3129,
+            height: 2079,
+          },
+          body: 'T-shirt designs were built from the graphics developed for the logo and the website. We moved to two base shirt colours and shifted the colour into a large graphic, which simplified our design process and made it easy to tell attendees apart from the people running the event.',
+          strip: [
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/tshirts-photo-1-1600.avif',
+              alt: 'IC Hack 26 T-shirt photo 1',
+              width: 1716,
+              height: 1144,
+            },
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/tshirts-photo-2-1600.avif',
+              alt: 'IC Hack 26 T-shirt photo 2',
+              width: 1716,
+              height: 1144,
+            },
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/tshirts-photo-3-1600.avif',
+              alt: 'IC Hack 26 T-shirt photo 3',
+              width: 1716,
+              height: 1144,
+            },
+          ],
+        },
+        {
+          kind: 'text',
+          for: 'lanyards',
+          body: 'Lanyards carried the same graphics through the rest of the branding. Each role received its own colour and landscape, plus an arched role label that echoes the t-shirts.',
+        },
+        {
+          kind: 'image',
+          id: 'lanyards',
+          src: 'https://media.noahhh.com/ic-hack-26/lanyards-1600.avif',
+          alt: 'IC Hack 26 Lanyard design',
+          width: 2352,
+          height: 1632,
+        },
+      ],
+    },
+    {
+      id: 'outcome',
+      heading: 'Outcome',
+      blocks: [
+        {
+          kind: 'gallery',
+          caption:
+            'Seeing the branding in action was a highlight. It felt cohesive and worked functionally, giving hackers and organisers the information they needed throughout the weekend.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/in-environment-1600.avif',
+              alt: 'IC Hack 26 branding in environment',
+              width: 5363,
+              height: 3576,
+            },
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/cupcakes-1600.avif',
+              alt: 'IC Hack 26 cupcakes with branding',
+              width: 3707,
+              height: 5561,
+            },
+            {
+              src: 'https://media.noahhh.com/ic-hack-26/tshirts-give-out-1600.avif',
+              alt: 'IC Hack 26 T-shirts being given out',
+              width: 3711,
+              height: 5567,
+            },
+          ],
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/ic-hack-26/group-photo-1600.avif',
+            alt: 'IC Hack 26 group photo',
+            width: 5373,
+            height: 3582,
+          },
+          body: 'A perfect way to cap off a great project. Thank you to everyone who made ICH26 possible.',
+        },
+      ],
+    },
+  ],
+};
+
 export const projects: Project[] = [
-  { ...placeholder('project-1', 'Project 1', '#E8E2D9', '#1E2A32'), groups: demoGroups() },
+  icHack26,
+  // Demoted from Selected to hold 3/3 (ic-hack-26 takes its slot).
+  { ...placeholder('project-1', 'Project 1', '#E8E2D9', '#1E2A32'), groups: demoGroups(), selected: false },
   gizmophone,
   buskRadio,
   // Demoted from Selected to hold 3/3 (busk-radio takes its slot).
@@ -702,7 +911,44 @@ export function validateProject(project: Project): void {
     throw new Error(
       `Project "${project.slug}": expected exactly one challenge group, found ${challenges.length}.`,
     );
-  }  const owners = new Map<string, string>(); // visual id -> group id
+  }
+  // Responsive cover variants are explicit, never derived: widths must
+  // strictly ascend, srcs must be unique, and the first entry MUST be the
+  // cover `src` itself (the fallback every surface can use).
+  if (project.cover.kind === 'image' && project.cover.srcSet !== undefined) {
+    const variants = project.cover.srcSet;
+    if (variants.length === 0) {
+      throw new Error(`Project "${project.slug}": cover srcSet must not be empty (omit it instead).`);
+    }
+    if (variants[0].src !== project.cover.src) {
+      throw new Error(
+        'Project "' + project.slug + '": cover srcSet[0] must equal the cover src ("' + project.cover.src + '").',
+      );
+    }
+    const seenSrcs = new Set<string>();
+    let prevWidth = -Infinity;
+    for (const v of variants) {
+      if (!v.src) {
+        throw new Error(`Project "${project.slug}": cover srcSet has an entry with an empty src.`);
+      }
+      if (!Number.isInteger(v.width) || v.width <= 0) {
+        throw new Error(
+          `Project "${project.slug}": cover srcSet width must be a positive integer, got ${v.width}.`,
+        );
+      }
+      if (v.width <= prevWidth) {
+        throw new Error(
+          'Project "' + project.slug + '": cover srcSet widths must strictly ascend, got ' + prevWidth + ' then ' + v.width + '.',
+        );
+      }
+      if (seenSrcs.has(v.src)) {
+        throw new Error(`Project "${project.slug}": cover srcSet has a duplicate src "${v.src}".`);
+      }
+      seenSrcs.add(v.src);
+      prevWidth = v.width;
+    }
+  }
+  const owners = new Map<string, string>(); // visual id -> group id
   for (const g of project.groups) {
     for (const b of g.blocks) {
       if (b.kind === 'image' && b.id !== undefined) {
@@ -744,4 +990,12 @@ export function collaboratorInitials(c: ProjectCollaborator): string {
     .join('')
     .slice(0, 3)
     .toUpperCase();
+}
+
+/** `"src 800w, src 1600w"` for an image cover's explicit variants, or
+    `undefined` when the cover has none (single-file covers render `src`
+    alone — thumbnails, gallery tiles, placeholders). */
+export function coverSrcSet(cover: ProjectCover): string | undefined {
+  if (cover.kind !== 'image' || !cover.srcSet?.length) return undefined;
+  return cover.srcSet.map((v) => `${v.src} ${v.width}w`).join(', ');
 }

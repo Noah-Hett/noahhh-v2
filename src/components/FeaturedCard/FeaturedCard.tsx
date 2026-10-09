@@ -12,7 +12,15 @@ import {
   type Point,
 } from './maskGeometry';
 
-export type FeaturedCardMedia = { type: 'img' | 'video'; src: string; thumb?: string; alt?: string };
+export type FeaturedCardMedia = {
+  type: 'img' | 'video';
+  src: string;
+  thumb?: string;
+  alt?: string;
+  /** Responsive variants (`"src 800w, …"`); omitted for single-file covers. */
+  srcSet?: string;
+  sizes?: string;
+};
 
 export type FeaturedCardProps = {
   media: FeaturedCardMedia;
@@ -244,6 +252,8 @@ export function FeaturedCard({
           >
             <img
               src={isVideo ? media.thumb || media.src : media.src}
+              srcSet={isVideo ? undefined : media.srcSet}
+              sizes={isVideo ? undefined : media.sizes}
               alt={media.alt || `${title} ${subtitle}`}
               draggable={false}
               loading="lazy"

@@ -50,12 +50,17 @@ the manifest is applied, promote the git-bound files out of staging:
 mkdir -p public/posters/<slug>
 cp .media-tmp/<slug>/cover-800.avif public/posters/<slug>/cover-800.avif
 cp .media-tmp/<slug>/cover-800.webp public/posters/<slug>/cover-800.webp
+cp .media-tmp/<slug>/cover-1600.avif public/posters/<slug>/cover-1600.avif
+cp .media-tmp/<slug>/cover-2400.avif public/posters/<slug>/cover-2400.avif
 cp .media-tmp/<slug>/*poster-800.avif public/posters/<slug>/  # video posters
 ```
 
 The manifest `cover` for an image cover points at the `public/posters/<slug>/` path
 (e.g. `/posters/<slug>/cover-800.avif`), with `width`/`height` from the
-source. A video cover drafts as `{ kind: 'video', src: <R2 mp4 URL>,
+source. Covers that render large (hero up to 1196px, featured cards) also
+take `srcSet` — one entry per promoted width, first entry MUST equal `src`
+(enforced by `validateProject`); hero + cards serve `srcset`/`sizes` off it
+while thumbnails keep using `src`. A video cover drafts as `{ kind: 'video', src: <R2 mp4 URL>,
 poster: <local poster path>, alt, width, height }` — poster dims from the
 extracted frame. Body images keep their R2 URLs. Never upload covers or posters
 to R2.
@@ -105,7 +110,7 @@ to R2.
   `--content-disposition inline`:
 
 ```bash
-wrangler r2 object put noahhh-media/<slug>/doc.pdf --file=.media-tmp/<slug>/doc.pdf --content-type application/pdf --content-disposition inline --cache-control "public, max-age=31536000, immutable"
+wrangler r2 object put --remote noahhh-media/<slug>/doc.pdf --file=.media-tmp/<slug>/doc.pdf --content-type application/pdf --content-disposition inline --cache-control "public, max-age=31536000, immutable"
 ```
 
   Without the disposition flag the PDF downloads instead of opening in a
@@ -129,7 +134,9 @@ posters, and fonts never go to R2:
 <slug>/model.glb
 ```
 
-Upload flags per object:
+Upload flags per object (every `wrangler r2 object put` takes `--remote` —
+without it wrangler writes to local emulator storage while reporting
+success, and the domain 404s):
 
 ```bash
 --cache-control "public, max-age=31536000, immutable"

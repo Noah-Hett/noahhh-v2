@@ -5,7 +5,7 @@ import HeroVideo from '../components/blocks/HeroVideo.tsx';
 import { assignFlipsAcross, collectItems } from '../components/blocks/pairing.ts';
 import { renderItems } from '../components/blocks/renderItems.tsx';
 import { useProjectFont, useProjectThemeing } from '../components/blocks/useProjectChrome.ts';
-import { challengeOf, getProject } from '../content/projects.ts';
+import { challengeOf, coverSrcSet, getProject } from '../content/projects.ts';
 import './ProjectPage.css';
 
 export default function ProjectPage() {
@@ -47,6 +47,9 @@ export default function ProjectPage() {
     );
   }
   const { titleStack, challenge, challengeItems, renderedGroups } = body;
+  // Responsive hero: variant covers serve srcset (browser picks 800/1600/
+  // 2400 by viewport); single-file covers render `src` alone, as before.
+  const coverSet = coverSrcSet(project.cover);
   return (
     <main className="page page-project">
       <ProjectLayout
@@ -68,6 +71,8 @@ export default function ProjectPage() {
             <figure className="project-hero">
               <img
                 src={project.cover.src}
+                srcSet={coverSet}
+                sizes={coverSet ? '(max-width: 1196px) 100vw, 1196px' : undefined}
                 alt={project.cover.alt}
                 width={project.cover.width}
                 height={project.cover.height}

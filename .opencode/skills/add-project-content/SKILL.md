@@ -190,8 +190,11 @@ R2 objects (run these — body media plus a cover mp4 if any; never image
 covers, posters, or fonts):
 
 ```bash
-wrangler r2 object put noahhh-media/<slug>/clip.mp4 --file=.media-tmp/<slug>/clip.mp4 --content-type video/mp4 --cache-control "public, max-age=31536000, immutable"
+wrangler r2 object put --remote noahhh-media/<slug>/clip.mp4 --file=.media-tmp/<slug>/clip.mp4 --content-type video/mp4 --cache-control "public, max-age=31536000, immutable"
 # ... one line per R2 object, with --content-type per playbook —
+# --remote is load-bearing: without it wrangler writes to LOCAL emulator
+# storage (and a stray ./.wrangler/ dir appears) while reporting success —
+# the domain then 404s. Verify one printed URL returns 200 afterwards.
 # PDFs additionally take --content-disposition inline (load-bearing:
 # without it they download instead of opening in a new tab)
 npm run build
