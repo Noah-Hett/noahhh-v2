@@ -226,6 +226,7 @@ export default function Home() {
   }, []);
   return (
     <main className={introIn ? 'home intro-in' : 'home intro-pending'}>
+      <title>Noah Hett</title>
       <section className="hero" aria-label="About">
         <DotGrid gap={48} />
         <HeroArt className="hero-art" svgRef={artRef} />

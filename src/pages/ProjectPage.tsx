@@ -39,6 +39,7 @@ export default function ProjectPage() {
   if (!project || !body) {
     return (
       <main className="page">
+        <title>Project not found</title>
         <h1>Project not found</h1>
         <p>
           <Link to="/projects">Back to all projects</Link>
@@ -52,6 +53,8 @@ export default function ProjectPage() {
   const coverSet = coverSrcSet(project.cover);
   return (
     <main className="page page-project">
+      {/* Tab title is the Project name alone (React 19 hoists <title>). */}
+      <title>{project.title}</title>
       <ProjectLayout
         title={project.title}
         titleFontFamily={titleStack}

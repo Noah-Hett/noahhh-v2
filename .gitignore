@@ -5,3 +5,4 @@ _incoming/
 experiments/
 .DS_Store
 *.tsbuildinfo
+.claude/

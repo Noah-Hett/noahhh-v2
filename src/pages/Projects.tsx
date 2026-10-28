@@ -225,6 +225,7 @@ export default function Projects() {
   };
   return (
     <main className="page page-projects pw">
+      <title>All work</title>
       <h1 className="pw-sr">All projects</h1>
       <div className="pw-toggle" role="group" aria-label="View">
         <button

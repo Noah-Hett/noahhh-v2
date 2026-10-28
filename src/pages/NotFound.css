@@ -1,0 +1,69 @@
+/* 404: fills the viewport above the footer, content bottom-left like the
+   home hero copy. Display numeral in the muted accent (as WORK), message
+   at body size, two outlined buttons (as the Experience CV/Portfolio). */
+.page-404 {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.page-404 > * + * {
+  margin-top: 0;
+}
+
+.nf-code {
+  margin: 0;
+  font-size: clamp(6rem, 22vw, 18rem);
+  font-weight: 500;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--text-muted);
+}
+
+.nf-title {
+  margin: 32px 0 0;
+  font: inherit;
+  font-size: var(--proj-copy);
+  color: var(--text-primary);
+}
+
+.nf-links {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+}
+
+.nf-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: inherit;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  padding: 14px 20px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nf-links a::after {
+  content: '→';
+}
+
+.nf-links a:hover {
+  background: var(--text-primary);
+  color: var(--surface-page);
+}
+
+.nf-links a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-links a {
+    transition: none;
+  }
+}
