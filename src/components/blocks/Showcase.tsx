@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { ProjectBlock } from '../../content/projects.ts';
 import type { VarStyle } from './cssVars.ts';
+import ProjectImage from './ProjectImage.tsx';
 
 type ShowcaseBlockType = Extract<ProjectBlock, { kind: 'showcase' }>;
 
@@ -53,14 +54,7 @@ function ShowcaseStrip({ items }: { items: ShowcaseBlockType['strip'] }) {
     >
       {list.map((item, i) => (
         <div key={`${item.src}::${i}`} className="showcase-cell" role="listitem">
-          <img
-            src={item.src}
-            alt={item.alt}
-            width={item.width}
-            height={item.height}
-            loading="lazy"
-            decoding="async"
-          />
+          <ProjectImage image={item} sizes="(max-width: 1150px) 50vw, 20vw" />
         </div>
       ))}
     </div>
@@ -75,14 +69,7 @@ export default function Showcase({ block }: { block: ShowcaseBlockType }) {
     <div className="showcase">
       <div className="showcase-main">
         <div className="showcase-visual">
-          <img
-            src={block.image.src}
-            alt={block.image.alt}
-            width={block.image.width}
-            height={block.image.height}
-            loading="lazy"
-            decoding="async"
-          />
+          <ProjectImage image={block.image} sizes="(max-width: 1150px) 100vw, 80vw" />
         </div>
         <p className="showcase-copy">{block.body}</p>
       </div>

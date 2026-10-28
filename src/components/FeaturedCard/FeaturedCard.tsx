@@ -21,6 +21,9 @@ export type FeaturedCardMedia = {
   /** Responsive variants (`"src 800w, …"`); omitted for single-file covers. */
   srcSet?: string;
   sizes?: string;
+  /** WebP twins of `src`/`srcSet` for browsers without AVIF (iOS ≤15). */
+  srcWebp?: string;
+  srcSetWebp?: string;
   /** Video only: lighter encode + poster used below 1024px viewports. */
   srcMobile?: string;
   thumbMobile?: string;
@@ -263,14 +266,23 @@ export function FeaturedCard({
             className={`fc-clip ${isVideo ? 'is-video' : ''}`}
             style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', willChange: 'clip-path' }}
           >
-            <img
-              src={isVideo ? poster || media.src : media.src}
-              srcSet={isVideo ? undefined : media.srcSet}
-              sizes={isVideo ? undefined : media.sizes}
-              alt={media.alt || title}
-              draggable={false}
-              loading="lazy"
-            />
+            {isVideo || !media.srcWebp ? (
+              <img
+                src={isVideo ? poster || media.src : media.src}
+                srcSet={isVideo ? undefined : media.srcSet}
+                sizes={isVideo ? undefined : media.sizes}
+                alt={media.alt || title}
+                draggable={false}
+                loading="lazy"
+              />
+            ) : (
+              // display: contents (FeaturedCard.css) keeps the <img> the box.
+              <picture>
+                <source type="image/avif" srcSet={media.srcSet ?? media.src} sizes={media.sizes} />
+                <source type="image/webp" srcSet={media.srcSetWebp ?? media.srcWebp} sizes={media.sizes} />
+                <img src={media.srcWebp} alt={media.alt || title} draggable={false} loading="lazy" />
+              </picture>
+            )}
             {isVideo && (
               <video
                 ref={videoRef}

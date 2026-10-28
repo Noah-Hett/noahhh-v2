@@ -4,6 +4,7 @@ import type { BodyItem } from './pairing.ts';
 import PairRow from './PairRow.tsx';
 import GalleryBlock from './GalleryBlock.tsx';
 import Showcase from './Showcase.tsx';
+import ProjectImage from './ProjectImage.tsx';
 
 // Stable keys from content identity (id / for / src / href) with the index
 // as a uniqueness suffix — duplicates stay unique, reorder-safe for static
@@ -42,14 +43,7 @@ export function renderItems(items: BodyItem[]): ReactNode {
       <li key={itemKey(item, i)}>
         {item.block.kind === 'text' && <p>{item.block.body}</p>}
         {item.block.kind === 'image' && (
-          <img
-            src={item.block.src}
-            alt={item.block.alt}
-            width={item.block.width}
-            height={item.block.height}
-            loading="lazy"
-            decoding="async"
-          />
+          <ProjectImage image={item.block} sizes="(max-width: 2200px) 100vw, 2200px" />
         )}
         {item.block.kind === 'pdf' && (
           <p>

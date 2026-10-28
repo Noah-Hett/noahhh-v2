@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
-import { getSelected, challengeOf, coverSrcSet, projects, type Project } from '../content/projects.ts';
+import { getSelected, challengeOf, coverSrcSet, coverWebp, coverWebpSrcSet, projects, type Project } from '../content/projects.ts';
 import { FeaturedCard } from '../components/FeaturedCard/FeaturedCard.tsx';
 import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { ViewMore, type ViewMoreItem } from '../components/ViewMore/ViewMore.tsx';
@@ -404,6 +404,8 @@ export default function Home() {
                           src: p.cover.src,
                           alt: p.cover.alt,
                           srcSet: coverSrcSet(p.cover),
+                          srcWebp: coverWebp(p.cover.src),
+                          srcSetWebp: coverWebpSrcSet(p.cover),
                           // Card media fills ~54% of the track (full-bleed
                           // single column under 720px) with a cover crop.
                           sizes: '(max-width: 720px) 100vw, 54vw',

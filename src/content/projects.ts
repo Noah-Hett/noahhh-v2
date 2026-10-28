@@ -56,7 +56,8 @@ export type ProjectCover =
       height: number;
       /** Responsive variants for large surfaces (hero, featured cards).
           Thumbnails and gallery tiles keep using `src`. Explicit, never
-          derived — every entry must exist as a committed poster file. */
+          derived — every entry must exist as a committed poster file,
+          AVIF with a same-named .webp twin beside it (see coverWebp). */
       srcSet?: CoverVariant[];
     }
   // Hero video (the ONLY video on a Project page): muted looping autoplay
@@ -796,4 +797,15 @@ export function collaboratorInitials(c: ProjectCollaborator): string {
 export function coverSrcSet(cover: ProjectCover): string | undefined {
   if (cover.kind !== 'image' || !cover.srcSet?.length) return undefined;
   return cover.srcSet.map((v) => `${v.src} ${v.width}w`).join(', ');
+}
+
+// WebP twin of an AVIF poster path (iOS 15 and older can't decode AVIF).
+// Every committed AVIF poster has one beside it in public/posters.
+export function coverWebp(src: string): string {
+  return src.replace(/\.avif$/, '.webp');
+}
+
+export function coverWebpSrcSet(cover: ProjectCover): string | undefined {
+  if (cover.kind !== 'image' || !cover.srcSet?.length) return undefined;
+  return cover.srcSet.map((v) => `${coverWebp(v.src)} ${v.width}w`).join(', ');
 }

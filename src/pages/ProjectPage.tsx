@@ -5,7 +5,9 @@ import HeroVideo from '../components/blocks/HeroVideo.tsx';
 import { assignFlipsAcross, collectItems } from '../components/blocks/pairing.ts';
 import { renderItems } from '../components/blocks/renderItems.tsx';
 import { useProjectFont, useProjectThemeing } from '../components/blocks/useProjectChrome.ts';
-import { challengeOf, coverSrcSet, getProject } from '../content/projects.ts';
+import { challengeOf, coverSrcSet, coverWebp, coverWebpSrcSet, getProject } from '../content/projects.ts';
+
+const HERO_SIZES = '(max-width: 1196px) 100vw, 1196px';
 import './ProjectPage.css';
 
 export default function ProjectPage() {
@@ -72,16 +74,20 @@ export default function ProjectPage() {
             <HeroVideo cover={project.cover} />
           ) : (
             <figure className="project-hero">
-              <img
-                src={project.cover.src}
-                srcSet={coverSet}
-                sizes={coverSet ? '(max-width: 1196px) 100vw, 1196px' : undefined}
-                alt={project.cover.alt}
-                width={project.cover.width}
-                height={project.cover.height}
-                fetchPriority="high"
-                decoding="async"
-              />
+              <picture className="pimg">
+                {coverSet && <source type="image/avif" srcSet={coverSet} sizes={HERO_SIZES} />}
+                {coverSet && (
+                  <source type="image/webp" srcSet={coverWebpSrcSet(project.cover)} sizes={HERO_SIZES} />
+                )}
+                <img
+                  src={coverWebp(project.cover.src)}
+                  alt={project.cover.alt}
+                  width={project.cover.width}
+                  height={project.cover.height}
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              </picture>
             </figure>
           )
         }

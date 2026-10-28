@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { ImageBlock, TextBlock } from './pairing.ts';
 import type { VarStyle } from './cssVars.ts';
+import ProjectImage from './ProjectImage.tsx';
 
 // Pair height cap: the visual may stand at most --pair-cap x its copy's
 // rendered height, shrinking narrower to preserve aspect (never cropped). The copy
@@ -45,14 +46,7 @@ export default function PairRow({
         {copy.body}
       </p>
       <div className="pair-visual">
-        <img
-          src={visual.src}
-          alt={visual.alt}
-          width={visual.width}
-          height={visual.height}
-          loading="lazy"
-          decoding="async"
-        />
+        <ProjectImage image={visual} sizes="(max-width: 800px) 100vw, 45vw" />
       </div>
     </div>
   );

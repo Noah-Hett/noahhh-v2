@@ -61,6 +61,12 @@ img, video {
   height: auto;
 }
 
+/* Format-fallback <picture> wrappers (ProjectImage, covers): lay out as if
+   absent, so the <img> stays the box every page/block rule targets. */
+picture.pimg {
+  display: contents;
+}
+
 /* Per-Project theming (see projects.ts colors + ProjectPage).
    ProjectPage sets --proj-light/--proj-dark + data-project on <html>;
    these overrides retarget the same tokens (flip rule: light OS uses

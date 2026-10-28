@@ -1,5 +1,6 @@
 import type { ProjectBlock } from '../../content/projects.ts';
 import type { VarStyle } from './cssVars.ts';
+import ProjectImage from './ProjectImage.tsx';
 
 type GalleryBlockType = Extract<ProjectBlock, { kind: 'gallery' }>;
 
@@ -59,14 +60,10 @@ export default function GalleryBlock({
     <figure className="gallery">
       <div className="gallery-grid">
         {images.map((image, i) => (
-          <img
+          <ProjectImage
             key={`${image.src}::${i}`}
-            src={image.src}
-            alt={image.alt}
-            width={image.width}
-            height={image.height}
-            loading="lazy"
-            decoding="async"
+            image={image}
+            sizes="(max-width: 800px) 100vw, 50vw"
             style={{ '--span': spans[i] ?? 12, '--span-m': mobile[i] ?? 12 } as VarStyle}
           />
         ))}

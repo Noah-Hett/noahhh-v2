@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import { projects, type Project, type ProjectCover } from '../content/projects.ts';
+import { coverWebp, projects, type Project, type ProjectCover } from '../content/projects.ts';
 import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
 import { useLazyVideo } from '../utils/useLazyVideo.ts';
@@ -41,15 +41,18 @@ function CoverMedia({
 }) {
   if (cover.kind === 'image') {
     return (
-      <img
-        src={cover.src}
-        alt=""
-        aria-hidden="true"
-        width={cover.width}
-        height={cover.height}
-        loading="lazy"
-        decoding="async"
-      />
+      <picture className="pimg">
+        <source type="image/avif" srcSet={cover.src} />
+        <img
+          src={coverWebp(cover.src)}
+          alt=""
+          aria-hidden="true"
+          width={cover.width}
+          height={cover.height}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
     );
   }
   if (!motionOK || !active) {
