@@ -9,25 +9,28 @@
   padding: clamp(20px, 3vw, 36px) 0;
 }
 
+/* Explicit flex columns (see ViewMore.tsx for why not CSS columns). */
 .dock-grid {
-  columns: 4;
-  column-gap: clamp(12px, 0.794vw, 20px);
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(12px, 0.794vw, 20px);
   /* No grid-level entrance: the thumbs carry their own staggered wipe via
      .in below. (A rise + scale here was tried and cut — it added nothing.) */
 }
 
+.dock-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 0.794vw, 20px);
+}
+
 .dock-cell {
   display: block;
-  break-inside: avoid;
-  margin: 0 0 clamp(12px, 0.794vw, 20px);
   overflow: hidden;
   color: inherit;
   text-decoration: none;
-}
-
-.dock-cell:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: -2px;
 }
 
 .dock-thumb {
@@ -41,9 +44,12 @@
    sized label bottom-left and a big arrow top-right, so it reads as a
    button at a glance; hover flips to the page canvas and the arrow
    travels. */
+/* Grid, not block + height:100% on the inner: WebKit resolves a percent
+   height inside an aspect-ratio box against the wrong size, pushing the
+   label out past the bottom edge (iOS showed only the arrow). A single
+   stretched grid row fills the square without any percentage. */
 .dock-tile {
-  display: block;
-  break-inside: avoid;
+  display: grid;
   background: var(--text-primary);
   color: var(--surface-wash);
   text-decoration: none;
@@ -61,7 +67,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  min-height: 0;
 }
 
 .tile-arrow {
@@ -90,18 +96,6 @@
 .dock-tile:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: -4px;
-}
-
-@media (max-width: 1024px) {
-  .dock-grid {
-    columns: 3;
-  }
-}
-
-@media (max-width: 600px) {
-  .dock-grid {
-    columns: 3;
-  }
 }
 
 /* Rise + deblur, staggered, expo: each thumb gets its own beat inside one
@@ -137,14 +131,6 @@
   transition-delay: 0.64s;
 }
 
-.dock-grid.in .dock-cell:nth-child(1) .dock-thumb { transition-delay: 0s; }
-.dock-grid.in .dock-cell:nth-child(2) .dock-thumb { transition-delay: 0.08s; }
-.dock-grid.in .dock-cell:nth-child(3) .dock-thumb { transition-delay: 0.16s; }
-.dock-grid.in .dock-cell:nth-child(4) .dock-thumb { transition-delay: 0.24s; }
-.dock-grid.in .dock-cell:nth-child(5) .dock-thumb { transition-delay: 0.32s; }
-.dock-grid.in .dock-cell:nth-child(6) .dock-thumb { transition-delay: 0.4s; }
-.dock-grid.in .dock-cell:nth-child(7) .dock-thumb { transition-delay: 0.48s; }
-.dock-grid.in .dock-cell:nth-child(8) .dock-thumb { transition-delay: 0.56s; }
 .dock-grid.in .dock-tile .tile-inner { transition-delay: 0.64s; }
 
 /* Floater: one black pill, portalled to body (never inside ShrinkReveal).
