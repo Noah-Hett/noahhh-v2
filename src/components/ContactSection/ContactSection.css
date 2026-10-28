@@ -236,21 +236,22 @@
   color: inherit;
 }
 
-/* Mobile: single column in DOM order. Hierarchy comes from a display-
-   sized heading, full-width link rows, then the form under muted labels
-   so the inputs (not the labels) carry the weight. */
+/* Mobile: contact + footer must share one screen at full scroll on any
+   phone (down to 360x640). Budget: footer 30svh (min 200px), so this block
+   gets the rest — sized in svh (the viewport with browser toolbars
+   SHOWING) so it fits whether or not the toolbar is out; vh would assume
+   it's hidden and overflow. Top padding clears the sticky header bar
+   (~88px), so the heading never slides under it. Compact by design:
+   links condensed to one row, name/email side by side, 2-line message. */
 @media (max-width: 600px) {
   .contact {
-    /* Anchor target for the header Contact link — sticky header offset. */
-    scroll-margin-top: 40px;
-    padding: 40px 20px 32px;
-    /* Same buffer contract against the 30vh mobile footer. */
-    min-height: calc(100vh - 30vh);
+    padding: 104px 20px 24px;
+    min-height: calc(100svh - max(30svh, 200px));
   }
 
   .contact .contact-heading {
-    margin-bottom: 28px;
-    font-size: 2.75rem;
+    margin-bottom: clamp(16px, 3svh, 28px);
+    font-size: clamp(2.25rem, 6svh, 2.75rem);
     font-weight: 500;
     line-height: 0.9;
     letter-spacing: -0.03em;
@@ -258,21 +259,27 @@
 
   .contact-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 48px;
+    gap: clamp(20px, 4svh, 36px);
   }
 
+  /* One row of three, same underline + hint language as desktop. */
   .contact-links--text {
     align-self: start;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
 
   .contact-form {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    gap: 16px;
   }
 
   .contact-field label {
     color: var(--text-muted);
+  }
+
+  /* 2 lines instead of the 4-row default — the box scrolls if needed. */
+  .contact-field textarea {
+    height: calc(2lh + 16px);
   }
 }
 

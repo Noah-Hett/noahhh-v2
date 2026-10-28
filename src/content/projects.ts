@@ -511,14 +511,17 @@ const icHack26: Project = {
       },
       blocks: [
         {
-          kind: 'showcase',
-          image: {
-            src: 'https://media.noahhh.com/ic-hack-26/problem.svg',
-            alt: 'Diagram stating the design problem for IC Hack 26',
-            width: 1067,
-            height: 406,
-          },
+          kind: 'text',
+          for: 'problem',
           body: 'IC Hack’s challenge was scale: a large, digital-first event where the branding had to hold together from early planning through to the live weekend. We chose Fantasy and Fairytale as our theme to bring fun and creativity to an otherwise technical event.',
+        },
+        {
+          kind: 'image',
+          id: 'problem',
+          src: 'https://media.noahhh.com/ic-hack-26/problem.svg',
+          alt: 'Diagram stating the design problem for IC Hack 26',
+          width: 1067,
+          height: 406,
         },
       ],
     },

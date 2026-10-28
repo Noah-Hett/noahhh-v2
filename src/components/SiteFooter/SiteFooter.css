@@ -132,7 +132,9 @@
   /* 40vh eats a phone screen — 30vh keeps the wordmark present
      without dominating. min-height drops to match. */
   .site-footer-dark {
-    height: 30vh;
+    /* svh, not vh: phone toolbars must not push it off the bottom (see the
+       shared contact + footer budget in ContactSection.css). */
+    height: 30svh;
     min-height: 200px;
   }
 }

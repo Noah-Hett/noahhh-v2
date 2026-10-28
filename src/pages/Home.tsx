@@ -109,6 +109,10 @@ function collageItems(list: Project[], picks: string[]): ViewMoreItem[] {
 
 const COLLAGE = collageItems(projects, COLLAGE_PICKS);
 
+// Home cards play an excerpt of each video cover, not the full hero cut:
+// skip the opening 2s and drop the last 10s of every loop.
+const CARD_VIDEO_TRIM = { start: 2, end: 10 };
+
 // Card copy is the first sentence of the challenge summary — the full
 // brief lives on the Project page. Splits on terminal punctuation followed
 // by a space, a capital, or the end, so a missing space still breaks.
@@ -292,7 +296,7 @@ export default function Home() {
                   key={p.slug}
                   media={
                     p.cover.kind === 'video'
-                      ? { type: 'video', src: p.cover.src, thumb: p.cover.poster, alt: p.cover.alt }
+                      ? { type: 'video', src: p.cover.src, thumb: p.cover.poster, alt: p.cover.alt, trim: CARD_VIDEO_TRIM }
                       : {
                           type: 'img',
                           src: p.cover.src,

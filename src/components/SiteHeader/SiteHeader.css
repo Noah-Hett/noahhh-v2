@@ -294,7 +294,7 @@
     transition-delay: 0.16s;
   }
 
-  .nav-d3 > a {
+  .nav-d2 > a {
     transition-delay: 0.08s;
   }
 
@@ -306,7 +306,7 @@
     transition-delay: 0s;
   }
 
-  .site-header.away .nav-d3 > a {
+  .site-header.away .nav-d2 > a {
     transition-delay: 0.08s;
   }
 
@@ -327,7 +327,7 @@
     transition-delay: 0s;
   }
 
-  .site-header.menu-open .site-nav-list .nav-d3 > a {
+  .site-header.menu-open .site-nav-list .nav-d2 > a {
     transition-delay: 0.08s;
   }
 
@@ -376,8 +376,11 @@
   }
 
   /* Base = exit: fast tuck with a tight reverse stagger. */
+  /* Ink colour, never UA link blue/visited purple (the bar links get
+     the same from .site-nav-list a). */
   .overlay-mask > a {
     display: inline-block;
+    color: inherit;
     background: var(--surface-page);
     padding: 4px 10px;
     transform: translateY(-120%);
@@ -444,7 +447,7 @@
     animation-delay: 2.2s;
   }
 
-  .site-header.load-play .nav-d3 > a {
+  .site-header.load-play .nav-d2 > a {
     animation-delay: 2.29s;
   }
 

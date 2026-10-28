@@ -20,6 +20,9 @@ export type FeaturedCardMedia = {
   /** Responsive variants (`"src 800w, …"`); omitted for single-file covers. */
   srcSet?: string;
   sizes?: string;
+  /** Video only: seconds skipped at the start / cut from the end of each
+      loop, so a card can play an excerpt of the full hero cut. */
+  trim?: { start: number; end: number };
 };
 
 export type FeaturedCardProps = {
@@ -195,6 +198,22 @@ export function FeaturedCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Trimmed loop: native `loop` always restarts at 0, so the excerpt loops
+  // by hand — seek to trim.start on load and whenever playback reaches
+  // duration - trim.end (timeupdate fires ~4x/s, close enough for a muted
+  // ambient loop). Skipped if the clip is too short to trim.
+  const trim = media.trim;
+  const trimmedVideo = (v: HTMLVideoElement): { from: number; to: number } | null => {
+    if (!trim || !Number.isFinite(v.duration)) return null;
+    const to = v.duration - trim.end;
+    return to - trim.start > 1 ? { from: trim.start, to } : null;
+  };
+  const restartTrim = (v: HTMLVideoElement): void => {
+    const t = trimmedVideo(v);
+    v.currentTime = t ? t.from : 0;
+    v.play().catch(() => undefined);
+  };
+
   const copyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -262,12 +281,23 @@ export function FeaturedCard({
             />
             {isVideo && (
               <video
-                src={media.src}
+                src={trim ? `${media.src}#t=${trim.start}` : media.src}
                 muted
-                loop
+                loop={!trim}
                 playsInline
                 autoPlay
                 preload="none"
+                onLoadedMetadata={(e) => {
+                  const t = trimmedVideo(e.currentTarget);
+                  if (t && e.currentTarget.currentTime < t.from) e.currentTarget.currentTime = t.from;
+                }}
+                onTimeUpdate={(e) => {
+                  const t = trimmedVideo(e.currentTarget);
+                  if (t && e.currentTarget.currentTime >= t.to) restartTrim(e.currentTarget);
+                }}
+                onEnded={(e) => {
+                  if (trim) restartTrim(e.currentTarget);
+                }}
                 onError={(e) => {
                   const v = e.currentTarget;
                   v.style.display = 'none';
