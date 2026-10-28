@@ -1,6 +1,6 @@
 /* Blank-slate skin for FeaturedCard. Mechanics kept from experiments;
    colors neutral grey so Figma tokens can land later without teardown. */
-.fc-track { padding: 0; background: #e5e5e5; border: 1px solid #d4d4d4; overflow: hidden; }
+.fc-track { padding: 0; background: #e5e5e5; overflow: hidden; }
 /* Per-Project flip pair (see FeaturedCard colors prop): light OS uses the
    light colour as canvas, dark OS flips. Colours come ONLY from
    projects.ts via --card-light/--card-dark. */
@@ -8,12 +8,14 @@
   background: var(--card-light);
   color: var(--card-dark);
   --track-accent: var(--card-dark);
+  --track-bg: var(--card-light);
 }
 @media (prefers-color-scheme: dark) {
   .fc-track.fc-themed {
     background: var(--card-dark);
     color: var(--card-light);
     --track-accent: var(--card-light);
+    --track-bg: var(--card-dark);
   }
 }
 .fc-inner { display: grid; grid-template-columns: 54% 1fr; min-height: 70vh; align-items: stretch; gap: 0; background: transparent; }
@@ -33,7 +35,8 @@
 .fc-clip.is-video img { display: none; }
 .fc-clip.is-video video { display: block; }
 .fc-copy { padding: 40px 36px 32px 48px; display: flex; flex-direction: column; justify-content: center; }
-.fc-copy h3 { margin: 0; font: inherit; color: inherit; }
+/* Title is the card's headline: display face from projects.ts, sized up. */
+.fc-copy h3 { margin: 0; font: inherit; color: inherit; font-size: clamp(2.25rem, 4.2vw, 5rem); line-height: 1; letter-spacing: -0.01em; }
 .fc-copy .rv { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
 .fc-copy .rv-inner { display: block; transform: translateY(120%); transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
 .fc-copy.in .rv-inner { transform: translateY(0); }
@@ -41,10 +44,19 @@
 .fc-copy.in .rv-d2 .rv-inner { transition-delay: 0.16s; }
 .fc-copy.in .rv-d3 .rv-inner { transition-delay: 0.24s; }
 .fc-copy.in .rv-d4 .rv-inner { transition-delay: 0.32s; }
-.fc-copy p { margin: 10px 0 0; font: inherit; color: inherit; }
+.fc-copy p { margin: 20px 0 0; font: inherit; color: inherit; max-width: 34ch; }
 .fc-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 .fc-meta span { font: inherit; color: inherit; background: none; border: 0; padding: 0; }
-.fc-children { margin-top: 12px; }
+.fc-children { margin-top: 32px; }
+/* "View project" prompt: outlined button in the card's ink, inverting to
+   an ink fill on hover; the arrow nudges right. Outline is inset because
+   the .rv mask clips anything drawn outside the button. */
+.fc-open { display: inline-flex; align-items: center; gap: 0.75em; color: inherit; text-decoration: none; text-transform: uppercase; border: 1px solid currentColor; padding: 14px 20px; transition: background-color 0.2s ease, color 0.2s ease; }
+.fc-open-arrow { display: inline-block; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.fc-open:hover { background: var(--track-accent); color: var(--track-bg, #e5e5e5); }
+.fc-open:hover .fc-open-arrow { transform: translateX(4px); }
+.fc-open:focus-visible { outline: 2px solid currentColor; outline-offset: -5px; }
 @media (prefers-reduced-motion: reduce) {
   .fc-copy .rv-inner { transform: none; transition: none; }
+  .fc-open, .fc-open-arrow { transition: none; }
 }

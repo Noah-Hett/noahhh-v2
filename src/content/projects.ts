@@ -312,7 +312,7 @@ const buskRadio: Project = {
       id: 'challenge',
       heading: 'Challenge',
       summary:
-        'Fostering community connections amongst Buskers, Street Performers and their audiences.Creating a playful way to support buskers while minimising friction and enhancing audience experience.',
+        'Fostering community connections amongst Buskers, Street Performers and their audiences. Creating a playful way to support buskers while minimising friction and enhancing audience experience.',
       meta: {
         date: 'June 2025',
         scope: 'Human Centred Design',

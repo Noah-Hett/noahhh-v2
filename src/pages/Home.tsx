@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
-import { getSelected, challengeOf, coverSrcSet } from '../content/projects.ts';
+import { getSelected, challengeOf, coverSrcSet, projects, type Project } from '../content/projects.ts';
 import { FeaturedCard } from '../components/FeaturedCard/FeaturedCard.tsx';
 import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
+import { ViewMore, type ViewMoreItem } from '../components/ViewMore/ViewMore.tsx';
 import { ExperienceDiagram } from '../components/ExperienceDiagram/ExperienceDiagram.tsx';
 import { useInView } from '../components/ExperienceDiagram/useInView.ts';
 import { DotGrid } from '../components/DotGrid/DotGrid.tsx';
@@ -67,6 +68,55 @@ const EXPERIENCE_DOCS: { label: string; href: string }[] = [
   { label: 'Portfolio', href: 'https://media.noahhh.com/docs/noah-hett-portfolio.pdf' },
 ];
 
+// View-more collage under WORK: a hand-picked set of finished-work photos
+// (no process graphics, renders, CAD or mockups), in display order —
+// alternate Projects so neighbouring cells differ. Entries are image srcs
+// already used on a Project page; dims and slug are looked up from the
+// manifest so they can never drift. Unknown srcs are skipped.
+const COLLAGE_PICKS: string[] = [
+  'https://media.noahhh.com/ic-hack-26/in-environment-1600.avif',
+  'https://media.noahhh.com/gizmophone/in-use-1600.avif',
+  'https://media.noahhh.com/busk-radio/hero-1600.avif',
+  'https://media.noahhh.com/ic-hack-26/cupcakes-1600.avif',
+  'https://media.noahhh.com/gizmophone/detail-1600.avif',
+  'https://media.noahhh.com/busk-radio/front-bw-1600.avif',
+  'https://media.noahhh.com/ic-hack-26/tshirts-give-out-1600.avif',
+  'https://media.noahhh.com/ic-hack-26/group-photo-1600.avif',
+];
+
+function projectImages(p: Project): ViewMoreItem[] {
+  const out: ViewMoreItem[] = [];
+  const add = (img: { src: string; width: number; height: number }) => {
+    out.push({ slug: p.slug, title: p.title, src: img.src, width: img.width, height: img.height });
+  };
+  for (const g of p.groups) {
+    for (const b of g.blocks) {
+      if (b.kind === 'image') add(b);
+      else if (b.kind === 'gallery') b.images.forEach(add);
+      else if (b.kind === 'showcase') {
+        add(b.image);
+        b.strip?.forEach(add);
+      }
+    }
+  }
+  return out;
+}
+
+function collageItems(list: Project[], picks: string[]): ViewMoreItem[] {
+  const bySrc = new Map(list.flatMap(projectImages).map((item) => [item.src, item]));
+  return picks.flatMap((src) => bySrc.get(src) ?? []);
+}
+
+const COLLAGE = collageItems(projects, COLLAGE_PICKS);
+
+// Card copy is the first sentence of the challenge summary — the full
+// brief lives on the Project page. Splits on terminal punctuation followed
+// by a space, a capital, or the end, so a missing space still breaks.
+function firstSentence(text: string): string {
+  const match = text.match(/^.*?[.!?](?=\s|[A-Z]|$)/);
+  return (match ? match[0] : text).trim();
+}
+
 function projectTitleStyle(p: { font: { family: string; fallback?: string } }): CSSProperties {
   return { fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}` };
 }
@@ -79,6 +129,7 @@ export default function Home() {
   // Selected cards render titles in each Project's display face — the
   // faces load with this page (ProjectPage only loads its own).
   useProjectFonts(selected);
+  const workRef = useRef<HTMLElement | null>(null);
   const { hash } = useLocation();
   // Intro starts pending (hidden states in Home.css) unless this document
   // already played it or there's a reason to skip (reduced motion, hash
@@ -232,7 +283,7 @@ export default function Home() {
       <div className="transition-band" aria-hidden="true" />
 
       <ShrinkReveal>
-          <section className="work" aria-label="Selected projects">
+          <section className="work" aria-label="Selected projects" ref={workRef}>
             <h2>WORK</h2>
             <div className="work-list">
               {selected.map((p) => (
@@ -254,13 +305,17 @@ export default function Home() {
                   colors={p.colors}
                   titleStyle={projectTitleStyle(p)}
                   title={p.title}
-                  subtitle={challengeOf(p).meta.date}
-                  description={challengeOf(p).summary}
+                  description={firstSentence(challengeOf(p).summary)}
                 >
-                  <Link to={`/project/${p.slug}`}>Open {p.title}</Link>
+                  <Link className="fc-open" to={`/project/${p.slug}`}>
+                    View project
+                    <span className="sr-only">: {p.title}</span>
+                    <span className="fc-open-arrow" aria-hidden="true">→</span>
+                  </Link>
                 </FeaturedCard>
               ))}
             </div>
+            <ViewMore items={COLLAGE} total={projects.length} zoneRef={workRef} />
           </section>
         </ShrinkReveal>
 

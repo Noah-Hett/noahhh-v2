@@ -33,7 +33,7 @@ export type FeaturedCardProps = {
   colors?: { light: string; dark: string };
   titleStyle?: CSSProperties;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   description: string;
   meta?: string[];
   children?: ReactNode;
@@ -254,7 +254,7 @@ export function FeaturedCard({
               src={isVideo ? media.thumb || media.src : media.src}
               srcSet={isVideo ? undefined : media.srcSet}
               sizes={isVideo ? undefined : media.sizes}
-              alt={media.alt || `${title} ${subtitle}`}
+              alt={media.alt || title}
               draggable={false}
               loading="lazy"
             />
@@ -281,9 +281,11 @@ export function FeaturedCard({
             <span className="rv">
               <span className="rv-inner">{title}</span>
             </span>
-            <span className="rv rv-d1">
-              <span className="rv-inner">{subtitle}</span>
-            </span>
+            {subtitle && (
+              <span className="rv rv-d1">
+                <span className="rv-inner">{subtitle}</span>
+              </span>
+            )}
           </h3>
           <p className="rv rv-d2">
             <span className="rv-inner">{description}</span>

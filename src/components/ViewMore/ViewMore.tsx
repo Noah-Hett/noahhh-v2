@@ -8,31 +8,31 @@ import './ViewMore.css';
 // WORK; the floater pill is portalled to document.body so no clip/transform
 // ancestor (notably ShrinkReveal) can trap its fixed positioning.
 //
-// Structure/aesthetics only: `items` are placeholder grey boxes until real
-// non-selected projects land in the manifest. At that point cells take the
-// FeaturedCard media pattern (thumb poster, preload=none, saveData guard).
+// Cells are Project images (each links to its Project); the masonry
+// rhythm comes from the images' own aspect ratios, reserved via
+// width/height so lazy loads never shift the column flow.
 
 export type ViewMoreItem = {
   slug: string;
-  label: string;
+  title: string;
+  src: string;
+  width: number;
+  height: number;
 };
 
 type ViewMoreProps = {
   items: ViewMoreItem[];
+  /** Project count shown on the see-all tile. */
+  total: number;
   /** Ref of the WORK section: the pill floats while it is on screen. */
   zoneRef: RefObject<HTMLElement | null>;
 };
 
-// Grey-box rhythm for the masonry — cycles 4/5, 4/3, 1/1, 3/4.
-function ratioClass(index: number): string {
-  return `ph-r${(index % 4) + 1}`;
-}
-
-export function ViewMore({ items, zoneRef }: ViewMoreProps) {
+export function ViewMore({ items, total, zoneRef }: ViewMoreProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const [pillVisible, setPillVisible] = useState(false);
-  const count = String(items.length).padStart(2, '0');
+  const count = String(total).padStart(2, '0');
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -91,16 +91,23 @@ export function ViewMore({ items, zoneRef }: ViewMoreProps) {
     <>
       <div className="dock-panel" ref={panelRef}>
         <div className="dock-grid" ref={gridRef}>
-          {items.map((item, i) => (
+          {items.map((item) => (
             <Link
-              key={item.slug}
+              key={item.src}
               className="dock-cell"
               to={`/project/${item.slug}`}
-              aria-label={item.label}
+              aria-label={item.title}
             >
-              <span className={`ph ${ratioClass(i)}`} aria-hidden="true">
-                {item.label}
-              </span>
+              <img
+                className="dock-thumb"
+                src={item.src}
+                alt=""
+                width={item.width}
+                height={item.height}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
             </Link>
           ))}
           <Link className="dock-tile" to="/projects">
@@ -111,7 +118,7 @@ export function ViewMore({ items, zoneRef }: ViewMoreProps) {
                   →
                 </span>
               </span>
-              <small>({count}) more inside</small>
+              <small>({count}) projects</small>
             </span>
           </Link>
         </div>

@@ -30,20 +30,12 @@
   outline-offset: -2px;
 }
 
-/* TEMP placeholders: grey ratio boxes until real project media lands.
-   Swap for the FeaturedCard media pattern at that point. */
-.ph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.dock-thumb {
+  display: block;
   width: 100%;
-  color: #737373;
+  height: auto;
+  background: #d4d4d4;
 }
-
-.ph-r1 { background: #d4d4d4; aspect-ratio: 4 / 5; }
-.ph-r2 { background: #e5e5e5; aspect-ratio: 4 / 3; border: 1px solid #d4d4d4; }
-.ph-r3 { background: #d4d4d4; aspect-ratio: 1 / 1; }
-.ph-r4 { background: #e5e5e5; aspect-ratio: 3 / 4; border: 1px solid #d4d4d4; }
 
 .dock-tile {
   break-inside: avoid;
@@ -118,7 +110,7 @@
 
 /* Rise + deblur, staggered, expo: each thumb gets its own beat inside one
    smooth wave. Fired once via .in, fixed once in. */
-.dock-cell .ph {
+.dock-cell .dock-thumb {
   clip-path: inset(0 100% 0 0);
   filter: blur(12px);
   transition:
@@ -126,7 +118,7 @@
     filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dock-grid.in .dock-cell .ph {
+.dock-grid.in .dock-cell .dock-thumb {
   clip-path: inset(0 0 0 0);
   filter: blur(0);
 }
@@ -149,14 +141,14 @@
   transition-delay: 0.64s;
 }
 
-.dock-grid.in .dock-cell:nth-child(1) .ph { transition-delay: 0s; }
-.dock-grid.in .dock-cell:nth-child(2) .ph { transition-delay: 0.08s; }
-.dock-grid.in .dock-cell:nth-child(3) .ph { transition-delay: 0.16s; }
-.dock-grid.in .dock-cell:nth-child(4) .ph { transition-delay: 0.24s; }
-.dock-grid.in .dock-cell:nth-child(5) .ph { transition-delay: 0.32s; }
-.dock-grid.in .dock-cell:nth-child(6) .ph { transition-delay: 0.4s; }
-.dock-grid.in .dock-cell:nth-child(7) .ph { transition-delay: 0.48s; }
-.dock-grid.in .dock-cell:nth-child(8) .ph { transition-delay: 0.56s; }
+.dock-grid.in .dock-cell:nth-child(1) .dock-thumb { transition-delay: 0s; }
+.dock-grid.in .dock-cell:nth-child(2) .dock-thumb { transition-delay: 0.08s; }
+.dock-grid.in .dock-cell:nth-child(3) .dock-thumb { transition-delay: 0.16s; }
+.dock-grid.in .dock-cell:nth-child(4) .dock-thumb { transition-delay: 0.24s; }
+.dock-grid.in .dock-cell:nth-child(5) .dock-thumb { transition-delay: 0.32s; }
+.dock-grid.in .dock-cell:nth-child(6) .dock-thumb { transition-delay: 0.4s; }
+.dock-grid.in .dock-cell:nth-child(7) .dock-thumb { transition-delay: 0.48s; }
+.dock-grid.in .dock-cell:nth-child(8) .dock-thumb { transition-delay: 0.56s; }
 .dock-grid.in .dock-tile .tile-inner { transition-delay: 0.64s; }
 
 /* Floater: one black pill, portalled to body (never inside ShrinkReveal).
@@ -216,7 +208,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dock-grid,
-  .dock-cell .ph,
+  .dock-cell .dock-thumb,
   .dock-tile,
   .tile-inner {
     transform: none !important;
