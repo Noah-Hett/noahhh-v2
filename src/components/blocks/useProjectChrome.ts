@@ -62,8 +62,11 @@ export function useProjectFont(
 
 // Listing pages (Home Selected cards, All Projects rows) render titles in
 // each Project's display face but never mount ProjectPage — the families
-// they reference would otherwise fall back everywhere. One <style> with a
-// rule per family (deduped, first wins), removed on unmount.
+// they reference would otherwise fall back everywhere. Registered through
+// the FontFace API (deduped, first wins) and removed on unmount. Not an
+// injected <style>: adding a stylesheet mid-session restyles the whole
+// document, which Chrome reported as a late LCP for the Home portrait when
+// these faces load after the intro.
 export function useProjectFonts(
   list: { font: { family: string; src: string } }[] | undefined,
 ): void {
@@ -71,26 +74,23 @@ export function useProjectFonts(
   // so depend on the serialized identity, not the array itself.
   const key = list?.map((p) => `${p.font.family}|||${p.font.src}`).join(';;') ?? '';
   useEffect(() => {
-    if (!list || list.length === 0) return;
+    if (!list || list.length === 0 || typeof FontFace === 'undefined') return;
     const seen = new Set<string>();
-    const rules: string[] = [];
+    const faces: FontFace[] = [];
     for (const p of list) {
       if (!p.font.family || !p.font.src || seen.has(p.font.family)) continue;
       seen.add(p.font.family);
-      rules.push(fontFaceRule(p.font.family, p.font.src));
+      const face = new FontFace(p.font.family, fontSrc(p.font.src), {
+        display: 'swap',
+        weight: '400',
+        style: 'normal',
+      });
+      document.fonts.add(face);
+      face.load().catch(() => undefined);
+      faces.push(face);
     }
-    if (rules.length === 0) return;
-    const id = 'project-font-faces';
-    const prev = document.getElementById(id);
-    const prevCss = prev?.textContent ?? null;
-    const style = document.createElement('style');
-    style.id = id;
-    style.textContent = rules.join('');
-    prev?.remove();
-    document.head.appendChild(style);
     return () => {
-      style.remove();
-      if (prevCss !== null && prev) document.head.appendChild(prev);
+      faces.forEach((f) => document.fonts.delete(f));
     };
     // `key` is the serialized identity of `list` — intentional.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,6 +98,10 @@ export function useProjectFonts(
 }
 
 function fontFaceRule(family: string, src: string): string {
+  return `@font-face{font-family:"${family}";src:${fontSrc(src)};font-display:swap;font-weight:400;font-style:normal;}`;
+}
+
+function fontSrc(src: string): string {
   const path = src.split(/[?#]/)[0].toLowerCase();
   // Safari validates format() strictly: .otf must be "opentype",
   // .ttf must be "truetype". Chrome/Firefox load either way, which is
@@ -110,5 +114,5 @@ function fontFaceRule(family: string, src: string): string {
         : path.endsWith('.otf')
           ? 'opentype'
           : 'truetype';
-  return `@font-face{font-family:"${family}";src:url("${src}") format("${format}");font-display:swap;font-weight:400;font-style:normal;}`;
+  return `url("${src}") format("${format}")`;
 }

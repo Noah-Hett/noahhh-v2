@@ -204,7 +204,7 @@ export function FeaturedCard({
 
   // Lazy video (see useLazyVideo); reduced-motion visitors keep the poster.
   const videoRef = useRef<HTMLVideoElement>(null);
-  useLazyVideo(videoRef, videoSrc, isVideo && !prefersReduced);
+  useLazyVideo(videoRef, videoSrc, isVideo && !prefersReduced, poster);
 
   const copyRef = useRef<HTMLDivElement>(null);
 
@@ -274,7 +274,6 @@ export function FeaturedCard({
             {isVideo && (
               <video
                 ref={videoRef}
-                poster={poster}
                 muted
                 loop
                 playsInline

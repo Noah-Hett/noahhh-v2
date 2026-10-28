@@ -21,6 +21,21 @@ import './Home.css';
 // do the work). Module flag — not sessionStorage — so a reload re-arms it.
 let homeIntroPlayed = false;
 
+// Longest wait before the intro plays regardless (slow network), and the
+// intro's length (Home.css: the portrait's 0.05s delay + 1.7s rise is the
+// longest leg) after which below-the-fold loading starts.
+const INTRO_GATE_MAX = 1200;
+const INTRO_DURATION = 1800;
+
+// Resolves on the next idle period (setTimeout fallback where
+// requestIdleCallback is missing, e.g. older Safari).
+function idle(): Promise<void> {
+  return new Promise((resolve) => {
+    if ('requestIdleCallback' in window) window.requestIdleCallback(() => resolve(), { timeout: 400 });
+    else setTimeout(resolve, 50);
+  });
+}
+
 function shouldSkipIntro(hash: string): boolean {
   if (typeof window === 'undefined') return true;
   if (prefersReducedMotion()) return true;
@@ -142,9 +157,6 @@ function projectTitleStyle(p: { font: { family: string; fallback?: string } }): 
 // Copy words come from Figma; type styling stays unstyled until style handoff.
 export default function Home() {
   const selected = getSelected();
-  // Selected cards render titles in each Project's display face — the
-  // faces load with this page (ProjectPage only loads its own).
-  useProjectFonts(selected);
   const workRef = useRef<HTMLElement | null>(null);
   const { hash } = useLocation();
   // Intro starts pending (hidden states in Home.css) unless this document
@@ -165,26 +177,94 @@ export default function Home() {
   const copyRef = useRef<HTMLDivElement>(null);
   const { ref: summaryCopyRef, inView: summaryCopyIn } = useInView<HTMLDivElement>(0.4);
 
-  // Intro flip: pending renders the hidden states; the double rAF guarantees
-  // the browser paints them once before .intro-in lands, so the CSS
-  // transitions run instead of batch-skipping straight to final. Flag is set
-  // inside the callback (not the initializer) so StrictMode's mount →
-  // cleanup → remount in dev doesn't consume the one play before it paints.
+  const photoRef = useRef<HTMLImageElement>(null);
+  // Below-the-fold loading (project title faces, collage thumbs) waits for
+  // the intro to finish so it never competes with it. Immediate when the
+  // intro is skipped.
+  const [settled, setSettled] = useState(introIn);
+  // Selected cards render titles in each Project's display face. The files
+  // are fetched into the HTTP cache once the intro has played (no effect on
+  // the page), and the faces are applied only when WORK comes within a
+  // screen. Applying them earlier swaps text across the page, and that
+  // repaint made Chrome log the already-visible portrait as a ~2.6s LCP;
+  // by the time the cards are near, the visitor has scrolled and LCP is
+  // final. Watches the card list (not the WORK section, whose top is
+  // within a screen of the fold on desktop) with a half-screen lead.
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const [workNear, setWorkNear] = useState(false);
+  useEffect(() => {
+    if (!settled) return;
+    selected.forEach((p) => {
+      if (p.font.src) fetch(p.font.src, { priority: 'low' } as RequestInit).catch(() => undefined);
+    });
+    // `selected` is derived from the static manifest; settle runs once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settled]);
+  useEffect(() => {
+    const work = cardsRef.current;
+    if (!work || workNear) return;
+    if (!('IntersectionObserver' in window)) {
+      setWorkNear(true);
+      return;
+    }
+    const obs = new IntersectionObserver(([e]) => e.isIntersecting && setWorkNear(true), {
+      rootMargin: '50% 0px',
+    });
+    obs.observe(work);
+    return () => obs.disconnect();
+  }, [workNear]);
+  useProjectFonts(workNear ? selected : undefined);
+
+  // Intro gate: on a cold first visit the browser is still compiling the
+  // bundle and fetching the body face + portrait when the page mounts, and
+  // an intro started then drops frames. Hold the hidden state (canvas +
+  // dot grid already showing) until the face and portrait are ready and
+  // the main thread has a quiet moment — capped at INTRO_GATE_MAX so a
+  // slow network never stalls the page. Warm visits resolve at once.
+  //
+  // Then the flip: pending renders the hidden states; the double rAF
+  // guarantees the browser paints them once before .intro-in lands, so the
+  // CSS transitions run instead of batch-skipping straight to final. Flag
+  // is set inside the callback (not the initializer) so StrictMode's mount
+  // → cleanup → remount in dev doesn't consume the one play before it
+  // paints.
   useEffect(() => {
     if (introIn) return;
+    let cancelled = false;
     let raf1 = 0;
     let raf2 = 0;
-    raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => {
-        homeIntroPlayed = true;
-        setIntroIn(true);
+    const photo = photoRef.current;
+    const ready = Promise.all([
+      document.fonts.load('1em "Instrument Sans"').catch(() => undefined),
+      photo && !photo.complete
+        ? new Promise((r) => {
+            photo.addEventListener('load', r, { once: true });
+            photo.addEventListener('error', r, { once: true });
+          })
+        : undefined,
+    ]).then(idle);
+    const cap = new Promise((r) => setTimeout(r, INTRO_GATE_MAX));
+    Promise.race([ready, cap]).then(() => {
+      if (cancelled) return;
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          homeIntroPlayed = true;
+          setIntroIn(true);
+        });
       });
     });
     return () => {
+      cancelled = true;
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
     };
   }, [introIn]);
+
+  useEffect(() => {
+    if (!introIn || settled) return;
+    const t = setTimeout(() => setSettled(true), INTRO_DURATION);
+    return () => clearTimeout(t);
+  }, [introIn, settled]);
 
   // Hero parallax: art + copy exit together, slightly faster than the page.
   // One shared value written to both. Uses the CSS `translate` property
@@ -286,6 +366,7 @@ export default function Home() {
                 sizes="(max-width: 600px) 284px, (max-width: 1024px) 466px, 564px"
               />
               <img
+                ref={photoRef}
                 className="hero-photo"
                 src="/portrait/portrait-1600.webp"
                 alt="Overhead portrait of Noah Hett working at a table"
@@ -304,7 +385,7 @@ export default function Home() {
       <ShrinkReveal>
           <section className="work" aria-label="Selected projects" ref={workRef} data-header-wash>
             <h2>WORK</h2>
-            <div className="work-list">
+            <div className="work-list" ref={cardsRef}>
               {selected.map((p) => (
                 <FeaturedCard
                   key={p.slug}
@@ -341,7 +422,7 @@ export default function Home() {
                 </FeaturedCard>
               ))}
             </div>
-            <ViewMore items={COLLAGE} zoneRef={workRef} />
+            <ViewMore items={COLLAGE} zoneRef={workRef} eager={settled} />
           </section>
         </ShrinkReveal>
 
