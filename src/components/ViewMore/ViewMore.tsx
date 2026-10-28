@@ -41,6 +41,11 @@ type ViewMoreProps = {
 
 type Placed = { item: ViewMoreItem; index: number };
 
+// Cached images can finish before onLoad is attached; catch those on mount.
+function markIfLoaded(img: HTMLImageElement | null): void {
+  if (img?.complete && img.naturalWidth > 0) img.classList.add('ready');
+}
+
 // Column heights in column-widths: each cell is its aspect ratio plus a
 // rough gap allowance (gap / column width across breakpoints).
 const CELL_GAP = 0.08;
@@ -179,15 +184,22 @@ export function ViewMore({ items, zoneRef }: ViewMoreProps) {
                   <picture>
                     {item.srcSetAvif && <source type="image/avif" srcSet={item.srcSetAvif} sizes={THUMB_SIZES} />}
                     {item.srcSetWebp && <source type="image/webp" srcSet={item.srcSetWebp} sizes={THUMB_SIZES} />}
+                    {/* Eager at low priority (the whole set is ~110–340KB),
+                        so the photos are in cache well before the collage
+                        scrolls in; lazy loading started too late and the
+                        wipe revealed grey placeholders. Each thumb also only
+                        wipes in once loaded (.ready) — never an empty box. */}
                     <img
+                      ref={markIfLoaded}
                       className="dock-thumb"
                       src={item.src}
                       alt=""
                       width={item.width}
                       height={item.height}
-                      loading="lazy"
+                      fetchPriority="low"
                       decoding="async"
                       draggable={false}
+                      onLoad={(e) => e.currentTarget.classList.add('ready')}
                       style={{ transitionDelay: `${(index * 0.08).toFixed(2)}s` }}
                     />
                   </picture>

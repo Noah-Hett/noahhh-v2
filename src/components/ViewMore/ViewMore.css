@@ -39,7 +39,6 @@
   display: block;
   width: 100%;
   height: auto;
-  background: #d4d4d4;
 }
 
 /* See-all tile: the collage's call to action. Ink block with a display-
@@ -111,7 +110,7 @@
   transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dock-grid.in .dock-cell .dock-thumb {
+.dock-grid.in .dock-cell .dock-thumb.ready {
   clip-path: inset(0 0 0 0);
 }
 
