@@ -29,6 +29,12 @@ export default function SiteHeader() {
   // Hide-on-scroll flag — state, so re-renders (load-play drop, menu
   // toggles) preserve it instead of wiping a hand-toggled class (see above).
   const [away, setAway] = useState(false);
+  // Pill surface follows the section under the bar: sections marked
+  // [data-header-wash] (Home's white WORK band) switch the link pills to
+  // the wash token so they don't read as grey patches on white.
+  // data-header-wash="lower-half" counts only the bottom half — for the
+  // page→wash gradient band, whose lower half already reads as white.
+  const [onWash, setOnWash] = useState(false);
   // Fresh-load entrance (see SiteHeader.css .load-play): one-shot mask-rise
   // cascade, home-only — the header lives outside Routes so it mounts once
   // per app load and never replays on route change, and the delayed rise
@@ -187,6 +193,43 @@ export default function SiteHeader() {
     };
   }, []);
 
+  // Wash detection: on scroll (rAF-throttled), resize, and after route
+  // changes (the incoming page swaps in under the transition cover, so
+  // re-check once it has rendered). Probe = the pills' vertical centre;
+  // the bar is sticky, so that line is fixed in the viewport.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const pill = headerRef.current?.querySelector('.site-nav-list a');
+      if (!pill) return;
+      const r = pill.getBoundingClientRect();
+      const y = r.top + r.height / 2;
+      let wash = false;
+      document.querySelectorAll('[data-header-wash]').forEach((el) => {
+        const b = el.getBoundingClientRect();
+        const top =
+          el.getAttribute('data-header-wash') === 'lower-half' ? b.top + b.height / 2 : b.top;
+        if (top <= y && b.bottom >= y) wash = true;
+      });
+      setOnWash(wash);
+    };
+    const request = () => {
+      if (raf === 0) raf = requestAnimationFrame(check);
+    };
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    request();
+    const late = window.setTimeout(request, 1200);
+    return () => {
+      window.removeEventListener('scroll', request);
+      window.removeEventListener('resize', request);
+      window.clearTimeout(late);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [location.pathname]);
+
   const closeMenu = () => {
     setOpen(false);
   };
@@ -232,7 +275,7 @@ export default function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`site-header${open ? ' menu-open' : ''}${loadPlay ? ' load-play' : ''}${away ? ' away' : ''}`}
+      className={`site-header${open ? ' menu-open' : ''}${loadPlay ? ' load-play' : ''}${away ? ' away' : ''}${onWash ? ' on-wash' : ''}`}
     >
       <nav className="site-nav" aria-label="Primary">
         <ul className="site-nav-list">

@@ -22,17 +22,14 @@ export type ViewMoreItem = {
 
 type ViewMoreProps = {
   items: ViewMoreItem[];
-  /** Project count shown on the see-all tile. */
-  total: number;
   /** Ref of the WORK section: the pill floats while it is on screen. */
   zoneRef: RefObject<HTMLElement | null>;
 };
 
-export function ViewMore({ items, total, zoneRef }: ViewMoreProps) {
+export function ViewMore({ items, zoneRef }: ViewMoreProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const [pillVisible, setPillVisible] = useState(false);
-  const count = String(total).padStart(2, '0');
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -112,13 +109,10 @@ export function ViewMore({ items, total, zoneRef }: ViewMoreProps) {
           ))}
           <Link className="dock-tile" to="/projects">
             <span className="tile-inner">
-              <span className="row">
-                <span>see all</span>
-                <span className="arrow" aria-hidden="true">
-                  →
-                </span>
+              <span className="tile-arrow" aria-hidden="true">
+                →
               </span>
-              <small>({count}) projects</small>
+              <span className="tile-label">See all</span>
             </span>
           </Link>
         </div>

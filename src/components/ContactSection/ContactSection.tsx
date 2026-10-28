@@ -1,9 +1,9 @@
 import { useState, type FormEvent, type MouseEvent } from 'react';
-import { createLucideIcon, Mail } from 'lucide-react';
 import { useInView } from '../ExperienceDiagram/useInView.ts';
 import './ContactSection.css';
 
 // Reusable contact section — Home + the ProjectLayout end prompt share it.
+// One text link list (LinkedIn / Instagram / Email) at every width.
 // Structure first, tokens later: neutral greys, page gutters, no type styling.
 //
 // Addresses ported from v1 (contact.jsx). Submit path mirrors v1 too:
@@ -20,29 +20,6 @@ export const DEFAULT_CONTACT: ContactDetails = {
   linkedinUrl: 'https://linkedin.com/in/noahhett',
   instagramUrl: 'https://ig.me/m/nh_portfolio_',
 };
-
-// Brand glyphs in the lucide stroke style. lucide-react dropped brand
-// icons, so these are recreated here from the feather originals (same
-// 24×24 stroke language as Mail, accepts the same `size` prop).
-const LinkedinIcon = createLucideIcon('Linkedin', [
-  [
-    'path',
-    {
-      d: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z',
-    },
-  ],
-  ['rect', { x: '2', y: '9', width: '4', height: '12' }],
-  ['circle', { cx: '4', cy: '4', r: '2' }],
-]);
-
-const InstagramIcon = createLucideIcon('Instagram', [
-  ['rect', { x: '2', y: '2', width: '20', height: '20', rx: '5', ry: '5' }],
-  [
-    'path',
-    { d: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z' },
-  ],
-  ['line', { x1: '17.5', y1: '6.5', x2: '17.51', y2: '6.5' }],
-]);
 
 // "Mobile" for the mail action = coarse pointer or narrow viewport —
 // matches the 600px breakpoint the mail row CSS pivots on.
@@ -155,30 +132,19 @@ export default function ContactSection({
             >
               <span className="contact-link-label">Email</span>
               <span className="contact-link-hint" aria-hidden="true">
-                {copied ? 'Copied ✓' : 'Copy'}
+                {/* Desktop copies, mobile opens the mail app (isMobileMail) —
+                    the hint swaps with the same breakpoint in CSS. */}
+                {copied ? (
+                  'Copied ✓'
+                ) : (
+                  <>
+                    <span className="hint-copy">Copy</span>
+                    <span className="hint-open">↗</span>
+                  </>
+                )}
               </span>
             </a>
             </span>
-          </li>
-        </ul>
-
-        {/* Symbol row for small screens — same three links as icons (v1 did
-            this too). Shown ≤600px; the text list above is desktop-only. */}
-        <ul className="contact-links contact-links--icons" aria-label="Social links">
-          <li>
-            <a href={contact.linkedinUrl} target="_blank" rel="noreferrer" aria-label="LinkedIn">
-              <LinkedinIcon size={30} aria-hidden="true" />
-            </a>
-          </li>
-          <li>
-            <a href={contact.instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram">
-              <InstagramIcon size={30} aria-hidden="true" />
-            </a>
-          </li>
-          <li>
-            <a href={`mailto:${contact.email}`} onClick={(e) => void onMailActivate(e)} aria-label="Email">
-              <Mail size={30} aria-hidden="true" />
-            </a>
           </li>
         </ul>
 

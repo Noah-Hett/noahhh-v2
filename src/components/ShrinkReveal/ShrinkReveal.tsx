@@ -3,8 +3,8 @@ import './ShrinkReveal.css';
 
 // ShrinkReveal — skeleton port of experiments/shrink-reveal/index.html.
 // Edge-only mask: the wrapped block keeps its size (no transform, no scale)
-// while a clip-path inset closes gutters in from the sides as its tail
-// exits the viewport. Scroll length and velocity are untouched, so the
+// while a clip-path inset closes gutters in from the sides — and rounds
+// its corners — as its tail exits the viewport. Scroll length and velocity are untouched, so the
 // sticky SiteHeader keeps working (a transform ancestor would break it).
 //
 // Barebones rules followed: direct style mutation (no re-render),
@@ -25,13 +25,14 @@ export default function ShrinkReveal({ children }: { children: ReactNode }) {
       raf = 0;
       const vh = window.innerHeight;
       const rect = el.getBoundingClientRect();
-      // Tail-exit progress: starts while the bottom is still ~0.6 viewports
-      // below the fold and completes once it has travelled to ~10% viewport
-      // height — a ~1.5-viewport runway, linear so it stays gradual right to
-      // the end with no release snap. START is the spacing control: raise it
-      // to trigger earlier / stretch the transition further.
-      const start = vh * 1.6;
-      const end = vh * 0.1;
+      // Tail-exit progress: starts as the bottom edge reaches the fold (so
+      // the whole tail, corners included, is on screen from the first
+      // frame) and completes once it has risen to 40% viewport height — a
+      // 0.6-viewport runway, linear so there is no release snap. START is
+      // the timing control: raise it to trigger earlier; END - START sets
+      // the speed.
+      const start = vh * 1.0;
+      const end = vh * 0.4;
       const p = Math.max(0, Math.min(1, (start - rect.bottom) / (start - end)));
       // Responsive gutter: experiment's fixed 58px would eat ~30% of a
       // 390px viewport, so cap at ~6vw on narrow screens. Above the 1512px
@@ -43,10 +44,14 @@ export default function ShrinkReveal({ children }: { children: ReactNode }) {
           ? Math.min(120, window.innerWidth * 0.045)
           : Math.min(58, window.innerWidth * 0.06);
       const g = (p * max).toFixed(1);
+      // Corners round in step with the gutters, so the block lifts off the
+      // page as a card instead of ending on a hard square cut.
+      const maxR = Math.min(64, Math.max(20, window.innerWidth * 0.035));
+      const r = (p * maxR).toFixed(1);
       // Each clip-path write repaints this whole block, so only write when
       // the value actually changes: outside the runway p parks at 0/1 and
       // the string goes quiet instead of repainting on every scroll event.
-      const v = `inset(0px ${g}px 0px ${g}px)`;
+      const v = `inset(0px ${g}px 0px ${g}px round ${r}px)`;
       if (v !== last) {
         last = v;
         el.style.clipPath = v;

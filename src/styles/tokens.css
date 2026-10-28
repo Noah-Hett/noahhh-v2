@@ -30,6 +30,9 @@
   --surface-wash: #ffffff;
   --text-primary: var(--clay-ink);
   --text-secondary: #000000;
+  /* Reduced-contrast accent (LONDON, WORK title): the primary ink at half
+     strength, so it follows light/dark automatically — no new hex. */
+  --text-muted: color-mix(in srgb, var(--text-primary) 50%, transparent);
 
   /* Artwork ink — line-art SVG + DotGrid dots. White on light, clay on
      dark: always a whisper above the page canvas in both modes. */
@@ -65,7 +68,7 @@
      stepping up to 30px at the 1512 canvas (Figma body 30 vs header 20).
      The 1.5x lives as the desktop end-state, not a live ratio, so UI size
      never moves. Body Blocks adopt this token in Phase 2. */
-  --proj-copy: clamp(1rem, 1.984vw, 1.875rem);
+  --proj-copy: clamp(1rem, 1.72vw, 1.625rem);
 
   /* Project copy measure: readable line length for body text. 610px from
      Figma body columns (609–639) — applied as 43.2% of the content width

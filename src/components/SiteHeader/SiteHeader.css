@@ -30,11 +30,22 @@
   margin-right: auto;
 }
 
+/* Pill surface: page canvas by default, wash (white / black in dark)
+   while a [data-header-wash] section sits under the bar — see onWash in
+   SiteHeader.tsx. One var feeds the links and the menu toggle. */
+.site-header {
+  --nav-pill: var(--surface-page);
+}
+
+.site-header.on-wash {
+  --nav-pill: var(--surface-wash);
+}
+
 .site-nav-list a {
   color: inherit;
   /* plain rectangle under the text so each link floats readable over
      scrolled content — unstyled placeholder until style handoff */
-  background: var(--surface-page);
+  background: var(--nav-pill);
   padding: 4px 10px;
 }
 
@@ -60,10 +71,15 @@
   margin-bottom: -0.08em;
 }
 
+/* Background fade rides the same transition list (and so the same
+   per-link stagger delays) as the slide: the wash/page pill swap ripples
+   across the bar in the header's own wave. */
 .nav-mask > a {
   display: inline-block;
   transform: translateY(0);
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease;
 }
 
 /* The toggle rides the same mask language so it hides on scroll with the
@@ -75,7 +91,9 @@
      ~5px taller than the link masks. */
   display: flex;
   transform: translateY(0);
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease;
 }
 
 .site-header.away .nav-mask > .menu-toggle {
@@ -189,7 +207,7 @@
   align-items: center;
   justify-content: center;
   padding: 4px 10px;
-  background: var(--surface-page);
+  background: var(--nav-pill);
   border: 0;
   cursor: pointer;
   color: inherit;

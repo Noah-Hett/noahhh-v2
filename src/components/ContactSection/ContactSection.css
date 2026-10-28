@@ -2,9 +2,8 @@
    Structure-first: neutral greys, page gutters, no type tokens.
    Desktop: 50/50 split — links left (bottom-aligned with the form),
    form right with name/email side-by-side over a full-width
-   message box. Mobile (≤600px): form first, links as a symbol row after.
-   DOM stays links-then-form so screen-reader and visual order agree
-   on desktop.
+   message box. Mobile (≤600px): one column in DOM order — display
+   heading, the link rows, then the form with muted labels.
    Fit budget: section + SiteFooter must share one viewport. Footer is
    40vh desktop / 30vh mobile, so this section stays compact — slim
    padding, tight gaps, 4-row message box. */
@@ -22,7 +21,9 @@
   justify-content: flex-end;
 }
 
-.contact-heading {
+/* .contact scope: the heading is also an .rv mask, and `.contact .rv`
+   (negative bottom margin for the descender pad) would otherwise win. */
+.contact .contact-heading {
   margin: 0 0 32px;
   font: inherit;
   color: inherit;
@@ -94,9 +95,20 @@
   white-space: nowrap;
 }
 
-/* Symbol row — small screens only (display:none on desktop). */
-.contact-links--icons {
+/* Email hint: "Copy" where the click copies, ↗ where it opens the mail
+   app — same condition as isMobileMail() in the component. */
+.hint-open {
   display: none;
+}
+
+@media (max-width: 600px), (pointer: coarse) {
+  .hint-copy {
+    display: none;
+  }
+
+  .hint-open {
+    display: inline;
+  }
 }
 
 /* Entrance: the site's masked rise verbatim (FeaturedCard / footer /
@@ -224,53 +236,43 @@
   color: inherit;
 }
 
-/* Mobile: single column, form first, symbol links after. Name/email
-   stack — side-by-side would be cramped at 390px. */
+/* Mobile: single column in DOM order. Hierarchy comes from a display-
+   sized heading, full-width link rows, then the form under muted labels
+   so the inputs (not the labels) carry the weight. */
 @media (max-width: 600px) {
-.contact {
-  /* Anchor target for the header Contact link — sticky header offset. */
-  scroll-margin-top: 40px;
+  .contact {
+    /* Anchor target for the header Contact link — sticky header offset. */
+    scroll-margin-top: 40px;
     padding: 40px 20px 32px;
     /* Same buffer contract against the 30vh mobile footer. */
     min-height: calc(100vh - 30vh);
   }
 
-  .contact-heading {
-    margin-bottom: 24px;
+  .contact .contact-heading {
+    margin-bottom: 28px;
+    font-size: 2.75rem;
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
   }
 
   .contact-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+    gap: 48px;
+  }
+
+  .contact-links--text {
+    align-self: start;
+    gap: 16px;
   }
 
   .contact-form {
     grid-template-columns: minmax(0, 1fr);
-    order: -1;
-  }
-
-  .contact-links--text {
-    display: none;
-  }
-
-  .contact-links--icons {
-    display: flex;
     gap: 20px;
-    align-items: center;
   }
 
-  .contact-links--icons a {
-    color: inherit;
-    display: inline-flex;
-  }
-
-  .contact-links--icons a:hover {
-    color: #737373;
-  }
-
-  .contact-links--icons a:focus-visible {
-    outline: 2px solid #737373;
-    outline-offset: 4px;
+  .contact-field label {
+    color: var(--text-muted);
   }
 }
 

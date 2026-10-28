@@ -280,10 +280,10 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="transition-band" aria-hidden="true" />
+      <div className="transition-band" aria-hidden="true" data-header-wash="lower-half" />
 
       <ShrinkReveal>
-          <section className="work" aria-label="Selected projects" ref={workRef}>
+          <section className="work" aria-label="Selected projects" ref={workRef} data-header-wash>
             <h2>WORK</h2>
             <div className="work-list">
               {selected.map((p) => (
@@ -315,7 +315,7 @@ export default function Home() {
                 </FeaturedCard>
               ))}
             </div>
-            <ViewMore items={COLLAGE} total={projects.length} zoneRef={workRef} />
+            <ViewMore items={COLLAGE} zoneRef={workRef} />
           </section>
         </ShrinkReveal>
 

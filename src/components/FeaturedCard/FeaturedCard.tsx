@@ -238,9 +238,11 @@ export function FeaturedCard({
           ? ({
               '--card-light': colors.light,
               '--card-dark': colors.dark,
-              '--track-accent': colors.dark,
+              // --track-accent / --track-bg come from FeaturedCard.css so
+              // they can flip under prefers-color-scheme: dark — an inline
+              // value here would pin the light-mode pair in both themes.
             } as CSSProperties)
-          : ({ background: bg, '--track-accent': accent } as CSSProperties)
+          : ({ background: bg, '--track-accent': accent, '--track-bg': bg } as CSSProperties)
       }
     >
       <div className="fc-inner">

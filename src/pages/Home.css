@@ -49,6 +49,9 @@
 .hero-copy {
   grid-column: 1;
   max-width: 357px;
+  /* Same project body token as the project pages: 16px on phones, 30px at
+     the 1512 canvas. */
+  font-size: var(--proj-copy);
 }
 
 .hero-art {
@@ -165,6 +168,10 @@
   margin-top: 1em;
 }
 
+.hero-copy .rv-london {
+  color: var(--text-muted);
+}
+
 /* Adaptable word wave: the lead sentence is split into per-word masks in
    Home.tsx (each word rides its own overflow-hidden mask, natural wrapping
    still forms the visual lines). Per-word delay is set inline as
@@ -255,14 +262,20 @@
 .work {
   width: 100vw;
   margin: 0 0 0 calc(50% - 50vw);
-  padding: 120px max(50px, calc((100vw - 1512px) / 2 + 50px)) 160px;
+  padding: 72px max(50px, calc((100vw - 1512px) / 2 + 50px)) 72px;
   background: var(--surface-wash);
 }
 
+/* WORK title: display-sized but tight (line-height 0.8, trimmed padding
+   above) so the word gets big without stretching the band much. */
 .work h2 {
-  margin: 0 0 48px;
+  margin: 0 0 40px;
   font: inherit;
-  color: inherit;
+  font-size: clamp(4rem, 12vw, 11rem);
+  font-weight: 425;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: var(--text-muted);
 }
 
 .work-list {
@@ -295,7 +308,7 @@
    experience heading. Targets only that junction — later sections keep
    the base rhythm. */
 .home > .shrink-reveal + .home-section {
-  padding-top: clamp(200px, 24vh, 310px);
+  padding-top: clamp(120px, 16vh, 200px);
 }
 
 .home-section > :not(.dot-grid) {
