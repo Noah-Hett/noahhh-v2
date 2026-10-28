@@ -82,7 +82,7 @@
   transform: translateY(-120%);
 }
 
-/* stagger: exit runs brand → Archive, return runs Archive → brand.
+/* stagger: exit runs brand → Contact, return runs Contact → brand.
    Transition delay is read from the after-change style, so base delays
    govern the return and .away delays govern the exit. Explicit delay
    classes (not nth-child) so nav reorder can't silently break the wave. */
@@ -131,7 +131,7 @@
 }
 
 /* Fresh-load entrance: same mask-rise language as the scroll return, but
-   as a one-shot *animation* (brand → Archive) so the scroll-hide
+   as a one-shot *animation* (brand → Contact) so the scroll-hide
    *transition* delays above are never disturbed. It lands LAST in the home
    hero cascade (portrait → art → copy first): held until the copy wave is
    in, base delay 2.2s, last link settles ~3.7s. Class drops off at 3.8s
@@ -391,7 +391,7 @@
     transition-delay: 0s;
   }
 
-  /* Entrance: slow expo rise, staggered brand → Archive, starting as the
+  /* Entrance: slow expo rise, staggered brand → Contact, starting as the
      sheet lands (~0.3s in). */
   .site-header.menu-open .overlay-mask > a {
     transform: translateY(0);

@@ -7,7 +7,6 @@ import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { ExperienceDiagram } from '../components/ExperienceDiagram/ExperienceDiagram.tsx';
 import { useInView } from '../components/ExperienceDiagram/useInView.ts';
 import { DotGrid } from '../components/DotGrid/DotGrid.tsx';
-import { ViewMore, type ViewMoreItem } from '../components/ViewMore/ViewMore.tsx';
 import ShrinkReveal from '../components/ShrinkReveal/ShrinkReveal.tsx';
 import ContactSection from '../components/ContactSection/ContactSection.tsx';
 import HeroArt from '../components/HeroArt/HeroArt.tsx';
@@ -15,18 +14,6 @@ import './Home.css';
 
 // DotGrid ink resolves live from the --artwork token inside the component
 // (white on light, clay on dark) — no colour props needed here.
-
-// TEMP placeholders for the ViewMore dock until real non-selected projects
-// land in the manifest. Slugs 404 (NotFound) until their pages exist.
-const MORE_PLACEHOLDERS: ViewMoreItem[] = [  { slug: 'project-4', label: 'P4' },
-  { slug: 'project-5', label: 'P5' },
-  { slug: 'project-6', label: 'P6' },
-  { slug: 'project-7', label: 'P7' },
-  { slug: 'project-8', label: 'P8' },
-  { slug: 'project-9', label: 'P9' },
-  { slug: 'project-10', label: 'P10' },
-  { slug: 'project-11', label: 'P11' },
-];
 
 // Fresh-document hero intro: plays once per document lifetime (refresh
 // replays; client-side back-nav to / skips and lets the PageTransition mask
@@ -72,6 +59,14 @@ const SUMMARY_SKILLS: string[] = [
   'Laser Cutting',
 ];
 
+// CV + portfolio PDFs under the Experience copy. Kept deliberately small:
+// the main path through the site is the Project pages, not these files.
+// Hosted on R2 like the Project PDFs (ADR-0003), opening in a new tab.
+const EXPERIENCE_DOCS: { label: string; href: string }[] = [
+  { label: 'CV', href: 'https://media.noahhh.com/docs/noah-hett-cv.pdf' },
+  { label: 'Portfolio', href: 'https://media.noahhh.com/docs/noah-hett-portfolio.pdf' },
+];
+
 function projectTitleStyle(p: { font: { family: string; fallback?: string } }): CSSProperties {
   return { fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}` };
 }
@@ -101,7 +96,6 @@ export default function Home() {
   // each assembly whole and can never disturb the locked reveal edge.
   const artRef = useRef<SVGSVGElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
-  const workRef = useRef<HTMLElement | null>(null);
   const { ref: summaryCopyRef, inView: summaryCopyIn } = useInView<HTMLDivElement>(0.4);
 
   // Intro flip: pending renders the hidden states; the double rAF guarantees
@@ -238,7 +232,7 @@ export default function Home() {
       <div className="transition-band" aria-hidden="true" />
 
       <ShrinkReveal>
-          <section className="work" aria-label="Selected projects" ref={workRef}>
+          <section className="work" aria-label="Selected projects">
             <h2>WORK</h2>
             <div className="work-list">
               {selected.map((p) => (
@@ -267,7 +261,6 @@ export default function Home() {
                 </FeaturedCard>
               ))}
             </div>
-            <ViewMore items={MORE_PLACEHOLDERS} zoneRef={workRef} />
           </section>
         </ShrinkReveal>
 
@@ -303,6 +296,20 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="rv rv-d4">
+                <div className="rv-inner">
+                  <ul className="exp-docs">
+                    {EXPERIENCE_DOCS.map((d) => (
+                      <li key={d.label}>
+                        <a href={d.href} target="_blank" rel="noreferrer">
+                          {d.label}
+                          <span className="sr-only"> (PDF, opens in new tab)</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>

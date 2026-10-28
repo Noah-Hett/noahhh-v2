@@ -9,20 +9,16 @@ import Home from './pages/Home.tsx';
 
 // Route-level splitting: everything below the fold ships on demand.
 // Home is eager (LCP); the rest lazy so initial JS stays small.
-const About = lazy(() => import('./pages/About.tsx'));
 const Projects = lazy(() => import('./pages/Projects.tsx'));
 const ProjectPage = lazy(() => import('./pages/ProjectPage.tsx'));
-const Archive = lazy(() => import('./pages/Archive.tsx'));
 const NotFound = lazy(() => import('./pages/NotFound.tsx'));
 
 // Intent prefetch map. Specifiers match the lazy() calls above exactly so
 // hover intent warms the same chunk the route will render — the transition
 // cover duration becomes the loading budget (see PageTransition).
 export function preloadForPathname(pathname: string): Promise<unknown> | null {
-  if (pathname === '/about') return import('./pages/About.tsx');
   if (pathname === '/projects') return import('./pages/Projects.tsx');
   if (pathname.startsWith('/project/')) return import('./pages/ProjectPage.tsx');
-  if (pathname === '/archive') return import('./pages/Archive.tsx');
   if (pathname === '/') return null;
   return import('./pages/NotFound.tsx');
 }
@@ -123,10 +119,8 @@ function Shell() {
             <Suspense fallback={<p>Loading…</p>}>
               <Routes location={displayLocation}>
                 <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/project/:slug" element={<ProjectRoute />} />
-                <Route path="/archive" element={<Archive />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

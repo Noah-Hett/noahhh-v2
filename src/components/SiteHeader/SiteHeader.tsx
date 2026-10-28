@@ -239,17 +239,11 @@ export default function SiteHeader() {
           <li className="nav-mask nav-d1 brand">
             <NavLink to="/" onClick={onBrand}>noahhh</NavLink>
           </li>
-          <li className="nav-mask hide-mobile nav-d2">
-            <NavLink to="/about">About</NavLink>
-          </li>
-          <li className="nav-mask nav-d3">
+          <li className="nav-mask nav-d2">
             <NavLink to="/projects">All work</NavLink>
           </li>
-          <li className="nav-mask hide-mobile nav-d4">
+          <li className="nav-mask hide-mobile nav-d3">
             <a href="/#contact" onClick={onContact}>Contact</a>
-          </li>
-          <li className="nav-mask hide-mobile nav-d5">
-            <NavLink to="/archive">Archive</NavLink>
           </li>
           <li className="nav-mask nav-toggle-item nav-d6">
             <button
@@ -280,16 +274,10 @@ export default function SiteHeader() {
               <NavLink ref={firstOverlayLinkRef} to="/" onClick={onBrand}>noahhh</NavLink>
             </li>
             <li className="overlay-mask od-2">
-              <NavLink to="/about" onClick={closeMenu}>About</NavLink>
-            </li>
-            <li className="overlay-mask od-3">
               <NavLink to="/projects" onClick={closeMenu}>All work</NavLink>
             </li>
-            <li className="overlay-mask od-4">
+            <li className="overlay-mask od-3">
               <a href="/#contact" onClick={onContact}>Contact</a>
-            </li>
-            <li className="overlay-mask od-5">
-              <NavLink to="/archive" onClick={closeMenu}>Archive</NavLink>
             </li>
           </ul>
         </nav>

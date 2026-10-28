@@ -381,6 +381,44 @@
   margin: 0;
 }
 
+/* CV + portfolio: two equal outlined buttons splitting the copy column,
+   held well clear of the skills strip so they read as their own row. */
+.exp-docs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  list-style: none;
+  margin: 3rem 0 0;
+  padding: 0;
+}
+
+.exp-docs a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  color: inherit;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  padding: 14px 16px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.exp-docs a::after {
+  content: '↗';
+}
+
+.exp-docs a:hover {
+  background: var(--text-primary);
+  color: var(--surface-page);
+}
+
+.exp-docs a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .exp-copy .rv-inner {
     transform: none;
