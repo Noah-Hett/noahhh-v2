@@ -11,6 +11,23 @@
          Keep og:description and twitter:description in sync with it. -->
     <meta name="description" content="Noah Hett is a design engineer in London, obsessed with visual comms and tangible interfaces that make complex systems legible." />
 
+    <!-- Found before the JS runs: the body face (avoids a swap reflow in
+         the hero intro) and, on Home only, the LCP portrait. Keep the
+         portrait srcset/sizes in sync with Home.tsx. -->
+    <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      if (location.pathname === '/') {
+        var l = document.createElement('link');
+        l.rel = 'preload';
+        l.as = 'image';
+        l.type = 'image/avif';
+        l.setAttribute('imagesrcset', '/portrait/portrait-800.avif 800w, /portrait/portrait-1600.avif 1600w');
+        l.setAttribute('imagesizes', '(max-width: 600px) 284px, (max-width: 1024px) 466px, 564px');
+        l.setAttribute('fetchpriority', 'high');
+        document.head.appendChild(l);
+      }
+    </script>
+
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import './FeaturedCard.css';
 import {
   fullPoints,
@@ -20,9 +20,9 @@ export type FeaturedCardMedia = {
   /** Responsive variants (`"src 800w, …"`); omitted for single-file covers. */
   srcSet?: string;
   sizes?: string;
-  /** Video only: seconds skipped at the start / cut from the end of each
-      loop, so a card can play an excerpt of the full hero cut. */
-  trim?: { start: number; end: number };
+  /** Video only: lighter encode + poster used below 1024px viewports. */
+  srcMobile?: string;
+  thumbMobile?: string;
 };
 
 export type FeaturedCardProps = {
@@ -82,6 +82,12 @@ export function FeaturedCard({
     (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData === true;
   // Save-data visitors never autoplay video: poster image only.
   const isVideo = media.type === 'video' && !saveData;
+  // Picked once per mount: a resize across 1024px keeps the file it has.
+  const [wide] = useState(
+    () => typeof window === 'undefined' || window.matchMedia('(min-width: 1024px)').matches,
+  );
+  const videoSrc = !wide && media.srcMobile ? media.srcMobile : media.src;
+  const poster = !wide && media.thumbMobile ? media.thumbMobile : media.thumb;
   const trackRef = useRef<HTMLDivElement>(null);
   const clipRef = useRef<HTMLDivElement>(null);
 
@@ -198,21 +204,34 @@ export function FeaturedCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Trimmed loop: native `loop` always restarts at 0, so the excerpt loops
-  // by hand — seek to trim.start on load and whenever playback reaches
-  // duration - trim.end (timeupdate fires ~4x/s, close enough for a muted
-  // ambient loop). Skipped if the clip is too short to trim.
-  const trim = media.trim;
-  const trimmedVideo = (v: HTMLVideoElement): { from: number; to: number } | null => {
-    if (!trim || !Number.isFinite(v.duration)) return null;
-    const to = v.duration - trim.end;
-    return to - trim.start > 1 ? { from: trim.start, to } : null;
-  };
-  const restartTrim = (v: HTMLVideoElement): void => {
-    const t = trimmedVideo(v);
-    v.currentTime = t ? t.from : 0;
-    v.play().catch(() => undefined);
-  };
+  // Lazy video: no src (so no download) until the card is within a
+  // screen of the viewport, then it plays only while on screen and pauses
+  // when it leaves. autoPlay is deliberately absent — it overrides
+  // preload="none" and pulls the whole file at page load. Reduced-motion
+  // visitors keep the poster.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || prefersReduced || !('IntersectionObserver' in window)) return;
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        v.src = videoSrc;
+        near.disconnect();
+      },
+      { rootMargin: '100% 0px' },
+    );
+    const onScreen = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) v.play().catch(() => undefined);
+      else v.pause();
+    });
+    near.observe(v);
+    onScreen.observe(v);
+    return () => {
+      near.disconnect();
+      onScreen.disconnect();
+    };
+  }, [videoSrc, prefersReduced]);
 
   const copyRef = useRef<HTMLDivElement>(null);
 
@@ -272,7 +291,7 @@ export function FeaturedCard({
             style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', willChange: 'clip-path' }}
           >
             <img
-              src={isVideo ? media.thumb || media.src : media.src}
+              src={isVideo ? poster || media.src : media.src}
               srcSet={isVideo ? undefined : media.srcSet}
               sizes={isVideo ? undefined : media.sizes}
               alt={media.alt || title}
@@ -281,23 +300,13 @@ export function FeaturedCard({
             />
             {isVideo && (
               <video
-                src={trim ? `${media.src}#t=${trim.start}` : media.src}
+                ref={videoRef}
+                poster={poster}
                 muted
-                loop={!trim}
+                loop
                 playsInline
-                autoPlay
                 preload="none"
-                onLoadedMetadata={(e) => {
-                  const t = trimmedVideo(e.currentTarget);
-                  if (t && e.currentTarget.currentTime < t.from) e.currentTarget.currentTime = t.from;
-                }}
-                onTimeUpdate={(e) => {
-                  const t = trimmedVideo(e.currentTarget);
-                  if (t && e.currentTarget.currentTime >= t.to) restartTrim(e.currentTarget);
-                }}
-                onEnded={(e) => {
-                  if (trim) restartTrim(e.currentTarget);
-                }}
+                aria-label={media.alt || title}
                 onError={(e) => {
                   const v = e.currentTarget;
                   v.style.display = 'none';

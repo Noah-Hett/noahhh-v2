@@ -210,11 +210,14 @@ export default function Projects() {
   // Home Selected cards) — the faces load with this page.
   useProjectFonts(projects);
   const motionOK = useMotionSafeVideo();
-  const [view, setView] = useState<'gallery' | 'list'>(() =>
-    typeof window !== 'undefined' && window.localStorage.getItem(VIEW_KEY) === 'list'
-      ? 'list'
-      : 'gallery',
-  );
+  const [view, setView] = useState<'gallery' | 'list'>(() => {
+    try {
+      return window.localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'gallery';
+    } catch {
+      // Storage blocked (private mode, strict settings): default view.
+      return 'gallery';
+    }
+  });
   const pick = (next: 'gallery' | 'list'): void => {
     setView(next);
     try {

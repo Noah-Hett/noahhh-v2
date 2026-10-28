@@ -22,7 +22,7 @@ type FontFile = { file: string; label: string; color: string };
 const FILES: FontFile[] = [
   { file: 'G2Hyper-VisibleSlanted.ttf', label: 'G2 Hyper', color: '#a3a3a3' },
   { file: 'Geist-Regular.ttf', label: 'Geist', color: '#a3a3a3' },
-  { file: 'Syne Mono Regular.otf', label: 'Syne Mono', color: '#a3a3a3' },
+  { file: 'projects/gizmophone/SyneMono-Regular.otf', label: 'Syne Mono', color: '#a3a3a3' },
   { file: 'GeistMono-Regular.ttf', label: 'Geist Mono', color: '#a3a3a3' },
 ];
 
@@ -88,7 +88,7 @@ export default function SiteFooter() {
         const opentypePromise = import('opentype.js');
         const settled = await Promise.allSettled(
           FILES.map(async ({ file, label, color }) => {
-            const res = await fetch(`${base}fonts/${encodeURIComponent(file)}`);
+            const res = await fetch(`${base}fonts/${file.split('/').map(encodeURIComponent).join('/')}`);
             if (!res.ok) throw new Error(`${file}: HTTP ${res.status}`);
             return { buf: await res.arrayBuffer(), label, color };
           }),

@@ -66,6 +66,11 @@ export type ProjectCover =
       kind: 'video';
       src: string;
       poster: string;
+      /** Home card loop: the hero cut minus its first 2s and last 10s,
+          silent, H.264 High. `src` is 1080p for wide screens, `srcMobile`
+          720p for phones/tablets, each with a first-frame WebP poster.
+          Falls back to the hero `src`/`poster`. */
+      card?: { src: string; srcMobile: string; poster: string; posterMobile: string };
       alt: string;
       width: number;
       height: number;
@@ -156,6 +161,12 @@ const gizmophone: Project = {
   cover: {
     kind: 'video',
     src: 'https://media.noahhh.com/gizmophone/gizmophone.mp4',
+    card: {
+      src: 'https://media.noahhh.com/gizmophone/gizmophone-card-1080.mp4',
+      srcMobile: 'https://media.noahhh.com/gizmophone/gizmophone-card-720.mp4',
+      poster: '/posters/gizmophone/gizmophone-card-poster-1600.webp',
+      posterMobile: '/posters/gizmophone/gizmophone-card-poster-800.webp',
+    },
     poster: '/posters/gizmophone/gizmophone-poster-800.avif',
     alt: 'GIZMOPHONE instrument in use',
     width: 1920,
@@ -302,6 +313,12 @@ const buskRadio: Project = {
   cover: {
     kind: 'video',
     src: 'https://media.noahhh.com/busk-radio/buskradio.mp4',
+    card: {
+      src: 'https://media.noahhh.com/busk-radio/buskradio-card-1080.mp4',
+      srcMobile: 'https://media.noahhh.com/busk-radio/buskradio-card-720.mp4',
+      poster: '/posters/busk-radio/buskradio-card-poster-1600.webp',
+      posterMobile: '/posters/busk-radio/buskradio-card-poster-800.webp',
+    },
     poster: '/posters/busk-radio/buskradio-poster-800.avif',
     alt: 'Busk Radio advert and demonstration',
     width: 1920,
