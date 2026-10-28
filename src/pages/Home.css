@@ -11,8 +11,8 @@
 }
 
 .home {
-  max-width: 1512px;
   margin: 0 auto;
+  font-size: var(--ui-copy);
 }
 
 /* Hero: intro copy (narrow) / line-art (center) / portrait (right).
@@ -27,11 +27,11 @@
      pulled up under the transparent site header so the DotGrid spans both.
      Bottom-anchored flex on desktop: copy ends ~60px above the fold,
      photo bleeds ~70px below it (Figma 95:206/236/257).
-     Gutters track the container: 50 left / 60 right (portrait right edge
-     = viewport - 60, copy left = viewport + 50). */
+     Gutters: --gutter left / --gutter-wide right (50 / 60 at 1512, growing
+     with the viewport past it). */
   width: 100vw;
   margin: calc(-1 * var(--header-overlap)) 0 0 calc(50% - 50vw);
-  padding: 110px max(60px, calc((100vw - 1512px) / 2 + 60px)) 60px max(50px, calc((100vw - 1512px) / 2 + 50px));
+  padding: clamp(110px, 7.275vw, 170px) var(--gutter-wide) clamp(60px, 3.968vw, 90px) var(--gutter);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -41,14 +41,18 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 357px) minmax(0, 1fr) minmax(0, 564px);
-  gap: 24px;
+  /* 357 / 564 at 1512, scaling with the viewport past it. */
+  grid-template-columns:
+    minmax(0, clamp(357px, 23.61vw, 560px))
+    minmax(0, 1fr)
+    minmax(0, clamp(564px, 37.3vw, 900px));
+  gap: clamp(24px, 1.587vw, 40px);
   align-items: end;
 }
 
 .hero-copy {
   grid-column: 1;
-  max-width: 357px;
+  max-width: clamp(357px, 23.61vw, 560px);
   /* Same project body token as the project pages: 16px on phones, 30px at
      the 1512 canvas. */
   font-size: var(--proj-copy);
@@ -69,9 +73,9 @@
      all-black = no-op). One transition on the var — firm cubic, no settle
      tail. Nothing ever clips the art: at rest the mask is identity. */
   position: absolute;
-  right: calc(max(60px, calc((100vw - 1512px) / 2 + 60px)) + 230px);
+  right: calc(var(--gutter-wide) + clamp(230px, 15.21vw, 360px));
   top: 24%;
-  width: 670px;
+  width: clamp(670px, 44.31vw, 1050px);
   aspect-ratio: 669.801 / 260.194;
   /* Author height beats the SVG's height attribute (presentational hint):
      without this the attribute pins a definite 260px height, the
@@ -258,18 +262,18 @@
 }
 
 /* WORK: full-bleed surface-wash block (heading + 3 Selected bands).
-   Gutters track the container: 50px each side at ≥1512, matching .page. */
+   Gutters match .page. */
 .work {
   width: 100vw;
   margin: 0 0 0 calc(50% - 50vw);
-  padding: 72px max(50px, calc((100vw - 1512px) / 2 + 50px)) 72px;
+  padding: clamp(72px, 4.762vw, 110px) var(--gutter);
   background: var(--surface-wash);
 }
 
 /* WORK title: display-sized but tight (line-height 0.8, trimmed padding
    above) so the word gets big without stretching the band much. */
 .work h2 {
-  margin: 0 0 40px;
+  margin: 0 0 clamp(40px, 2.646vw, 64px);
   font: inherit;
   font-size: clamp(4rem, 12vw, 11rem);
   font-weight: 425;
@@ -280,7 +284,7 @@
 
 .work-list {
   display: grid;
-  gap: 72px;
+  gap: clamp(72px, 4.762vw, 110px);
 }
 
 /* View-all lives in the ViewMore dock (panel tile + floater pill). */
@@ -298,7 +302,7 @@
    so at least ~1 viewport of content must follow it). */
 .home-section {
   position: relative;
-  padding: 180px 50px 80px;
+  padding: clamp(180px, 11.905vw, 270px) var(--gutter) clamp(80px, 5.291vw, 120px);
   min-height: 100vh;
 }
 
@@ -321,7 +325,7 @@
    adapted to v2 gutters): diagram left, copy right, stacks ≤1024px. */
 .exp-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(15rem, 22rem);
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, clamp(22rem, 23.28vw, 32rem));
   align-items: center;
   gap: clamp(2rem, 4vw, 4rem);
 }
@@ -340,7 +344,7 @@
    rise, 1s expo-out, 80ms staggers, .in fires once from useInView.
    Type stays unstyled (font/color inherit) until style handoff. */
 .exp-copy {
-  max-width: 34rem;
+  max-width: clamp(34rem, 35.98vw, 50rem);
 }
 
 .exp-copy .rv {

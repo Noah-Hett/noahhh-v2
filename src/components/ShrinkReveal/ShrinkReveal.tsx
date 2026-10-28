@@ -35,14 +35,11 @@ export default function ShrinkReveal({ children }: { children: ReactNode }) {
       const end = vh * 0.4;
       const p = Math.max(0, Math.min(1, (start - rect.bottom) / (start - end)));
       // Responsive gutter: experiment's fixed 58px would eat ~30% of a
-      // 390px viewport, so cap at ~6vw on narrow screens. Above the 1512px
-      // design canvas the 58px edge reads proportionally thinner, so scale
-      // it up there (XL layer) — at/below 1512px this branch never runs and
-      // behaviour is byte-identical.
-      const max =
-        window.innerWidth > 1512
-          ? Math.min(120, window.innerWidth * 0.045)
-          : Math.min(58, window.innerWidth * 0.06);
+      // 390px viewport, so cap at ~6vw on narrow screens. Past the 1512px
+      // design canvas it keeps the 58/1512 proportion (capped at 120), so
+      // there is no step at the boundary.
+      const w = window.innerWidth;
+      const max = Math.min(120, Math.max(Math.min(58, w * 0.06), (w * 58) / 1512));
       const g = (p * max).toFixed(1);
       // Corners round in step with the gutters, so the block lifts off the
       // page as a card instead of ending on a hard square cut.

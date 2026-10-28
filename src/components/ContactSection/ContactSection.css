@@ -11,7 +11,7 @@
 .contact {
   /* Generous run into the footer — deliberately more than the 50px side
      margins so the section lands before the footer reads as a beat. */
-  padding: 64px 50px 72px;
+  padding: clamp(64px, 4.233vw, 96px) var(--gutter) clamp(72px, 4.762vw, 110px);
   /* Bottom-of-page buffer: with the 40vh footer this section is always
      ≥60vh tall and bottom-pinned, so at max scroll the viewport holds
      only contact + footer — earlier content scrolls fully out of view. */
@@ -24,7 +24,7 @@
 /* .contact scope: the heading is also an .rv mask, and `.contact .rv`
    (negative bottom margin for the descender pad) would otherwise win. */
 .contact .contact-heading {
-  margin: 0 0 32px;
+  margin: 0 0 clamp(32px, 2.116vw, 48px);
   font: inherit;
   color: inherit;
 }
@@ -50,7 +50,7 @@
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 48px 120px;
+  gap: clamp(48px, 3.175vw, 72px) clamp(120px, 7.937vw, 180px);
   align-items: start;
 }
 

@@ -5,13 +5,13 @@
 .dock-panel {
   background: transparent;
   color: var(--text-primary);
-  margin-top: 72px;
+  margin-top: clamp(72px, 4.762vw, 110px);
   padding: clamp(20px, 3vw, 36px) 0;
 }
 
 .dock-grid {
   columns: 4;
-  column-gap: 12px;
+  column-gap: clamp(12px, 0.794vw, 20px);
   /* No grid-level entrance: the thumbs carry their own staggered wipe via
      .in below. (A rise + scale here was tried and cut — it added nothing.) */
 }
@@ -19,7 +19,7 @@
 .dock-cell {
   display: block;
   break-inside: avoid;
-  margin: 0 0 12px;
+  margin: 0 0 clamp(12px, 0.794vw, 20px);
   overflow: hidden;
   color: inherit;
   text-decoration: none;

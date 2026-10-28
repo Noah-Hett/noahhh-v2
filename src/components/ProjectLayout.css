@@ -5,8 +5,17 @@
 
 /* Project pages skip the roomy shared `.page` top padding (built for Home's
    hero pull-under) — the Back button sits ~32px below the header so the
-   title lands near the Figma measure instead of ~110px lower. */
+   title lands near the Figma measure instead of ~110px lower.
+   Width limit: the whole page scales as one composition up to --page-max,
+   then holds and centers. --pvw is a vw that stops growing at that limit;
+   every viewport-scaled value on the page (gutters, title, hero, copy)
+   uses it, so the top and the body grow together and stop together. */
 .page-project {
+  --page-max: 2200px;
+  --pvw: min(1vw, var(--page-max) / 100);
+  --gutter: clamp(50px, calc(3.307 * var(--pvw)), 120px);
+  --proj-copy: clamp(1rem, calc(1.72 * var(--pvw)), 2.75rem);
+  max-width: var(--page-max);
   padding-top: 32px;
 }
 
@@ -16,15 +25,16 @@
   text-wrap: balance;
   /* Phase 1: always centered display title. Family stays per-Project
      (inline style); size is one shared clamp — 200px at the 1512 canvas,
-     flooring at 56px on phones. */
+     flooring at 56px on phones, growing with the page past it. */
   text-align: center;
-  font-size: clamp(3.5rem, 13.23vw, 12.5rem);
+  font-size: max(3.5rem, calc(13.23 * var(--pvw)));
   line-height: 1.1;
   overflow-wrap: break-word;
   margin: 24px 0 0;
 }
 
-/* Phase 1 hero: capped at the Figma 1196 measure, centered, sharp corners.
+/* Phase 1 hero: Figma 1196 measure (84.7% of the 1412 content width at
+   1512), held proportional past it, centered, sharp corners.
    Eager LCP — sizing comes from width/height attrs, never shifts.
    Overlap: the hero rides up over the title's descenders per Figma 236:92/93.
    Figma's 70px linebox overlap includes ~20px of half-leading slack, so the
@@ -32,9 +42,9 @@
    floored at 14px). Later in DOM so it paints above the title;
    DOM/reading order unchanged. */
 .project-hero {
-  margin: calc(-1 * clamp(14px, 3.17vw, 48px)) auto 0;
+  margin: calc(-1 * max(14px, calc(3.17 * var(--pvw)))) auto 0;
   padding: 0;
-  max-width: 1196px;
+  max-width: max(1196px, 84.7%);
 }
 
 .project-hero img,
@@ -59,7 +69,7 @@
 .project-intro {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px 119px;
+  gap: 24px clamp(119px, calc(7.87 * var(--pvw)), 173px);
   align-items: start;
   /* Opening composition: hero leads into the challenge row on the tighter
      lead gear, not the inter-block section rhythm. */

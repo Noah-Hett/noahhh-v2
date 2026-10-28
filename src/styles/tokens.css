@@ -67,14 +67,26 @@
   /* Project body copy: 16px on phones (same as headers/UI — untouched),
      stepping up to 30px at the 1512 canvas (Figma body 30 vs header 20).
      The 1.5x lives as the desktop end-state, not a live ratio, so UI size
-     never moves. Body Blocks adopt this token in Phase 2. */
-  --proj-copy: clamp(1rem, 1.72vw, 1.625rem);
+     never moves. Keeps growing past 1512 (44px near 2550). */
+  --proj-copy: clamp(1rem, 1.72vw, 2.75rem);
 
   /* Project copy measure: readable line length for body text. 610px from
      Figma body columns (609–639) — applied as 43.2% of the content width
      (610/1412) so the proportion holds at every viewport, full width below
      the pair-stacking breakpoint. Pairs consume the same proportion. */
   --proj-copy-measure: 610px;
+
+  /* Layout scale past the 1512 canvas. Nothing is capped by a container
+     width: gutters, UI type and spacing grow with the viewport instead.
+     Every clamp floor is the 1512 design value and its vw rate is
+     floor / 1512, so at and below 1512 they compute to the fixed design
+     values and there is no seam on the way up. */
+  --gutter: clamp(50px, 3.307vw, 120px);
+  --gutter-wide: clamp(60px, 3.968vw, 130px);
+  --ui-copy: clamp(16px, 1.058vw, 23px);
+
+  /* Viewport unit that a capped page can freeze (see .page-project). */
+  --pvw: 1vw;
 }
 
 /* Narrow screens compress the rhythm proportionally — same tokens, same

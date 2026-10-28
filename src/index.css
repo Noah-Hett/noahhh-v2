@@ -9,7 +9,6 @@
 @import 'tailwindcss/utilities.css';
 @import './styles/fonts.css';
 @import './styles/tokens.css';
-@import './styles/xl.css';
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -85,16 +84,16 @@ html[data-project] {
     --text-secondary: var(--proj-light);
   }
 }
-/* Shared page layout: 1512 container, 50px gutters, section rhythm.
+/* Shared page layout: full-width, fluid gutters (50px at 1512), section rhythm.
    Home's hero/work set their own padding; everything else uses .page. */
 .page {
-  max-width: 1512px;
   margin: 0 auto;
-  padding: 110px 50px 80px;
+  padding: clamp(110px, 7.275vw, 160px) var(--gutter) clamp(80px, 5.291vw, 120px);
+  font-size: var(--ui-copy);
 }
 
 .page > * + * {
-  margin-top: 48px;
+  margin-top: clamp(48px, 3.175vw, 72px);
 }
 
 @media (max-width: 900px) {

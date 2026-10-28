@@ -36,7 +36,7 @@
    left-aligned, full width below the pair-stacking breakpoint. */
 .project-body li p {
   margin: 0;
-  max-width: 43.2%;
+  max-width: min(43.2%, 880px);
 }
 
 /* Pair + showcase copy are sized by their tracks, never by this cap. */
@@ -64,8 +64,8 @@
    is untouched — alternation is placement only. Rows center-align. */
 .pair {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(0, 43.2%);
-  column-gap: clamp(48px, 13.23vw, 200px);
+  grid-template-columns: minmax(240px, 1fr) minmax(0, min(43.2%, 880px));
+  column-gap: clamp(48px, calc(13.23 * var(--pvw)), 290px);
   align-items: center;
   /* Visual height cap as a multiple of copy height — bump to taste
      (try 2 or 2.5). Single knob; the rule below consumes it. */
@@ -91,7 +91,7 @@
 }
 
 .pair-flip {
-  grid-template-columns: minmax(0, 43.2%) minmax(240px, 1fr);
+  grid-template-columns: minmax(0, min(43.2%, 880px)) minmax(240px, 1fr);
 }
 
 .pair-flip .pair-copy {
@@ -142,7 +142,7 @@
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: clamp(24px, 4vw, 60px);
+  gap: clamp(24px, calc(4 * var(--pvw)), 88px);
   align-items: end;
 }
 
@@ -182,7 +182,7 @@
 .showcase-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 19%);
-  column-gap: clamp(24px, 3.6vw, 51px);
+  column-gap: clamp(24px, calc(3.6 * var(--pvw)), 51px);
   align-items: start;
 }
 
@@ -206,7 +206,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: clamp(24px, 4vw, 60px);
+  gap: clamp(24px, calc(4 * var(--pvw)), 60px);
   margin-top: var(--proj-space-tight);
 }
 
@@ -215,7 +215,7 @@
      so every drawing renders whole with zero padding — the row height,
      not the cell, does the work. */
   flex: 0 0 auto;
-  height: var(--strip-h, clamp(120px, 17.4vw, 263px));
+  height: var(--strip-h, clamp(120px, calc(17.4 * var(--pvw)), 263px));
 }
 
 /* Specificity note: beats `.project-body li img` (standalone full-width

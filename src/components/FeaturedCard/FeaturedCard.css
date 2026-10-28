@@ -34,7 +34,7 @@
 .fc-clip video { display: none; }
 .fc-clip.is-video img { display: none; }
 .fc-clip.is-video video { display: block; }
-.fc-copy { padding: 40px 36px 32px 48px; display: flex; flex-direction: column; justify-content: center; }
+.fc-copy { padding: clamp(40px, 2.646vw, 64px) clamp(36px, 2.381vw, 56px) clamp(32px, 2.116vw, 48px) clamp(48px, 3.175vw, 76px); display: flex; flex-direction: column; justify-content: center; }
 /* Title is the card's headline: display face from projects.ts, sized up. */
 .fc-copy h3 { margin: 0; font: inherit; color: inherit; font-size: clamp(2.25rem, 4.2vw, 5rem); line-height: 1; letter-spacing: -0.01em; }
 .fc-copy .rv { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }

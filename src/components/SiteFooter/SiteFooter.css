@@ -9,6 +9,7 @@
      of the page tokens, per the Figma light/dark pairing. */
   background: var(--text-primary);
   color: var(--surface-page);
+  font-size: var(--ui-copy);
   height: 40vh;
   min-height: 280px;
   overflow: hidden;
@@ -19,10 +20,9 @@
 }
 
 .sf-inner {
-  max-width: 1512px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 50px;
+  padding: 0 var(--gutter);
 }
 
 .sf-top {
@@ -31,7 +31,7 @@
   gap: 8px 24px;
   align-items: baseline;
   justify-content: space-between;
-  padding: 32px 0 0;
+  padding: clamp(32px, 2.116vw, 48px) 0 0;
   font-size: 13px;
   color: #a3a3a3;
 }

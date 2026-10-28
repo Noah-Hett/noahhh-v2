@@ -7,9 +7,9 @@
      takeover covers it; below the PageTransition masks (z-299+) so route
      transitions still cover the header. */
   z-index: 60;
-  max-width: 1512px;
   margin: 0 auto;
-  padding: 60px 50px 0;
+  padding: clamp(60px, 3.968vw, 90px) var(--gutter) 0;
+  font-size: var(--ui-copy);
 }
 
 .site-nav {
@@ -20,7 +20,7 @@
 .site-nav-list {
   display: flex;
   align-items: baseline;
-  gap: 32px;
+  gap: clamp(32px, 2.116vw, 48px);
   list-style: none;
   margin: 0;
   padding: 0;
