@@ -102,9 +102,25 @@ function projectImages(p: Project): ViewMoreItem[] {
   return out;
 }
 
+// Collage cells are ~25vw (33vw under 1024px), so they use local
+// 480/720/960w thumbnails in public/collage/ instead of the 1600w Project
+// files: named <slug>-<name>-<w>.(avif|webp) after the R2 src.
+const COLLAGE_WIDTHS = [480, 720, 960];
+
+function collageThumbs(src: string): Pick<ViewMoreItem, 'srcSetAvif' | 'srcSetWebp'> {
+  const m = src.match(/media\.noahhh\.com\/([^/]+)\/(.+)-1600\.avif$/);
+  if (!m) return {};
+  const base = `/collage/${m[1]}-${m[2]}`;
+  const set = (ext: string) => COLLAGE_WIDTHS.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
+  return { srcSetAvif: set('avif'), srcSetWebp: set('webp') };
+}
+
 function collageItems(list: Project[], picks: string[]): ViewMoreItem[] {
   const bySrc = new Map(list.flatMap(projectImages).map((item) => [item.src, item]));
-  return picks.flatMap((src) => bySrc.get(src) ?? []);
+  return picks.flatMap((src) => {
+    const item = bySrc.get(src);
+    return item ? [{ ...item, ...collageThumbs(src) }] : [];
+  });
 }
 
 const COLLAGE = collageItems(projects, COLLAGE_PICKS);

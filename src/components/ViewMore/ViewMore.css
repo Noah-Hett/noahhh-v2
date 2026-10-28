@@ -12,7 +12,9 @@
 /* Explicit flex columns (see ViewMore.tsx for why not CSS columns). */
 .dock-grid {
   display: flex;
-  align-items: flex-start;
+  /* Stretch: every column spans the tallest one, so the tile's column
+     has room for the tile to grow into (see .dock-tile). */
+  align-items: stretch;
   gap: clamp(12px, 0.794vw, 20px);
   /* No grid-level entrance: the thumbs carry their own staggered wipe via
      .in below. (A rise + scale here was tried and cut — it added nothing.) */
@@ -53,7 +55,9 @@
   background: var(--text-primary);
   color: var(--surface-wash);
   text-decoration: none;
+  /* At least square, then grows to end flush with the tallest column. */
   aspect-ratio: 1 / 1;
+  flex: 1 0 auto;
   overflow: hidden;
   padding: clamp(16px, 2vw, 28px);
   clip-path: inset(0 100% 0 0);
@@ -98,19 +102,17 @@
   outline-offset: -4px;
 }
 
-/* Rise + deblur, staggered, expo: each thumb gets its own beat inside one
-   smooth wave. Fired once via .in, fixed once in. */
+/* Staggered left-to-right wipe, expo: each thumb gets its own beat inside
+   one smooth wave. Fired once via .in, fixed once in. Clip only — the
+   earlier blur-in ran a filter on every image (and left blur(0) applied),
+   which stuttered in Chrome. */
 .dock-cell .dock-thumb {
   clip-path: inset(0 100% 0 0);
-  filter: blur(12px);
-  transition:
-    clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dock-grid.in .dock-cell .dock-thumb {
   clip-path: inset(0 0 0 0);
-  filter: blur(0);
 }
 
 .dock-grid.in .dock-tile {
@@ -121,17 +123,20 @@
     color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Tile label fades up behind the wipe (opacity + transform: compositor). */
 .tile-inner {
-  filter: blur(12px);
-  transition: filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dock-grid.in .tile-inner {
-  filter: blur(0);
+  opacity: 1;
+  transform: none;
   transition-delay: 0.64s;
 }
-
-.dock-grid.in .dock-tile .tile-inner { transition-delay: 0.64s; }
 
 /* Floater: one black pill, portalled to body (never inside ShrinkReveal).
    Mask-slide mirrors SiteHeader (.nav-mask) + FeaturedCard (.rv):
@@ -196,7 +201,7 @@
     transform: none !important;
     transition: none !important;
     clip-path: none !important;
-    filter: none !important;
+    opacity: 1 !important;
   }
 
   .pill-inner {

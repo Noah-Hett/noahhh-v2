@@ -16,8 +16,8 @@ import './ViewMore.css';
 // Masonry is explicit flex columns, NOT CSS multi-column: WebKit (iOS
 // Safari) clips and mis-hit-tests clip-path/filter children inside
 // column fragments, which cut the see-all tile off and made it untappable.
-// Items go to the shortest column (by aspect ratio) so columns balance;
-// the tile goes last into whichever column is shortest then.
+// Items are spread across columns (by aspect ratio) so the bottoms even out;
+// the tile always closes the rightmost column.
 
 export type ViewMoreItem = {
   slug: string;
@@ -25,7 +25,13 @@ export type ViewMoreItem = {
   src: string;
   width: number;
   height: number;
+  /** Thumbnail variants (`"url 480w, …"`); `src` is the fallback. */
+  srcSetAvif?: string;
+  srcSetWebp?: string;
 };
+
+// Cell width: 4 columns over the WORK gutter, 3 under 1024px.
+const THUMB_SIZES = '(max-width: 1024px) 33vw, 25vw';
 
 type ViewMoreProps = {
   items: ViewMoreItem[];
@@ -35,16 +41,70 @@ type ViewMoreProps = {
 
 type Placed = { item: ViewMoreItem; index: number };
 
+// Column heights in column-widths: each cell is its aspect ratio plus a
+// rough gap allowance (gap / column width across breakpoints).
+const CELL_GAP = 0.08;
+
 function distribute(items: ViewMoreItem[], count: number): { cols: Placed[][]; tileCol: number } {
+  // The tile always closes the rightmost column, so it sits in the same
+  // place at every breakpoint. Its minimum square (height 1) is booked
+  // there up front; in CSS it then stretches to finish flush with the
+  // tallest column, so that column never needs to balance exactly.
+  const tileCol = count - 1;
+  const ratios = items.map((item) => item.height / item.width + CELL_GAP);
+  const base = (): number[] => Array.from({ length: count }, (_, c) => (c === tileCol ? 1 + CELL_GAP : 0));
+
+  // Greedy shortest-column fill: the fallback for long lists.
+  let best = items.map(() => 0);
+  {
+    const h = base();
+    best = ratios.map((r) => {
+      const c = h.indexOf(Math.min(...h));
+      h[c] += r;
+      return c;
+    });
+  }
+  // Small lists (the curated collage is 8 photos): try every assignment
+  // (4^8 = 65k, a few ms once per breakpoint) and keep the most even
+  // column bottoms. Display order is kept within each column.
+  if (items.length <= 9) {
+    // Photo columns should end level; the tile column only counts when it
+    // overshoots (a short one is filled by the stretching tile). Stretch
+    // itself is lightly penalised so the tile stays close to square.
+    const spread = (h: number[]) => {
+      const photos = h.filter((_, c) => c !== tileCol);
+      const top = Math.max(...photos);
+      const stretch = Math.max(0, top - h[tileCol]);
+      const over = Math.max(0, h[tileCol] - top);
+      return top - Math.min(...photos) + over + stretch * 0.25;
+    };
+    const h0 = base();
+    best.forEach((c, i) => (h0[c] += ratios[i]));
+    let bestSpread = spread(h0);
+    const pick = new Array<number>(items.length).fill(0);
+    const h = base();
+    const walk = (i: number): void => {
+      if (i === items.length) {
+        const s = spread(h);
+        if (s < bestSpread - 1e-9) {
+          bestSpread = s;
+          best = pick.slice();
+        }
+        return;
+      }
+      for (let c = 0; c < count; c++) {
+        pick[i] = c;
+        h[c] += ratios[i];
+        walk(i + 1);
+        h[c] -= ratios[i];
+      }
+    };
+    walk(0);
+  }
+
   const cols: Placed[][] = Array.from({ length: count }, () => []);
-  const heights = new Array<number>(count).fill(0);
-  const shortest = () => heights.indexOf(Math.min(...heights));
-  items.forEach((item, index) => {
-    const c = shortest();
-    cols[c].push({ item, index });
-    heights[c] += item.height / item.width;
-  });
-  return { cols, tileCol: shortest() };
+  best.forEach((c, index) => cols[c].push({ item: items[index], index }));
+  return { cols, tileCol };
 }
 
 export function ViewMore({ items, zoneRef }: ViewMoreProps) {
@@ -116,17 +176,21 @@ export function ViewMore({ items, zoneRef }: ViewMoreProps) {
             <div className="dock-col" key={c}>
               {col.map(({ item, index }) => (
                 <div key={item.src} className="dock-cell">
-                  <img
-                    className="dock-thumb"
-                    src={item.src}
-                    alt=""
-                    width={item.width}
-                    height={item.height}
-                    loading="lazy"
-                    decoding="async"
-                    draggable={false}
-                    style={{ transitionDelay: `${(index * 0.08).toFixed(2)}s` }}
-                  />
+                  <picture>
+                    {item.srcSetAvif && <source type="image/avif" srcSet={item.srcSetAvif} sizes={THUMB_SIZES} />}
+                    {item.srcSetWebp && <source type="image/webp" srcSet={item.srcSetWebp} sizes={THUMB_SIZES} />}
+                    <img
+                      className="dock-thumb"
+                      src={item.src}
+                      alt=""
+                      width={item.width}
+                      height={item.height}
+                      loading="lazy"
+                      decoding="async"
+                      draggable={false}
+                      style={{ transitionDelay: `${(index * 0.08).toFixed(2)}s` }}
+                    />
+                  </picture>
                 </div>
               ))}
               {c === tileCol && (
