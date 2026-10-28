@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ProjectCover } from '../../content/projects.ts';
 import { prefersReducedMotion } from '../../utils/reducedMotion.ts';
+import { useWideViewport } from '../../utils/useLazyVideo.ts';
 
 type VideoCover = Extract<ProjectCover, { kind: 'video' }>;
 
@@ -11,6 +12,9 @@ export default function HeroVideo({ cover }: { cover: VideoCover }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [paused, setPaused] = useState<boolean>(() => prefersReducedMotion());
   const [muted, setMuted] = useState<boolean>(true);
+  // Phones/tablets get the 720p encode (~10-13MB vs 22-25MB at 1080p).
+  const wide = useWideViewport();
+  const src = !wide && cover.srcMobile ? cover.srcMobile : cover.src;
 
   // React sets `muted` as an attribute; browsers gate autoplay on the
   // property — sync it so state and element can never disagree.
@@ -35,7 +39,7 @@ export default function HeroVideo({ cover }: { cover: VideoCover }) {
     <figure className="project-hero">
       <video
         ref={videoRef}
-        src={cover.src}
+        src={src}
         poster={cover.poster}
         width={cover.width}
         height={cover.height}
@@ -43,7 +47,7 @@ export default function HeroVideo({ cover }: { cover: VideoCover }) {
         muted={muted}
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-label={cover.alt}
         onPlay={() => setPaused(false)}
         onPause={() => setPaused(true)}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { projects, type Project, type ProjectCover } from '../content/projects.ts';
 import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
+import { useLazyVideo } from '../utils/useLazyVideo.ts';
 import './Projects.css';
 
 function titleStyle(p: Project): CSSProperties {
@@ -24,7 +25,7 @@ function useMotionSafeVideo(): boolean {
 }
 
 // Cover media shared by both views. Images render as-is; video covers
-// autoplay muted loops inline (the hero asset, poster-backed) only when
+// play muted loops inline (the card loop, poster-backed) only when
 // `active` — gallery tiles are always active, list previews only while
 // their row's sweep is running, so hidden rows cost a poster fetch, not
 // an autoplaying stream. Inactive or motion-unsafe covers render the
@@ -64,13 +65,20 @@ function CoverMedia({
       />
     );
   }
+  return <CoverVideo cover={cover} />;
+}
+
+// Tiles play the silent 720p card loop (a fraction of the hero file),
+// loaded lazily and paused off screen — see useLazyVideo.
+function CoverVideo({ cover }: { cover: Extract<ProjectCover, { kind: 'video' }> }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useLazyVideo(ref, cover.card?.srcMobile ?? cover.src);
   return (
     <video
-      src={cover.src}
+      ref={ref}
       poster={cover.poster}
       width={cover.width}
       height={cover.height}
-      autoPlay
       muted
       loop
       playsInline

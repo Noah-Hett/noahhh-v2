@@ -141,11 +141,11 @@ export default function Home() {
     }
     return false;
   });
-  // The line-art intro (see Home.css) runs on a single --u variable driving
-  // both travel and reveal edge. Parallax owns the CSS `translate` property
-  // on the art + copy roots — independent of `transform`, so scroll moves
-  // each assembly whole and can never disturb the locked reveal edge.
-  const artRef = useRef<SVGSVGElement>(null);
+  // The line-art intro (see Home.css) slides the svg up inside its clipping
+  // .hero-art box. Parallax owns the CSS `translate` property on that box +
+  // the copy root — independent of `transform`, so scroll moves each
+  // assembly whole and can never disturb the intro.
+  const artRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const { ref: summaryCopyRef, inView: summaryCopyIn } = useInView<HTMLDivElement>(0.4);
 
@@ -229,7 +229,9 @@ export default function Home() {
       <title>Noah Hett</title>
       <section className="hero" aria-label="About">
         <DotGrid gap={48} />
-        <HeroArt className="hero-art" svgRef={artRef} />
+        <div className="hero-art" ref={artRef}>
+          <HeroArt className="hero-art-svg" />
+        </div>
         <div className="hero-grid">
           <div className="hero-copy" ref={copyRef}>
             <p className="rv hero-lead" aria-label={HERO_LEAD}>

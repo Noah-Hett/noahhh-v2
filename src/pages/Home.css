@@ -1,15 +1,6 @@
 /* Home layout pulled from Figma frames 28:12 / 40:3 (geometry + organisation only).
    Canvas 1512, gutters 50. Colour via styles/tokens.css (Figma 155:12 light / 155:69 dark). */
 
-/* Single custom property driving the line-art intro (see .hero-art): the
-   rise distance and the reveal edge derive from the same value in the same
-   frame, so the wall edge cannot drift. Registered for transition. */
-@property --u {
-  syntax: '<percentage>';
-  inherits: false;
-  initial-value: 0%;
-}
-
 .home {
   margin: 0 auto;
   font-size: var(--ui-copy);
@@ -65,13 +56,9 @@
      offset is measured from the content gutter — tracks narrowing viewports
      (95:236: 13px error vs 88px with left-%).
      Only the portrait (later in DOM, grid above) obscures part of it.
-     Rise from behind a wall with no wall element and no paint: --u drives
-     BOTH the travel (translateY, % of own height — fully responsive) and
-     the reveal edge (mask gradient stop in matching %), so the blade is
-     locked to the page while the art moves. --u: 104% parks a full height
-     below home (mask all-transparent there); 0% lands home (mask
-     all-black = no-op). One transition on the var — firm cubic, no settle
-     tail. Nothing ever clips the art: at rest the mask is identity. */
+     Rise from behind a wall: this box is the wall (overflow clip at its
+     own edges) and the inner svg travels up into it. Transform-only, so
+     the intro runs on the compositor (no mask repaint during load). */
   position: absolute;
   right: calc(var(--gutter-wide) + clamp(230px, 15.21vw, 360px));
   top: 24%;
@@ -89,25 +76,26 @@
      #e0dcdc dark). Presence per theme: 70% on light, 35% on dark. */
   color: var(--artwork);
   opacity: 0.7;
-  --u: 0%;
+  overflow: hidden;
+}
+
+.hero-art-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
   /* Figma composes this group with a vertical flip; the raw export lacks
      it. Order matters — translate first, then the flip — so the parked
      frame sits below home. Scroll parallax (see Home.tsx) uses the CSS
-     `translate` property, independent of this transform, so the two never
-     interfere; mask + travel stay glued, no re-clip on scroll. */
-  transform: translateY(var(--u)) scaleY(-1);
-  /* Edge leads travel 1.25×: the unmask completes a little before the
-     motion lands, so the art settles visibly into home. Same var, same
-     transition — still impossible for the two to drift. */
-  mask-image: linear-gradient(to bottom, black calc((100% - var(--u)) * 1.25), transparent calc((100% - var(--u)) * 1.25));
+     `translate` property on the .hero-art box, so it moves wall and art
+     together and never touches this transform. */
+  transform: translateY(0) scaleY(-1);
   /* Softer expo landing, back in the portrait's family so the two read as
-     one gesture; the 1.25× edge lead keeps the settle from feeling like a
-     second motion. */
-  transition: --u 1.4s var(--hero-ease) 0.3s;
+     one gesture. */
+  transition: transform 1.4s var(--hero-ease) 0.3s;
 }
 
-.home.intro-pending .hero-art {
-  --u: 104%;
+.home.intro-pending .hero-art-svg {
+  transform: translateY(104%) scaleY(-1);
 }
 
 /* Dark canvas (clay ink): the white line-art drops to 35% — the 0.7
@@ -447,12 +435,12 @@
   .hero-copy .wmask-inner,
   .hero-photo-wrap,
   .hero-photo-wrap .hero-photo,
-  .hero-art {
+  .hero-art-svg {
     transition: none;
   }
 
-  .home.intro-pending .hero-art {
-    --u: 0%;
+  .home.intro-pending .hero-art-svg {
+    transform: scaleY(-1);
   }
 
   .home.intro-pending .hero .dot-grid {

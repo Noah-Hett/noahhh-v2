@@ -66,6 +66,8 @@ export type ProjectCover =
       kind: 'video';
       src: string;
       poster: string;
+      /** 720p hero (with audio) for viewports under 1024px. */
+      srcMobile?: string;
       /** Home card loop: the hero cut minus its first 2s and last 10s,
           silent, H.264 High. `src` is 1080p for wide screens, `srcMobile`
           720p for phones/tablets, each with a first-frame WebP poster.
@@ -161,6 +163,7 @@ const gizmophone: Project = {
   cover: {
     kind: 'video',
     src: 'https://media.noahhh.com/gizmophone/gizmophone.mp4',
+    srcMobile: 'https://media.noahhh.com/gizmophone/gizmophone-720.mp4',
     card: {
       src: 'https://media.noahhh.com/gizmophone/gizmophone-card-1080.mp4',
       srcMobile: 'https://media.noahhh.com/gizmophone/gizmophone-card-720.mp4',
@@ -313,6 +316,7 @@ const buskRadio: Project = {
   cover: {
     kind: 'video',
     src: 'https://media.noahhh.com/busk-radio/buskradio.mp4',
+    srcMobile: 'https://media.noahhh.com/busk-radio/buskradio-720.mp4',
     card: {
       src: 'https://media.noahhh.com/busk-radio/buskradio-card-1080.mp4',
       srcMobile: 'https://media.noahhh.com/busk-radio/buskradio-card-720.mp4',
