@@ -96,11 +96,24 @@ For a video cover:
 
 > "Which mp4 is the hero? Poster timestamp (default 0:01)? Alt text?"
 
+> "For the homepage card loop, how much of the start and end should it
+> skip? (Default: first 2s and last 10s — the card plays the middle as a
+> silent loop.)"
+
 The mp4 lives on R2; its poster is local and load-bearing three times
 over — hero LCP image, Home/All-Projects thumbnail, and reduced-motion
 fallback. If `ffmpeg`/`ffprobe` is missing, stop here (rule 7). Confirm
-back: "`<file>` → R2 mp4 + local poster; page autoplays muted-loop with
-pause + unmute."
+back: "`<file>` → R2 mp4 (desktop hero) + 720p phone hero + silent card
+loops (1080p/720p, skipping <start>s/<end>s) + local posters; Project page
+autoplays muted-loop with pause + unmute."
+
+Then, for every Project (image or video cover):
+
+> "Should any finished-work photos from this Project join the homepage
+> collage? (Photos of the real thing only — no process graphics, renders
+> or CAD. Optional.)"
+
+Note the picks for the collage step after optimizing.
 
 ## 7. Inventory — read-only, no placement yet
 
@@ -180,4 +193,6 @@ Plus font row and colours row (bytes/dims `n/a`), and:
 Only after yes → run `scripts/optimize-media.mjs`.
 Only after optimize report → show manifest diff → "Apply?"
 Only after apply → promote cover/posters/fonts to `public/` →
-print git + R2 commands → "Dry-run complete."
+`npm run media:variants` (and `media:collage` if picks) →
+print R2 commands (`media:upload-plan`) → `media:check` after upload →
+git commands → "Dry-run complete."

@@ -24,8 +24,9 @@ Project {
   slug; title; tags; selected: boolean;
   colors: { light: string; dark: string };       // pasted hexes, flip rule
   font: { family: string; src: string; fallback?: string }; // local, one weight
-  cover: { kind: 'image'; src; alt; width; height }        // local poster path
-       | { kind: 'video'; src; poster; alt; width; height }; // R2 mp4 + local poster
+  cover: { kind: 'image'; src; alt; width; height; srcSet? } // local poster path
+       | { kind: 'video'; src; srcMobile; poster; alt; width; height;
+           card: { src; srcMobile; poster; posterMobile } }; // R2 mp4s + local posters
   groups: [
     ChallengeGroup { id: 'challenge', heading, summary, meta, blocks }, // challenge summary + date/scope/role/collabs live here
     BodyGroup { id: 'process' | 'outcome', heading, blocks },            // exactly one challenge per Project
@@ -43,7 +44,10 @@ ProjectBlock =
 ## Hard rules (never break these)
 
 1. **Dry-run only.** Never run `wrangler r2 object put`, never push to R2,
-   never commit large originals. End with printable upload commands.
+   never commit large originals. End with printable upload commands
+   (`npm run media:upload-plan`), and say that `npm run media:check` must
+   pass after the user uploads and **before** anything is pushed — the
+   page references every variant, so deploying first breaks images.
 2. **One cover — image local, video split.** An image cover is served from
    its local path only (~150KB AVIF/WebP in `public/posters/<slug>/`). A video cover is an
    R2 mp4 plus a local poster; the poster is load-bearing three times over
@@ -66,13 +70,24 @@ ProjectBlock =
 7. **ffmpeg is blocking for cover video.** If `ffmpeg`/`ffprobe` is missing
    and the Project has a video cover, stop — the poster frame is
    load-bearing three times over (hero LCP, card thumbnail, reduced-motion
-   fallback). Do not continue poster-less. Body video does not exist: video
-   lives only as cover, so no other ffmpeg work should ever arise.
+   fallback), and the derived encodes (`npm run media:video`: Home card
+   loops at 1080p/720p, 720p phone hero) are required, not optional — the
+   full hero file on a card streams 20MB+ per visitor. Never re-encode the
+   hero mp4 itself. Body video does not exist: video lives only as cover.
 8. **Staging is gitignored.** Optimize into `.media-tmp/<slug>/`, never into
    `public/` directly. Originals stay where the user put them.
 9. **Edits never clobber.** On update, print the current entry first and
    confirm per field (keep/change). Never overwrite workshopped
    colours/fonts unless explicitly re-supplied.
+10. **Every image ships AVIF + WebP at every width.** The site serves
+    AVIF with a WebP fallback (iOS ≤15 can't decode AVIF) and picks the
+    width per screen, so every produced variant must exist: body images
+    on R2 (all of them — not just 1600w AVIF), covers/posters/collage in
+    `public/` with a same-named `.webp` beside each `.avif`.
+11. **Regenerate the variants map after optimizing.**
+    `npm run media:variants` rewrites `src/content/mediaVariants.ts` from
+    the manifests; it is how Project pages know each image's sizes.
+    Commit it with the entry. Skipping it silently serves 1600w AVIF only.
 
 ## Workflow
 
@@ -135,16 +150,32 @@ then verify `faststart` and extract the poster frame — do not
 re-encode 20-25MB files unless moov atom is at end. PDFs/GLBs/fonts: copy
 through untouched (original filenames).
 
+For a video cover, then run
+`npm run media:video -- --in <hero.mp4> --out .media-tmp/<slug> --name <stem> [--trim-start 2] [--trim-end 10]`
+(trim = the card loop skips the hero's first/last seconds; confirmed at
+intake Q6). It writes `<stem>-card-1080.mp4`, `<stem>-card-720.mp4`,
+`<stem>-720.mp4` and the card posters `<stem>-card-poster-1600/800.webp`.
+
+Then always run `npm run media:variants` (rule 11). If the user picked
+collage photos at Q6, run
+`npm run media:collage -- --slug <slug> --names <name1>,<name2>` and add
+each pick's R2 1600w AVIF URL to `COLLAGE_PICKS` in `src/pages/Home.tsx`
+(finished-work photos only — no process graphics, renders or CAD).
+
 Report what was produced: per-image AVIF+WebP (body 800/1600/2400w, cover
-800/1600 only), cover variants, poster file + size (or "poster: missing" —
-stop, posters are triple-load-bearing; extract via `ffmpeg`, rule 7), font staged
-file + size. Record every image's source dims — the manifest draft needs
-them transcribed into solo, gallery, strip, and showcase visuals.
+800/1600/2400 where the source allows), cover variants, poster file + size
+(or "poster: missing" — stop, posters are triple-load-bearing; extract via
+`ffmpeg`, rule 7), derived video sizes, font staged file + size. Record
+every image's source dims — the manifest draft needs them transcribed
+into solo, gallery, strip, and showcase visuals.
 
 ### 4. Manifest patch — diff first, validate, apply on approval
 
-Draft the new `Project` entry: `cover` (image path or video mp4 + poster
-path, both with dims), `colors`, `font` (staged
+Draft the new `Project` entry: `cover` (image path + `srcSet` of every
+promoted width, or video: hero mp4 `src`, `srcMobile` = `<stem>-720.mp4`,
+`poster`, and `card: { src: <stem>-card-1080.mp4, srcMobile:
+<stem>-card-720.mp4, poster: /posters/<slug>/<stem>-card-poster-1600.webp,
+posterMobile: …-800.webp }` — all with dims), `colors`, `font` (staged
 `public/fonts/projects/<slug>/...` path), challenge group (challenge
 `summary`
 + `meta` with auto-derived initials unless overridden), body groups from
@@ -179,26 +210,25 @@ minutes, catches the 404-class mistakes):
 Stop the run if any check fails — say which one, not just "publishing
 is broken".
 
-Output two sections. Git files (commit these — covers, posters, fonts
-already promoted to `public/`):
+Output three sections, in this order — uploads land before the push.
+
+1. R2 objects: run `npm run media:upload-plan -- --slug <slug>` and print
+   its output verbatim. It lists every staged R2 file still missing from
+   `media.noahhh.com` (all widths and both formats of every body image,
+   the hero mp4 and its derived encodes, PDFs, GLBs) with the right
+   `--content-type`, `--remote` (load-bearing: without it wrangler writes
+   to local emulator storage while reporting success) and, for PDFs,
+   `--content-disposition inline`. Never hand-write this list — a
+   hand-picked list is how only the 1600w AVIFs once reached R2.
+2. Verify: `npm run media:check` — must print `OK` before pushing. It
+   HEAD-checks every R2 URL the site references and that every local
+   poster/collage/font file (and each `.avif`'s `.webp` twin) exists.
+3. Git files (commit these with the entry and `mediaVariants.ts`):
 
 ```bash
-git add public/posters/<slug>/ public/fonts/projects/<slug>/
-```
-
-R2 objects (run these — body media plus a cover mp4 if any; never image
-covers, posters, or fonts):
-
-```bash
-wrangler r2 object put --remote noahhh-media/<slug>/clip.mp4 --file=.media-tmp/<slug>/clip.mp4 --content-type video/mp4 --cache-control "public, max-age=31536000, immutable"
-# ... one line per R2 object, with --content-type per playbook —
-# --remote is load-bearing: without it wrangler writes to LOCAL emulator
-# storage (and a stray ./.wrangler/ dir appears) while reporting success —
-# the domain then 404s. Verify one printed URL returns 200 afterwards.
-# PDFs additionally take --content-disposition inline (load-bearing:
-# without it they download instead of opening in a new tab)
+git add public/posters/<slug>/ public/fonts/projects/<slug>/ public/collage/ src/content/mediaVariants.ts src/content/projects.ts
 npm run build
 ```
 
-End with: "Dry-run complete. Run these commands to publish."
-Never commit `.media-tmp/` or originals.
+End with: "Dry-run complete. Run the uploads, then `npm run media:check`,
+then commit and push." Never commit `.media-tmp/` or originals.
