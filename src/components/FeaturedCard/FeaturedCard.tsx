@@ -116,17 +116,15 @@ export function FeaturedCard({
 
     // Mask geometry cache: the pill→full point sets only depend on the clip
     // box size, so they are rebuilt on resize (rare) instead of every frame.
-    // Per-frame mask work is then two lerps + one polygon string, memoized
-    // per quantized progress step — settled frames are cache hits with no
-    // allocation, and the per-tick getBoundingClientRect (a forced layout)
-    // is gone entirely.
-    const Q = 128;
+    // Per-frame mask work is then two lerps + one polygon string (~17µs),
+    // computed from the exact progress rather than a quantized step — a
+    // 128-step cache made the edge jump ~8px at a time mid-reveal. The
+    // per-tick getBoundingClientRect (a forced layout) is gone entirely.
     let cw = 0;
     let ch = 0;
     let baseC: Point[] = [];
     let baseP: Point[] = [];
     let baseF: Point[] = [];
-    let polyCache: string[] = [];
     let lastPoly = '';
     const rebuildBase = (): void => {
       const W = cw || 100;
@@ -134,18 +132,11 @@ export function FeaturedCard({
       baseC = toOuterPercent(smallPillPoints(), W, H);
       baseP = toOuterPercent(pillPoints(), W, H);
       baseF = fullPoints();
-      polyCache = new Array(Q + 1).fill('');
     }
     const polygonFor = (eased: number): string => {
-      const q = Math.max(0, Math.min(Q, Math.round(eased * Q)));
-      const hit = polyCache[q];
-      if (hit) return hit;
       const s1 = smoothstep(0, s1End, eased);
       const s2 = smoothstep(s2Start, 1, eased);
-      const pts = lerpPoints(lerpPoints(baseC, baseP, s1), baseF, s2);
-      const poly = pointsToPolygon(pts);
-      polyCache[q] = poly;
-      return poly;
+      return pointsToPolygon(lerpPoints(lerpPoints(baseC, baseP, s1), baseF, s2));
     }
     const measure = (): void => {
       // clientWidth/Height read once per resize — never in the frame loop.
