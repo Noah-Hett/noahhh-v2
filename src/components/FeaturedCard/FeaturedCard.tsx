@@ -145,6 +145,62 @@ export function FeaturedCard({
       rebuildBase();
     }
 
+    // Trial: scroll-driven path. The same lift/scale/mask math is sampled
+    // into keyframes once per size and played on a ViewTimeline, so the
+    // browser applies each frame in step with the scroll itself instead of
+    // waiting on a JS rAF that can land a frame late. `?legacy` on the URL
+    // keeps the rAF scrub for side-by-side comparison.
+    const ViewTimelineCtor = (window as unknown as { ViewTimeline?: new (o: { subject: Element; axis: string }) => AnimationTimeline }).ViewTimeline;
+    if (ViewTimelineCtor && !new URLSearchParams(window.location.search).has('legacy')) {
+      const timeline = new ViewTimelineCtor({ subject: el, axis: 'block' });
+      const SAMPLES = 96;
+      let anims: Animation[] = [];
+      const build = (): void => {
+        anims.forEach((a) => a.cancel());
+        cw = clip.clientWidth || 100;
+        ch = clip.clientHeight || 100;
+        rebuildBase();
+        const lift: Keyframe[] = [];
+        const mask: Keyframe[] = [];
+        // The rAF path measures the card's rect *with* its own lift and
+        // scale applied, so it settles where p = progress(transformed
+        // rect). The timeline reports untransformed layout progress q;
+        // solve that same fixed point per sample so both rest identically.
+        const vh = window.innerHeight;
+        const h = el.offsetHeight;
+        const settle = (q: number): number => {
+          const topLayout = vh - q * (vh + h);
+          let p = q;
+          for (let k = 0; k < 40; k++) {
+            const e = applyCardHangs(p);
+            const sc = cardScale + (1 - cardScale) * e;
+            const top = topLayout + (1 - e) * cardY + ((1 - sc) * h) / 2;
+            p = Math.max(0, Math.min(1, (vh - top) / (vh + sc * h)));
+          }
+          return p;
+        };
+        for (let i = 0; i <= SAMPLES; i++) {
+          const p = settle(i / SAMPLES);
+          const cardEased = applyCardHangs(p);
+          const y = (1 - cardEased) * cardY;
+          const s = cardScale + (1 - cardScale) * cardEased;
+          lift.push({ offset: i / SAMPLES, transform: `translateY(${y.toFixed(2)}px) scale(${s.toFixed(4)})` });
+          mask.push({ offset: i / SAMPLES, clipPath: polygonFor(applyHangs(p)) });
+        }
+        const opts = { timeline, rangeStart: 'cover 0%', rangeEnd: 'cover 100%', fill: 'both', easing: 'linear' } as unknown as KeyframeAnimationOptions;
+        anims = [el.animate(lift, opts), clip.animate(mask, opts)];
+      };
+      build();
+      const sizeObs = 'ResizeObserver' in window ? new ResizeObserver(build) : null;
+      sizeObs?.observe(clip);
+      window.addEventListener('resize', build);
+      return () => {
+        sizeObs?.disconnect();
+        window.removeEventListener('resize', build);
+        anims.forEach((a) => a.cancel());
+      };
+    }
+
     const tick = () => {
       raf = null;
       current += (target - current) * 0.12;
