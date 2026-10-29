@@ -1,6 +1,7 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import './FeaturedCard.css';
 import { useLazyVideo, useWideViewport } from '../../utils/useLazyVideo.ts';
+import { viewTimeline } from '../../utils/scrollTimeline.ts';
 import {
   fullPoints,
   getMaskPoints,
@@ -145,14 +146,13 @@ export function FeaturedCard({
       rebuildBase();
     }
 
-    // Trial: scroll-driven path. The same lift/scale/mask math is sampled
-    // into keyframes once per size and played on a ViewTimeline, so the
-    // browser applies each frame in step with the scroll itself instead of
-    // waiting on a JS rAF that can land a frame late. `?legacy` on the URL
-    // keeps the rAF scrub for side-by-side comparison.
-    const ViewTimelineCtor = (window as unknown as { ViewTimeline?: new (o: { subject: Element; axis: string }) => AnimationTimeline }).ViewTimeline;
-    if (ViewTimelineCtor && !new URLSearchParams(window.location.search).has('legacy')) {
-      const timeline = new ViewTimelineCtor({ subject: el, axis: 'block' });
+    // Scroll-driven path: the same lift/scale/mask math is sampled into
+    // keyframes once per size and played on a ViewTimeline, so the browser
+    // applies each frame in step with the scroll itself instead of waiting
+    // on a rAF that can land a frame late (visible snapping on slower
+    // machines). Browsers without ViewTimeline keep the rAF scrub below.
+    const timeline = viewTimeline(el);
+    if (timeline) {
       const SAMPLES = 96;
       let anims: Animation[] = [];
       const build = (): void => {

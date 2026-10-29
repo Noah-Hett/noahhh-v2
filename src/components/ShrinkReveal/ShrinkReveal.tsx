@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import './ShrinkReveal.css';
+import { documentScrollTimeline, scrollRamp } from '../../utils/scrollTimeline.ts';
 
 // ShrinkReveal — skeleton port of experiments/shrink-reveal/index.html.
 // Edge-only mask: the wrapped block keeps its size (no transform, no scale)
@@ -26,6 +27,38 @@ export default function ShrinkReveal({ children }: { children: ReactNode }) {
     if (!el || typeof window === 'undefined') return;
     // Static skeleton under reduced motion (matches Hero/FeaturedCard/Header).
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Scroll-driven path: the gutters/corners ramp linearly with scrollY
+    // over the tail-exit runway, so the same inset is played on the page's
+    // ScrollTimeline and stays in step with the scroll. Rebuilt when the
+    // page or the block resizes (the runway is in absolute scroll px).
+    const timeline = documentScrollTimeline();
+    if (timeline) {
+      let anim: Animation | null = null;
+      const build = (): void => {
+        anim?.cancel();
+        const w = window.innerWidth;
+        const vh = window.innerHeight;
+        const max = Math.min(120, Math.max(Math.min(58, w * 0.06), (w * 58) / 1512));
+        const maxR = Math.min(96, Math.max(32, w * 0.06));
+        // Untransformed absolute bottom: progress runs from bottom = vh to 0.
+        const bottom = el.getBoundingClientRect().bottom + window.scrollY;
+        anim = scrollRamp(el, timeline, 'clipPath', bottom - vh, bottom, (p) => {
+          const g = (p * max).toFixed(1);
+          const r = (p * maxR).toFixed(1);
+          return `inset(0px ${g}px 0px ${g}px round ${r}px)`;
+        });
+      };
+      build();
+      const ro = 'ResizeObserver' in window ? new ResizeObserver(build) : null;
+      ro?.observe(document.body);
+      ro?.observe(el);
+      window.addEventListener('resize', build);
+      return () => {
+        ro?.disconnect();
+        window.removeEventListener('resize', build);
+        anim?.cancel();
+      };
+    }
     let raf = 0;
     let last = '';
     let target = 0;
