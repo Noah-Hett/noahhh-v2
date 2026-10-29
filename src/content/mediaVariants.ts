@@ -597,6 +597,186 @@ const GROUPS: MediaVariants[] = [
         1600
       ]
     ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/panelcal/addtaskbutton-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/addtaskbutton-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/addtaskbutton-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/panelcal/addtaskbutton-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/addtaskbutton-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/addtaskbutton-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/panelcal/concept-art-1-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-1-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-1-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/panelcal/concept-art-1-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-1-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-1-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/panelcal/concept-art-2-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-2-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-2-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/panelcal/concept-art-2-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-2-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/concept-art-2-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/panelcal/currentdesign-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/currentdesign-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/currentdesign-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/panelcal/currentdesign-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/currentdesign-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/currentdesign-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/panelcal/initial-prototype-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/initial-prototype-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/initial-prototype-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/panelcal/initial-prototype-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/initial-prototype-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/initial-prototype-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/panelcal/redesign-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/redesign-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/redesign-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/panelcal/redesign-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/panelcal/redesign-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/panelcal/redesign-2400.webp",
+        2400
+      ]
+    ]
   }
 ];
 

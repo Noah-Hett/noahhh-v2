@@ -96,6 +96,8 @@ const COLLAGE_PICKS: string[] = [
   'https://media.noahhh.com/busk-radio/front-bw-1600.avif',
   'https://media.noahhh.com/ic-hack-26/tshirts-give-out-1600.avif',
   'https://media.noahhh.com/ic-hack-26/group-photo-1600.avif',
+  'https://media.noahhh.com/panelcal/currentdesign-1600.avif',
+  'https://media.noahhh.com/panelcal/addtaskbutton-1600.avif',
 ];
 
 function projectImages(p: Project): ViewMoreItem[] {
