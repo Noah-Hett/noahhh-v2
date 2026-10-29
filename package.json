@@ -11,6 +11,8 @@
     "media:video": "node scripts/encode-video.mjs",
     "media:variants": "node scripts/media-variants.mjs",
     "media:collage": "node scripts/collage-thumbs.mjs",
+    "media:svg-check": "node scripts/svg-canvas-check.mjs",
+    "media:svg-theme": "node scripts/theme-svg.mjs",
     "media:upload-plan": "node scripts/media-upload-plan.mjs",
     "media:check": "node scripts/check-media.mjs"
   },

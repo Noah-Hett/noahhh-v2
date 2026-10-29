@@ -8,10 +8,11 @@
 //          [--dark <swap>...] [--light <swap>...]
 //   swap = [fill:|stroke:]<from>=<to>, matched against the exact attribute
 //   value Figma exported, e.g. --dark black=white --light stroke:white=black
-// Writes .media-tmp/<slug>/<stem>-themed.svg (a new name: R2 serves SVGs as
-// immutable, so overwriting the old URL would never reach cached visitors).
-// Then: npm run media:upload-plan -- --slug <slug>, and point projects.ts
-// at the -themed URL. <mask> contents are left alone (their black/white is
+// A file staged in .media-tmp/<slug>/ and not yet on R2 is rewritten in
+// place. Anything already live is written to <stem>-themed.svg instead (R2
+// serves SVGs as immutable, so overwriting the old URL would never reach
+// cached visitors) — point projects.ts at that URL.
+// Then: npm run media:upload-plan -- --slug <slug>. <mask> contents are left alone (their black/white is
 // coverage, not colour).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -60,9 +61,16 @@ if (!open) throw new Error(`${src} has no <svg> tag`);
 const at = open.index + open[0].length;
 const out = `${svg.slice(0, at)}\n<style>${css}</style>${svg.slice(at)}`;
 
+// A staged file that isn't on R2 yet is themed in place (keeps its name);
+// anything already live gets a new -themed name.
 const stem = path.basename(new URL(src, 'file:///').pathname, '.svg');
 const dir = path.join('.media-tmp', slug);
+const live = await fetch(`https://media.noahhh.com/${slug}/${stem}.svg`, { method: 'HEAD' })
+  .then((r) => r.status === 200)
+  .catch(() => true);
+const inPlace = !/^https?:/.test(src) && path.resolve(path.dirname(src)) === path.resolve(dir) && !live;
+const name = inPlace ? `${stem}.svg` : `${stem}-themed.svg`;
 fs.mkdirSync(dir, { recursive: true });
-const file = path.join(dir, `${stem}-themed.svg`);
+const file = path.join(dir, name);
 fs.writeFileSync(file, out);
-console.log(`${file}  →  https://media.noahhh.com/${slug}/${stem}-themed.svg`);
+console.log(`${file}  →  https://media.noahhh.com/${slug}/${name}${inPlace ? '  (themed in place)' : ''}`);

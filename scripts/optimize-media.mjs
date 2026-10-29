@@ -5,12 +5,12 @@
 // Video/PDF/GLB are passed through untouched; fonts are copied through
 // untouched (no conversion — see media-playbook.md).
 
-import { mkdirSync, readdirSync, statSync, copyFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync, copyFileSync, existsSync } from 'node:fs';
 import { join, basename, extname, resolve } from 'node:path';
 
 const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.webp']);
 const VIDEO_EXTS = new Set(['.mp4', '.mov', '.webm']);
-const PASSTHROUGH_EXTS = new Set(['.mp4', '.mov', '.webm', '.pdf', '.glb', '.gltf']);
+const PASSTHROUGH_EXTS = new Set(['.mp4', '.mov', '.webm', '.pdf', '.glb', '.gltf', '.svg']);
 const FONT_EXTS = new Set(['.woff2', '.woff', '.ttf', '.otf']);
 const WIDTHS = [800, 1600, 2400];
 const FONT_WARN_BYTES = 100 * 1024;
@@ -99,6 +99,14 @@ for (const file of passthrough) {
   const bytes = statSync(join(outDir, file)).size;
   manifest.passthrough.push({ file, bytes, url: `${base}/${slug}/${file}` });
   console.log(`[pass]  ${file} (${(bytes / 1048576).toFixed(1)}MB) copied untouched`);
+  if (extname(file).toLowerCase() === '.svg') {
+    // SVGs ship as-is (no raster variants) but still need dims in the
+    // manifest, and a canvas check before upload (svg-canvas-check.mjs).
+    const open = readFileSync(join(outDir, file), 'utf8').match(/<svg\b[^>]*>/)?.[0] ?? '';
+    const dim = (a) => Math.round(Number(open.match(new RegExp(`\\s${a}="([\\d.]+)`))?.[1] ?? 0));
+    Object.assign(manifest.passthrough.at(-1), { srcWidth: dim('width'), srcHeight: dim('height') });
+    console.log(`[svg]   ${file} (${dim('width')}x${dim('height')}) -> run svg-canvas-check.mjs`);
+  }
   if (VIDEO_EXTS.has(extname(file).toLowerCase())) {
     // Poster check: the skill stops on missing posters (load-bearing for
     // <video poster>), so report presence per video, don't guess.
