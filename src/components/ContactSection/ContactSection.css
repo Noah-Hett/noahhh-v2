@@ -26,6 +26,9 @@
 .contact .contact-heading {
   margin: 0 0 clamp(32px, 2.116vw, 48px);
   font: inherit;
+  /* Same size as the hero lead and the Experience heading. */
+  font-size: var(--proj-copy);
+  font-weight: 500;
   color: inherit;
 }
 
@@ -250,7 +253,7 @@
   }
 
   .contact .contact-heading {
-    margin-bottom: clamp(16px, 3svh, 28px);
+    margin-bottom: clamp(32px, 6svh, 52px);
     font-size: clamp(2.25rem, 6svh, 2.75rem);
     font-weight: 500;
     line-height: 0.9;

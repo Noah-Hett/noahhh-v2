@@ -53,26 +53,25 @@ function shouldSkipIntro(hash: string): boolean {
 // touch this string — delays cascade from WORD_BASE + index * WORD_STEP
 // and LONDON trails the last word by LONDON_GAP. Reads as a line wave at
 // any viewport width with no manual break points to maintain.
-const HERO_LEAD = 'Noah Hett is a design engineer, obsessed with visual comms and tangible interfaces that make complex systems legible';
+const HERO_LEAD = 'Noah Hett is a design engineer, with a love for user-centred design projects, and a slight obsession with visual communications';
 const HERO_LEAD_WORDS = HERO_LEAD.split(' ');
 const WORD_BASE = 1.1;
 const WORD_STEP = 0.03;
 const LONDON_GAP = 0.08;
 const LONDON_DELAY = WORD_BASE + (HERO_LEAD_WORDS.length - 1) * WORD_STEP + LONDON_GAP;
 
-// Skills strip under the summary side copy — demo list from
-// experiments/experience-diagram until spec lands.
+// Skills strip under the Experience copy (looped marquee).
 const SUMMARY_SKILLS: string[] = [
-  'Fusion 360',
-  'SolidWorks',
-  'Figma',
-  'React',
-  'TypeScript',
+  'UI Design (Figma)',
+  'Fusion360',
+  'Motion Design',
+  'Web Design',
+  'Rapid Prototyping',
+  'User Research',
+  'Presentation Design',
+  'Branding',
   'Python',
-  'Arduino',
-  'Blender',
-  '3D Printing',
-  'Laser Cutting',
+  'Embedded Devices (ESP32)',
 ];
 
 // CV + portfolio PDFs under the Experience copy. Kept deliberately small:
@@ -428,22 +427,26 @@ export default function Home() {
           </section>
         </ShrinkReveal>
 
-        <section className="home-section" aria-label="Professional summary">
+        <section className="home-section" aria-label="Experience">
           <DotGrid gap={48} />
           <div className="exp-grid">
             <div className="exp-diagram-col">
               <ExperienceDiagram />
             </div>
             <div ref={summaryCopyRef} className={`exp-copy${summaryCopyIn ? ' in' : ''}`}>
-              <p className="exp-kicker rv">
+              <h2 className="exp-heading rv">
                 <span className="rv-inner">Experience</span>
-              </p>
-              <h2 className="rv rv-d1">
-                <span className="rv-inner">Professional summary placeholder</span>
               </h2>
+              <p className="rv rv-d1">
+                <span className="rv-inner">
+                  I’m studying MEng Design Engineering at Imperial, where I joined the IC Hack branding team and
+                  am now stepping up to lead it. This summer I researched dynamic and accessible visualisation at
+                  the RCA’s Helen Hamlyn Centre for Design.
+                </span>
+              </p>
               <p className="rv rv-d2">
                 <span className="rv-inner">
-                  Work history / CV graphic goes here — held empty until spec lands.
+                  I’m now looking for an internship where I can keep making ideas real, and great to use.
                 </span>
               </p>
               <div className="rv rv-d3">

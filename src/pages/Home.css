@@ -368,22 +368,27 @@
   transition-delay: 0.32s;
 }
 
-.exp-kicker {
-  font: inherit;
-  color: inherit;
-  margin: 0 0 0.75rem;
-}
-
 .exp-copy h2 {
   font: inherit;
   color: inherit;
   margin: 0 0 1rem;
 }
 
+/* Same size as the hero lead (the project body token). */
+.exp-copy .exp-heading {
+  font-size: var(--proj-copy);
+  font-weight: 500;
+  margin-bottom: 0.6em;
+}
+
 .exp-copy p {
   font: inherit;
   color: inherit;
   margin: 0;
+}
+
+.exp-copy p + p {
+  margin-top: 1em;
 }
 
 /* CV + portfolio: two equal outlined buttons splitting the copy column,
