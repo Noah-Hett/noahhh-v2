@@ -185,7 +185,7 @@ const gizmophone: Project = {
       meta: {
         date: 'December 2025',
         scope: 'interaction design, electronics, mechatronics',
-        role: 'TBD',
+        role: 'Co-Creator',
         collaborators: [
           { name: 'Dermot Mooney', url: 'https://www.linkedin.com/in/dermot-mooney-a1160b323/' },
         ],
