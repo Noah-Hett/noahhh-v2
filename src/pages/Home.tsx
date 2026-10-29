@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { prefersReducedMotion } from '../utils/reducedMotion.ts';
 import { getSelected, challengeOf, coverSrcSet, coverWebp, coverWebpSrcSet, projects, type Project } from '../content/projects.ts';
 import { FeaturedCard } from '../components/FeaturedCard/FeaturedCard.tsx';
+import { documentScrollTimeline, scrollRamp } from '../utils/scrollTimeline.ts';
 import { useProjectFonts } from '../components/blocks/useProjectChrome.ts';
 import { ViewMore, type ViewMoreItem } from '../components/ViewMore/ViewMore.tsx';
 import { ExperienceDiagram } from '../components/ExperienceDiagram/ExperienceDiagram.tsx';
@@ -281,6 +282,30 @@ export default function Home() {
     const copy = copyRef.current;
     if ((!art && !copy) || typeof window === 'undefined') return;
     if (prefersReducedMotion()) return;
+    // Scroll-driven path: the same -0.2 × scrollY played on the page's
+    // ScrollTimeline, so it moves with the scroll itself. Held once the
+    // hero has scrolled away, like the parked rAF loop. Rebuilt when the
+    // page height changes (keyframe offsets are fractions of it).
+    const timeline = documentScrollTimeline();
+    const heroSection = (art ?? copy)?.closest('section');
+    if (timeline && heroSection) {
+      let anims: Animation[] = [];
+      const build = (): void => {
+        anims.forEach((a) => a.cancel());
+        const end = heroSection.getBoundingClientRect().bottom + window.scrollY;
+        const ramp = (p: number): string => `0 ${(-0.2 * p * end).toFixed(1)}px`;
+        anims = [art, copy].filter((n): n is HTMLDivElement => !!n).map((n) => scrollRamp(n, timeline, 'translate', 0, end, ramp));
+      };
+      build();
+      const ro = 'ResizeObserver' in window ? new ResizeObserver(build) : null;
+      ro?.observe(document.body);
+      window.addEventListener('resize', build);
+      return () => {
+        ro?.disconnect();
+        window.removeEventListener('resize', build);
+        anims.forEach((a) => a.cancel());
+      };
+    }
     const hero = (art ?? copy)?.closest('section');
     let raf = 0;
     let visible = true;
