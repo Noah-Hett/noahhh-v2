@@ -685,7 +685,179 @@ const icHack26: Project = {
   ],
 };
 
-export const projects: Project[] = [icHack26, gizmophone, buskRadio];
+// Cover is an image hero (local poster). Body PNGs are 1600w AVIF;
+// body SVGs ride as-is on R2 (renamed lowercase-hyphen).
+const panelcal: Project = {
+  slug: 'panelcal',
+  title: 'PanelCal',
+  tags: [],
+  selected: false,
+  colors: { light: '#EFECEC', dark: '#302E2E' },
+  font: {
+    family: 'Geist',
+    src: '/fonts/projects/panelcal/Geist-Bold.woff2',
+    fallback: 'system-ui, sans-serif',
+  },
+  cover: {
+    kind: 'image',
+    src: '/posters/panelcal/cover-800.avif',
+    alt: 'PanelCal prototype in dark mode: a week view of calendar events and scheduled tasks, with a control panel along the bottom holding an add-task dial and a stack of unscheduled tasks.',
+    width: 5128,
+    height: 3348,
+    srcSet: [
+      { src: '/posters/panelcal/cover-800.avif', width: 800 },
+      { src: '/posters/panelcal/cover-1600.avif', width: 1600 },
+      { src: '/posters/panelcal/cover-2400.avif', width: 2400 },
+    ],
+  },
+  groups: [
+    {
+      id: 'challenge',
+      heading: 'Challenge',
+      summary:
+        'An embodiment of my frustration with the available solutions to calendars and task scheduling. Building something personal that adapts to my workflow and how I wanted to be able to manage my time.',
+      meta: {
+        date: 'Current',
+        scope: 'Web app Design + Development',
+        role: 'Solo',
+        collaborators: [],
+      },
+      blocks: [
+        {
+          kind: 'image',
+          id: 'tasks',
+          src: 'https://media.noahhh.com/panelcal/tasks.svg',
+          alt: 'Wireframe of three task cards: an empty dashed placeholder, an open task, and a completed task with a tick.',
+          width: 487,
+          height: 282,
+        },
+        {
+          kind: 'text',
+          for: 'tasks',
+          body: 'From my own experimentation with digital time organisation and task tracking, I found current systems are half-baked.',
+        },
+        {
+          kind: 'text',
+          for: 'currentcalendar',
+          body: 'Often, they take a reminders/to-do app and force a user to manually assign elements to each day through using basic abstracted input.\n\nThis lacks both fidelity and prioritisation, simply giving users the option to put tasks on days makes the creation of those tasks a chore.',
+        },
+        {
+          kind: 'image',
+          id: 'currentcalendar',
+          src: 'https://media.noahhh.com/panelcal/currentcalendar.svg',
+          alt: 'Wireframe of a typical week calendar: solid event blocks and dashed task placeholders spread across the days.',
+          width: 705,
+          height: 343,
+        },
+      ],
+    },
+    {
+      id: 'process',
+      heading: 'Process',
+      blocks: [
+        {
+          kind: 'gallery',
+          caption:
+            'Concept art for the initial calendar idea, where I experimented with splitting time into ‘blocks’, ‘tasks’ and ‘errands’.\nBlocks: Time taken up (lectures, meetings)\nTasks: Time to do things (homework)\nErrands: Quick tasks to get on with',
+          images: [
+            {
+              src: 'https://media.noahhh.com/panelcal/concept-art-1-1600.avif',
+              alt: 'Concept art of a week of university lectures as dark blocks, with tasks as light pill-shaped cards slotted between them.',
+              width: 2528,
+              height: 1260,
+            },
+            {
+              src: 'https://media.noahhh.com/panelcal/concept-art-2-1600.avif',
+              alt: 'The same concept with colour-coding: each module gets an accent colour, and its tasks carry a matching dot.',
+              width: 2592,
+              height: 1280,
+            },
+          ],
+        },
+        {
+          kind: 'image',
+          id: 'initial-prototype',
+          src: 'https://media.noahhh.com/panelcal/initial-prototype-1600.avif',
+          alt: 'Early dark-mode prototype: synced calendar events and scheduled test tasks in a week view, with the stack of tasks along the bottom.',
+          width: 2976,
+          height: 1680,
+        },
+        {
+          kind: 'text',
+          for: 'initial-prototype',
+          body: 'I built the initial prototype in a 2 day sprint, bringing together Google + Microsoft calendar sync, the first scheduling algorithm, and the UI layout I had planned. This early version established the technical side too, with OAuth, and database syncing through Convex.',
+        },
+        {
+          kind: 'text',
+          for: 'visual-ties',
+          body: 'The key feature that I brought in was visual ‘ties’. By visually attaching together tasks and blocks, I make a much stronger mental connection between work that needs completing, and the time that it’s due by.',
+        },
+        {
+          kind: 'image',
+          id: 'visual-ties',
+          src: 'https://media.noahhh.com/panelcal/visual-ties.svg',
+          alt: 'Wireframe of a task tied to a calendar block by a curved line, linking the work to its deadline.',
+          width: 718,
+          height: 337,
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/panelcal/redesign-1600.avif',
+            alt: 'Light-mode redesign: task card variants with red accents in raised, tactile styling, above the restyled week view.',
+            width: 4108,
+            height: 2676,
+          },
+          body: 'For the full 2.0 version I decided it needed a visual refresh, for this I took dual inspiration from modern music synths and late 1990s metallic desktop interfaces.',
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'After establishing the aesthetic, I moved onto development of the bottom ‘panel’ that gives the app its name. Starting with identifying the key functions and their placement.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/panelcal/bottompanel.svg',
+              alt: 'Wireframe of the bottom panel’s three zones (Main Functions, The Stack, Session Mode) above the finished metallic panel.',
+              width: 1298,
+              height: 404,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'outcome',
+      heading: 'Outcome',
+      blocks: [
+        {
+          kind: 'image',
+          id: 'addtaskbutton',
+          src: 'https://media.noahhh.com/panelcal/addtaskbutton-1600.avif',
+          alt: 'The add-task button in dark and light versions: a raised round dial with a plus sign and a red indicator dot.',
+          width: 2990,
+          height: 1393,
+        },
+        {
+          kind: 'text',
+          for: 'addtaskbutton',
+          body: 'After defining shape and layout, I moved to adding shadow and depth, for both a light and dark interface. The calendar uses minimal colour, though an expanded palette was needed to separate events.',
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/panelcal/currentdesign-1600.avif',
+            alt: 'The current PanelCal design in dark and light mode, with the light window overlapping the dark one.',
+            width: 4168,
+            height: 2388,
+          },
+          body: 'As an active project, PanelCal keeps being updated, the latest version is 2.12.0, where I added auto-colouration of calendar blocks.',
+        },
+      ],
+    },
+  ],
+};
+
+export const projects: Project[] = [icHack26, gizmophone, buskRadio, panelcal];
 
 export function getProject(slug: string | undefined): Project | undefined {
   const project = projects.find((p) => p.slug === slug);

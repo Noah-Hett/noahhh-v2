@@ -80,6 +80,8 @@
 .project-body .showcase-copy {
   margin: 0;
   max-width: none;
+  /* Authored \n in body copy renders as a line break. */
+  white-space: pre-line;
 }
 
 /* Standalone visual (explicit fallback — real visuals end up paired or in
@@ -195,6 +197,7 @@
 .gallery-caption {
   margin: var(--proj-space-tight) 0 0;
   max-width: 43.2%;
+  white-space: pre-line;
 }
 
 /* Mobile halves on the same 12 columns: desktop trios re-partition to
