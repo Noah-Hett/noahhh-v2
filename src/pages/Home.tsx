@@ -53,7 +53,7 @@ function shouldSkipIntro(hash: string): boolean {
 // touch this string — delays cascade from WORD_BASE + index * WORD_STEP
 // and LONDON trails the last word by LONDON_GAP. Reads as a line wave at
 // any viewport width with no manual break points to maintain.
-const HERO_LEAD = 'Noah Hett is a design engineer, with a love for user-centred design projects, and a slight obsession with visual communications';
+const HERO_LEAD = 'Noah Hett is a design engineer, with a love for user-centred design projects, and a slight obsession with visual communication';
 const HERO_LEAD_WORDS = HERO_LEAD.split(' ');
 const WORD_BASE = 1.1;
 const WORD_STEP = 0.03;
