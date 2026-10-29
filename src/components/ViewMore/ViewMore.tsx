@@ -92,13 +92,17 @@ function distribute(items: ViewMoreItem[], count: number): { cols: Placed[][]; t
       const t = h[tileCol];
       return top - low + (t > top ? t - top : (top - t) * 0.25);
     };
+    // The tile always shares its column with at least one photo (given
+    // enough photos): left alone it stretches into a full-height panel.
+    const tileEmpty = (cs: number[]): boolean => items.length >= count && !cs.includes(tileCol);
     const h0 = base();
     best.forEach((c, i) => (h0[c] += ratios[i]));
-    let bestSpread = spread(h0);
+    let bestSpread = tileEmpty(best) ? Infinity : spread(h0);
     const pick = new Array<number>(items.length).fill(0);
     const h = base();
     const walk = (i: number, opened: number): void => {
       if (i === items.length) {
+        if (tileEmpty(pick)) return;
         const s = spread(h);
         if (s < bestSpread - 1e-9) {
           bestSpread = s;

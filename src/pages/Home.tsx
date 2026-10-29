@@ -91,12 +91,10 @@ const COLLAGE_PICKS: string[] = [
   'https://media.noahhh.com/ic-hack-26/in-environment-1600.avif',
   'https://media.noahhh.com/gizmophone/in-use-1600.avif',
   'https://media.noahhh.com/busk-radio/hero-1600.avif',
-  'https://media.noahhh.com/ic-hack-26/cupcakes-1600.avif',
+  'https://media.noahhh.com/panelcal/currentdesign-1600.avif',
   'https://media.noahhh.com/gizmophone/detail-1600.avif',
   'https://media.noahhh.com/busk-radio/front-bw-1600.avif',
   'https://media.noahhh.com/ic-hack-26/tshirts-give-out-1600.avif',
-  'https://media.noahhh.com/ic-hack-26/group-photo-1600.avif',
-  'https://media.noahhh.com/panelcal/currentdesign-1600.avif',
   'https://media.noahhh.com/panelcal/addtaskbutton-1600.avif',
 ];
 
