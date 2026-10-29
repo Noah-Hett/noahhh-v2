@@ -48,6 +48,14 @@ when drafting URLs. Never hardcode a second base in `projects.ts`.
   / `srcHeight`); copy them across, never guess.
 * Filenames: `<slug>/<name>-<w>.<ext>`, content-hash optional but
   recommended for immutable caching.
+* SVG line art is uploaded as-is (no AVIF/WebP). Check it on BOTH Project
+  canvases: black art vanishes on the dark one, white on the light one.
+  Fix only the ones that fail with `node scripts/theme-svg.mjs --slug
+  <slug> <file|url> --dark black=white` (or `--light white=black`;
+  `stroke:`/`fill:` prefix limits a swap). It embeds a
+  prefers-color-scheme style and writes `<stem>-themed.svg`; upload that
+  and use its URL. Self-contained art (dials, quote bubbles, swatches)
+  needs nothing.
 
 ## Cover + poster promotion
 

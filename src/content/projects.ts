@@ -283,7 +283,7 @@ const gizmophone: Project = {
               height: 4160,
             },
             {
-              src: 'https://media.noahhh.com/gizmophone/technicaldrawings.svg',
+              src: 'https://media.noahhh.com/gizmophone/technicaldrawings-themed.svg',
               alt: 'Technical drawings of the GIZMOPHONE',
               width: 837,
               height: 253,
@@ -355,7 +355,7 @@ const buskRadio: Project = {
         {
           kind: 'image',
           id: 'barriers',
-          src: 'https://media.noahhh.com/busk-radio/Group-241.svg',
+          src: 'https://media.noahhh.com/busk-radio/Group-241-themed.svg',
           alt: 'Diagram listing 3 barriers to interaction: Social Barriers, Cash Decline and Time Constraints',
           width: 594,
           height: 530,
@@ -408,7 +408,7 @@ const buskRadio: Project = {
             'By mapping the journeys of our key stakeholders, we identified donation as the central pain point. We set out to develop a system that breaks down social barriers, responds to the decline of cash, and reduces the time pressure on audience-busker interactions.',
           images: [
             {
-              src: 'https://media.noahhh.com/busk-radio/journeymap.svg',
+              src: 'https://media.noahhh.com/busk-radio/journeymap-themed.svg',
               alt: 'Busker and Audience Member journey map',
               width: 1385,
               height: 526,
@@ -540,7 +540,7 @@ const icHack26: Project = {
         {
           kind: 'image',
           id: 'problem',
-          src: 'https://media.noahhh.com/ic-hack-26/problem.svg',
+          src: 'https://media.noahhh.com/ic-hack-26/problem-themed.svg',
           alt: 'Diagram stating the design problem for IC Hack 26',
           width: 1067,
           height: 406,
@@ -559,7 +559,7 @@ const icHack26: Project = {
         {
           kind: 'image',
           id: 'fonts',
-          src: 'https://media.noahhh.com/ic-hack-26/fonts-v2.svg',
+          src: 'https://media.noahhh.com/ic-hack-26/fonts-v2-themed.svg',
           alt: 'Selected fonts for IC Hack 26',
           width: 509,
           height: 384,
