@@ -88,6 +88,11 @@ ProjectBlock =
     `npm run media:variants` rewrites `src/content/mediaVariants.ts` from
     the manifests; it is how Project pages know each image's sizes.
     Commit it with the entry. Skipping it silently serves 1600w AVIF only.
+12. **Every SVG passes the canvas check before upload.** SVGs ship as-is
+    (no AVIF/WebP) and sit straight on the Project canvas, so black line
+    art vanishes on the dark colour and white art on the light one. Run
+    `npm run media:svg-check` (step 3) and fix each failure with
+    `npm run media:svg-theme` — only the ones that fail, never blanket.
 
 ## Workflow
 
@@ -162,12 +167,28 @@ collage photos at Q6, run
 each pick's R2 1600w AVIF URL to `COLLAGE_PICKS` in `src/pages/Home.tsx`
 (finished-work photos only — no process graphics, renders or CAD).
 
+If any `.svg` was staged, run the canvas check (rule 12) with the
+colours confirmed at intake:
+`npm run media:svg-check -- --slug <slug> --light <#hex> --dark <#hex>`.
+Look at `.media-tmp/<slug>/svg-check.png` (left: light page, right: dark
+page; show it to the user if you can't view images) and list every SVG
+whose art is hard to see on either side. Art with its own background
+(dials, speech bubbles, swatches) usually passes. Confirm the list with
+the user, then theme each one, e.g.
+`npm run media:svg-theme -- --slug <slug> .media-tmp/<slug>/<file>.svg --dark black=white`
+(`--light white=black` for white art; a `stroke:`/`fill:` prefix limits
+a swap to that paint). Staged files not yet on R2 are fixed in place.
+Re-run the check until every SVG reads on both sides.
+
 Report what was produced: per-image AVIF+WebP (body 800/1600/2400w, cover
 800/1600/2400 where the source allows), cover variants, poster file + size
 (or "poster: missing" — stop, posters are triple-load-bearing; extract via
 `ffmpeg`, rule 7), derived video sizes, font staged file + size. Record
 every image's source dims — the manifest draft needs them transcribed
-into solo, gallery, strip, and showcase visuals.
+into solo, gallery, strip, and showcase visuals. SVG dims come from the
+optimizer's `[svg]` lines (`manifest.json` → `passthrough[].srcWidth` /
+`srcHeight`), and their `src` is the plain `.svg` URL (no variants).
+Also report the SVG canvas check: which files were themed and how.
 
 ### 4. Manifest patch — diff first, validate, apply on approval
 

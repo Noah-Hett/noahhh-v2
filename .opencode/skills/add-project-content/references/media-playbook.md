@@ -48,6 +48,17 @@ when drafting URLs. Never hardcode a second base in `projects.ts`.
   / `srcHeight`); copy them across, never guess.
 * Filenames: `<slug>/<name>-<w>.<ext>`, content-hash optional but
   recommended for immutable caching.
+* SVGs are staged as-is (no AVIF/WebP) by the optimizer, which prints
+  their dims. They sit straight on the Project canvas, so each one goes
+  through `npm run media:svg-check -- --slug <slug> --light <#hex> --dark
+  <#hex>` (renders `.media-tmp/<slug>/svg-check.png`: light page left,
+  dark page right). Fix only the failures with `npm run media:svg-theme --
+  --slug <slug> <file|url> --dark black=white` (or `--light white=black`;
+  a `stroke:`/`fill:` prefix limits a swap). It embeds a
+  prefers-color-scheme style and leaves `<mask>` paint alone. Staged files
+  not yet on R2 are themed in place; an SVG already live is written to
+  `<stem>-themed.svg` (R2 caches immutably) — upload that and switch the
+  URL. Self-contained art (dials, quote bubbles, swatches) needs nothing.
 
 ## Cover + poster promotion
 
