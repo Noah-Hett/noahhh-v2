@@ -74,6 +74,13 @@ picture.pimg > source {
   display: none;
 }
 
+/* Text selection inverts the page: ink becomes the highlight, canvas the
+   text. Tokens flip with the OS scheme and per Project, so it follows. */
+::selection {
+  background: var(--text-primary);
+  color: var(--surface-page);
+}
+
 /* Per-Project theming (see projects.ts colors + ProjectPage).
    ProjectPage sets --proj-light/--proj-dark + data-project on <html>;
    these overrides retarget the same tokens (flip rule: light OS uses
