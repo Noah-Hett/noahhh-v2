@@ -67,6 +67,13 @@ picture.pimg {
   display: contents;
 }
 
+/* Browsers don't hide <source> by default: it's an empty box. With the
+   <picture> flattened, each one would become a grid/flex item of its own
+   (galleries lost cells to them), so take them out of layout. */
+picture.pimg > source {
+  display: none;
+}
+
 /* Per-Project theming (see projects.ts colors + ProjectPage).
    ProjectPage sets --proj-light/--proj-dark + data-project on <html>;
    these overrides retarget the same tokens (flip rule: light OS uses

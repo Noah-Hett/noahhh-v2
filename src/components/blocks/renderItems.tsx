@@ -46,9 +46,10 @@ export function renderItems(items: BodyItem[]): ReactNode {
           <ProjectImage image={item.block} sizes="(max-width: 2200px) 100vw, 2200px" />
         )}
         {item.block.kind === 'pdf' && (
-          <p>
+          <p className="project-pdf">
             <a href={item.block.href} target="_blank" rel="noreferrer">
-              View {item.block.label} (PDF, opens in new tab)
+              View {item.block.label}
+              <span className="visually-hidden"> (PDF, opens in new tab)</span>
             </a>
           </p>
         )}

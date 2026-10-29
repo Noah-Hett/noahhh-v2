@@ -11,10 +11,8 @@ type ShowcaseBlockType = Extract<ProjectBlock, { kind: 'showcase' }>;
 // Detail strip: justified filmstrip — row height derives from the images
 // (H = (row width − gaps) ÷ summed aspects) so the row always fills
 // exactly with constant gaps and natural aspects. No cap: portrait-heavy
-// sets get tall rows. When the derived height would drop below the floor,
-// the strip wraps to left-aligned uniform rows at floor height instead of
-// shrinking further. Width measured live (ResizeObserver).
-export const STRIP_FLOOR = 120;
+// sets get tall rows. Always one row — on narrow screens the strip just
+// gets shorter. Width measured live (ResizeObserver).
 
 function ShowcaseStrip({ items }: { items: ShowcaseBlockType['strip'] }) {
   const stripRef = useRef<HTMLDivElement>(null);
@@ -38,11 +36,12 @@ function ShowcaseStrip({ items }: { items: ShowcaseBlockType['strip'] }) {
 
   const list = items ?? [];
   const aspects = list.map((item) => (item.height > 0 ? item.width / item.height : 1));
+  // Floored to the hundredth so sub-pixel rounding never pushes the last
+  // cell past the row.
   const derived =
     rowWidth !== null && list.length > 0
-      ? (rowWidth - gap * (list.length - 1)) / aspects.reduce((a, b) => a + b, 0)
+      ? Math.floor(((rowWidth - gap * (list.length - 1)) / aspects.reduce((a, b) => a + b, 0)) * 100) / 100
       : null;
-  const singleRow = derived !== null && derived >= STRIP_FLOOR;
 
   return (
     <div
@@ -50,7 +49,7 @@ function ShowcaseStrip({ items }: { items: ShowcaseBlockType['strip'] }) {
       className="showcase-strip"
       role="list"
       aria-label="Detail views"
-      style={singleRow && derived !== null ? ({ '--strip-h': `${derived}px` } as VarStyle) : undefined}
+      style={derived !== null ? ({ '--strip-h': `${derived}px` } as VarStyle) : undefined}
     >
       {list.map((item, i) => (
         <div key={`${item.src}::${i}`} className="showcase-cell" role="listitem">

@@ -119,9 +119,17 @@
 .project-collabs {
   list-style: none;
   display: flex;
+  /* One line, right-aligned with the rest of the meta stack. */
+  justify-content: flex-end;
   gap: 8px;
   margin: 0;
   padding: 0;
+}
+
+/* The intro sits inside .project-body, whose block-list rule spaces
+   every li + li by block rhythm — not wanted between initials. */
+.project-body .project-collabs li {
+  margin: 0;
 }
 
 .project-collabs a,
@@ -200,6 +208,10 @@
 
   .project-meta {
     text-align: left;
+  }
+
+  .project-collabs {
+    justify-content: flex-start;
   }
 }
 

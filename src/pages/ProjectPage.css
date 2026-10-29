@@ -39,6 +39,42 @@
   max-width: min(43.2%, 880px);
 }
 
+/* PDF link (e.g. the full report): centred outlined button, the same
+   style as the CV / Portfolio buttons on Home. */
+.project-body .project-pdf {
+  max-width: none;
+  text-align: center;
+  font-size: var(--ui-copy);
+}
+
+.project-pdf a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-width: min(100%, 16rem);
+  color: inherit;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  padding: 14px 16px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.project-pdf a::after {
+  content: '↗';
+}
+
+.project-pdf a:hover {
+  background: var(--text-primary);
+  color: var(--surface-page);
+}
+
+.project-pdf a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
 /* Pair + showcase copy are sized by their tracks, never by this cap. */
 .project-body .pair-copy,
 .project-body .showcase-copy {
@@ -200,11 +236,11 @@
 /* Detail strip: justified filmstrip. Uniform height derives from the
    images (--strip-h, measured: row width minus gaps over summed aspects)
    so the row fills exactly with constant gaps and natural aspects — no
-   letterboxing, no crop. Below the floor the fixed height holds and rows
-   wrap left-aligned instead of shrinking further. */
+   letterboxing, no crop. Always one row: narrow screens get a shorter
+   strip, never a second line. */
 .showcase-strip {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   gap: clamp(24px, calc(4 * var(--pvw)), 60px);
   margin-top: var(--proj-space-tight);
@@ -231,8 +267,7 @@
    keeps source order), on the tight intra gap. Breaks at 1150px: the
    protected proportion + visual minimum + gap need ~900px of content
    before tracks start squeezing, so the grid yields early. Showcase stacks
-   visual → copy → strip the same way; the strip keeps its uniform height
-   (proportionally floored) and wraps. */
+   visual → copy → strip the same way; the strip stays one row. */
 @media (max-width: 1150px) {
   .showcase-main {
     grid-template-columns: minmax(0, 1fr);
