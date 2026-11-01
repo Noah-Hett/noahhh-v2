@@ -21,6 +21,11 @@
 
 .project-title {
   font-weight: 400;
+  /* Project fonts render as designed: don't inherit the body's Instrument
+     Sans stylistic sets (ss03/ss04 swap glyphs in other fonts, e.g. a
+     serifed I in Noto IKEA) or its 95% stretch. */
+  font-feature-settings: normal;
+  font-stretch: normal;
   letter-spacing: -0.01em;
   text-wrap: balance;
   /* Phase 1: always centered display title. Family stays per-Project

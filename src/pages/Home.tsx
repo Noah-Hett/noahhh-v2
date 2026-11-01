@@ -97,6 +97,9 @@ const COLLAGE_PICKS: string[] = [
   'https://media.noahhh.com/busk-radio/front-bw-1600.avif',
   'https://media.noahhh.com/ic-hack-26/tshirts-give-out-1600.avif',
   'https://media.noahhh.com/panelcal/addtaskbutton-1600.avif',
+  'https://media.noahhh.com/bietub/in_environment-1600.avif',
+  'https://media.noahhh.com/bietub/app_aqi-1600.avif',
+  'https://media.noahhh.com/bietub/packaging2-800.avif',
 ];
 
 function projectImages(p: Project): ViewMoreItem[] {
@@ -123,7 +126,8 @@ function projectImages(p: Project): ViewMoreItem[] {
 const COLLAGE_WIDTHS = [480, 720, 960];
 
 function collageThumbs(src: string): Pick<ViewMoreItem, 'srcSetAvif' | 'srcSetWebp'> {
-  const m = src.match(/media\.noahhh\.com\/([^/]+)\/(.+)-1600\.avif$/);
+  // 800w src = source narrower than 1600 (the optimizer's largest variant).
+  const m = src.match(/media\.noahhh\.com\/([^/]+)\/(.+)-(?:1600|800)\.avif$/);
   if (!m) return {};
   const base = `/collage/${m[1]}-${m[2]}`;
   const set = (ext: string) => COLLAGE_WIDTHS.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');

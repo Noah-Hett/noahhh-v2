@@ -7,6 +7,218 @@ const GROUPS: MediaVariants[] = [
   {
     "avif": [
       [
+        "https://media.noahhh.com/bietub/app_aqi-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_aqi-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_aqi-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/app_aqi-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_aqi-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_aqi-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/app_metrics-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_metrics-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_metrics-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/app_metrics-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_metrics-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/bietub/app_metrics-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/diffuserlayer-800.avif",
+        800
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/diffuserlayer-800.webp",
+        800
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/finalairflow-800.avif",
+        800
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/finalairflow-800.webp",
+        800
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/in_environment-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/in_environment-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/bietub/in_environment-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/in_environment-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/in_environment-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/bietub/in_environment-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/modeswitch-800.avif",
+        800
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/modeswitch-800.webp",
+        800
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/packaging1-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/packaging1-1600.avif",
+        1600
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/packaging1-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/packaging1-1600.webp",
+        1600
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/packaging2-800.avif",
+        800
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/packaging2-800.webp",
+        800
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/sensinglayer-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/sensinglayer-1600.avif",
+        1600
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/sensinglayer-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/sensinglayer-1600.webp",
+        1600
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
+        "https://media.noahhh.com/bietub/warning-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/warning-1600.avif",
+        1600
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/bietub/warning-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/bietub/warning-1600.webp",
+        1600
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
         "https://media.noahhh.com/busk-radio/group-240-800.avif",
         800
       ],
