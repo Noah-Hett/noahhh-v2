@@ -857,7 +857,250 @@ const panelcal: Project = {
   ],
 };
 
-export const projects: Project[] = [icHack26, gizmophone, buskRadio, panelcal];
+// Cover is an image hero (local poster). Body PNGs are 1600w AVIF;
+// body SVGs ride as-is on R2 (spaces normalised to hyphens).
+const bietub: Project = {
+  slug: 'bietub',
+  title: 'BIETUB',
+  tags: [],
+  selected: false,
+  colors: { light: '#FBDA0C', dark: '#0057AD' },
+  font: {
+    family: 'Noto IKEA',
+    src: '/fonts/projects/bietub/Noto-sans-ikea-bold.ttf',
+    fallback: 'system-ui, sans-serif',
+  },
+  cover: {
+    kind: 'image',
+    src: '/posters/bietub/cover-800.avif',
+    alt: 'A hand holding BIETUB, a stack of rounded yellow modules, in a makerspace storeroom.',
+    width: 5184,
+    height: 3456,
+    srcSet: [
+      { src: '/posters/bietub/cover-800.avif', width: 800 },
+      { src: '/posters/bietub/cover-1600.avif', width: 1600 },
+      { src: '/posters/bietub/cover-2400.avif', width: 2400 },
+    ],
+  },
+  groups: [
+    {
+      id: 'challenge',
+      heading: 'Challenge',
+      summary:
+        'Bringing intuitive, multimodal communication to air quality monitoring. Creating a modular device that enables visibility for the invisible risks of fumes in makerspaces, through scent, light and mechatronic movements.',
+      meta: {
+        date: 'June 2026',
+        scope: 'Product Design Engineering',
+        role: 'COO, Software + System Design',
+        collaborators: [
+          { name: 'Joseph Birch', url: 'https://www.linkedin.com/in/joseph-birch-546683278/' },
+          { name: 'Leila Ali', url: 'https://www.linkedin.com/in/leila-ali-design-engineer/' },
+          { name: 'Kyara Surtani', url: 'https://www.linkedin.com/in/kyara-surtani-144252410/' },
+        ],
+      },
+      blocks: [
+        {
+          kind: 'image',
+          id: 'makerspaces',
+          src: 'https://media.noahhh.com/bietub/makerspaces.svg',
+          alt: 'Illustration of a pillar drill, 3D printer and resin printer giving off clouds of fumes, under an outlined ‘Makerspaces’ title.',
+          width: 700,
+          height: 482,
+        },
+        {
+          kind: 'text',
+          for: 'makerspaces',
+          body: 'Makerspaces give people the freedom to create and invent. But that freedom comes with a catch: laser cutters, 3D printers, sanders, and more share the same air, releasing fumes or fine particles as they run.',
+        },
+        {
+          kind: 'text',
+          for: 'multimodality',
+          body: 'These invisible risks need signals that can’t be missed. Busy makers don’t see warnings, so we need multimodal communication.\nA combination of light, movement, and scent, designed to reach you even when distracted.',
+        },
+        {
+          kind: 'image',
+          id: 'multimodality',
+          src: 'https://media.noahhh.com/bietub/multimodality.svg',
+          alt: 'Outlined ‘Multi-modality’ lettering.',
+          width: 660,
+          height: 235,
+        },
+      ],
+    },
+    {
+      id: 'process',
+      heading: 'Process',
+      blocks: [
+        {
+          kind: 'image',
+          id: 'beehive',
+          src: 'https://media.noahhh.com/bietub/beehive.svg',
+          alt: 'Stack diagram of BIETUB’s five layers: reservoir, diffusion, mechatronics, sensing and battery.',
+          width: 339,
+          height: 307,
+        },
+        {
+          kind: 'text',
+          for: 'beehive',
+          body: 'This concept lent itself to the device being fully modular. With different communication modes in each module. This would allow users to swap out and reconfigure depending on their needs.',
+        },
+        {
+          kind: 'text',
+          for: 'modularity',
+          body: 'Our goal was that each layer should be electronically separable with standard connections, so custom layers could be designed by makers.',
+        },
+        {
+          kind: 'image',
+          id: 'modularity',
+          src: 'https://media.noahhh.com/bietub/modularity.svg',
+          alt: 'Three layer configurations showing how the reservoir, mechatronics, primary electronics and battery modules can be reordered.',
+          width: 633,
+          height: 223,
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'To understand this multimodal system I mapped the ‘logical flow’ and structure, breaking the system down into its elements.\nThe ‘true system’ is different: this is the realistic data flow between realtime tasks, how the system can be translated to code.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/bietub/logical-flow.svg',
+              alt: 'Flowchart of the logical flow: shared state, sensor read, a Time-or-Levels decision feeding the AQI or exposure engine, then logger, actuators and monitors.',
+              width: 569,
+              height: 509,
+            },
+            {
+              src: 'https://media.noahhh.com/bietub/truesystem.svg',
+              alt: 'Diagram of the true system: realtime tasks reading and writing a shared state, driving the web app, LED rings, diffuser and servo.',
+              width: 514,
+              height: 531,
+            },
+          ],
+        },
+        {
+          kind: 'image',
+          id: 'modeswitch',
+          src: 'https://media.noahhh.com/bietub/modeswitch-800.avif',
+          alt: 'The mode switch: a timer icon for Time mode beside a bar-chart icon for Levels mode.',
+          width: 1458,
+          height: 838,
+        },
+        {
+          kind: 'text',
+          for: 'modeswitch',
+          body: 'The key decision point is data processing: Time vs Levels - interpolating time remaining at safe limits, or an index (AQI) based on current pollutant concentration.',
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'The electronics were my main practical focus, routing and wiring up each layer and their connecting plates.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/bietub/wiring-diagram.svg',
+              alt: 'Wiring diagram linking the battery, sensing, mechatronics and diffuser layers through shared SCL, SDA, 5V, ground, LED and servo lines.',
+              width: 1383,
+              height: 540,
+            },
+          ],
+        },
+        {
+          kind: 'text',
+          for: 'sensinglayer',
+          body: 'The most complex is the sensing layer, housing the computation, user input and airflow elements as well as the sensor itself.',
+        },
+        {
+          kind: 'image',
+          id: 'sensinglayer',
+          src: 'https://media.noahhh.com/bietub/sensinglayer-1600.avif',
+          alt: 'The sensing layer as labelled diagrams (microcontroller, sensor, breakout, button, pogo PCB) beside photos of the assembled electronics.',
+          width: 1941,
+          height: 1249,
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'Ensuring that scent spreads around the space was another element key to BIETUB’s successful function. I trialled many different internal profiles for mist routing, landing on one that provided a balance of volume and spread distance.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/bietub/finalairflow-800.avif',
+              alt: 'Cross-section of the diffuser showing airflow paths through the water reservoir.',
+              width: 1525,
+              height: 1716,
+            },
+            {
+              src: 'https://media.noahhh.com/bietub/diffuserlayer-800.avif',
+              alt: 'Close-up of the diffuser layer releasing mist.',
+              width: 1564,
+              height: 1564,
+            },
+            {
+              src: 'https://media.noahhh.com/bietub/mistrouting.svg',
+              alt: 'Four internal profiles trialled for routing mist out of the lid.',
+              width: 288,
+              height: 378,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'outcome',
+      heading: 'Outcome',
+      blocks: [
+        {
+          kind: 'gallery',
+          caption:
+            'The application enables users to track real-time sensor measurements and switch between Time and Levels modes. I developed BIETUB to run a small web server hosted from its internal network, so no other Wi-Fi connection is needed.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/bietub/app_aqi-1600.avif',
+              alt: 'Phone showing the BIETUB web app dashboard with a ‘Good’ air quality index.',
+              width: 2564,
+              height: 3204,
+            },
+            {
+              src: 'https://media.noahhh.com/bietub/app_metrics-1600.avif',
+              alt: 'Phone showing live pollutant readings (PM, VOC and NOx indices) in the web app.',
+              width: 2552,
+              height: 2236,
+            },
+          ],
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/bietub/in_environment-1600.avif',
+            alt: 'BIETUB’s stacked yellow modules on a makerspace workbench beside soldering equipment.',
+            width: 4028,
+            height: 3536,
+          },
+          body: 'The colour, material and finish of the device in combination with the use of simplified zoomorphism gears it to fit directly into IKEA’s brand identity, right alongside other iconic modular designs.',
+          strip: [
+            {
+              src: 'https://media.noahhh.com/bietub/warning-1600.avif',
+              alt: 'BIETUB’s LED ring glowing pink as a warning.',
+              width: 2048,
+              height: 1384,
+            },
+            {
+              src: 'https://media.noahhh.com/bietub/packaging1-1600.avif',
+              alt: 'BIETUB’s flat-pack packaging on a store shelf, printed with a beehive graphic.',
+              width: 2052,
+              height: 1384,
+            },
+            {
+              src: 'https://media.noahhh.com/bietub/packaging2-800.avif',
+              alt: 'A single BIETUB box among cardboard packaging.',
+              width: 968,
+              height: 1384,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const projects: Project[] = [icHack26, gizmophone, buskRadio, panelcal, bietub];
 
 export function getProject(slug: string | undefined): Project | undefined {
   const project = projects.find((p) => p.slug === slug);
