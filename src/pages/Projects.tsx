@@ -6,8 +6,14 @@ import { prefersReducedMotion } from '../utils/reducedMotion.ts';
 import { useLazyVideo } from '../utils/useLazyVideo.ts';
 import './Projects.css';
 
+// Feature/stretch reset: Project fonts render as designed, not with the
+// body's Instrument Sans stylistic sets (see .project-title).
 function titleStyle(p: Project): CSSProperties {
-  return { fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}` };
+  return {
+    fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}`,
+    fontFeatureSettings: 'normal',
+    fontStretch: 'normal',
+  };
 }
 
 function saveData(): boolean {

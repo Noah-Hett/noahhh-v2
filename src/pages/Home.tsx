@@ -152,8 +152,14 @@ function firstSentence(text: string): string {
   return (match ? match[0] : text).trim();
 }
 
+// Feature/stretch reset: Project fonts render as designed, not with the
+// body's Instrument Sans stylistic sets (see .project-title).
 function projectTitleStyle(p: { font: { family: string; fallback?: string } }): CSSProperties {
-  return { fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}` };
+  return {
+    fontFamily: `"${p.font.family}", ${p.font.fallback ?? 'system-ui, sans-serif'}`,
+    fontFeatureSettings: 'normal',
+    fontStretch: 'normal',
+  };
 }
 
 // Layout mirrors Figma frames 28:12 / 40:3 (organisation + geometry only):
