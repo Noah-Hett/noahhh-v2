@@ -1184,16 +1184,13 @@ const icrs: Project = {
           ],
         },
         {
-          kind: 'image',
-          id: 'primary-typeface',
-          src: 'https://media.noahhh.com/icrs/primary-typeface.svg',
-          alt: 'Type specimen for Geist Mono, the main typeface, showing its weights and Normal, CAPITALS and S P A C E D formatting.',
-          width: 1032,
-          height: 384,
-        },
-        {
-          kind: 'text',
-          for: 'primary-typeface',
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/icrs/primary-typeface.svg',
+            alt: 'Type specimen for Geist Mono, the main typeface, showing its weights and Normal, CAPITALS and S P A C E D formatting.',
+            width: 1032,
+            height: 384,
+          },
           body: 'Three typefaces were selected in total, with the primary - Geist Mono - being used for 80% of communications.',
         },
         {
