@@ -1251,6 +1251,11 @@ const icrs: Project = {
           },
           body: 'A collage of my favourite posters produced for society communications.\nThis shows how unique images and graphics are incorporated into the stricter system rules.',
         },
+        {
+          kind: 'pdf',
+          href: 'https://media.noahhh.com/icrs/ICRS-Brandkit.pdf',
+          label: 'Brand kit',
+        },
       ],
     },
   ],
