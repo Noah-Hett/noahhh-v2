@@ -813,6 +813,36 @@ const GROUPS: MediaVariants[] = [
   {
     "avif": [
       [
+        "https://media.noahhh.com/icrs/collage-800.avif",
+        800
+      ],
+      [
+        "https://media.noahhh.com/icrs/collage-1600.avif",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/icrs/collage-2400.avif",
+        2400
+      ]
+    ],
+    "webp": [
+      [
+        "https://media.noahhh.com/icrs/collage-800.webp",
+        800
+      ],
+      [
+        "https://media.noahhh.com/icrs/collage-1600.webp",
+        1600
+      ],
+      [
+        "https://media.noahhh.com/icrs/collage-2400.webp",
+        2400
+      ]
+    ]
+  },
+  {
+    "avif": [
+      [
         "https://media.noahhh.com/panelcal/addtaskbutton-800.avif",
         800
       ],
