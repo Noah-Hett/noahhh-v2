@@ -1100,7 +1100,168 @@ const bietub: Project = {
   ],
 };
 
-export const projects: Project[] = [icHack26, gizmophone, buskRadio, panelcal, bietub];
+// Cover is an image hero (local poster). Brand-kit boards ride as SVG on
+// R2 (spaces normalised to hyphens); collage is 1600w AVIF.
+const icrs: Project = {
+  slug: 'icrs',
+  title: 'ICRS',
+  tags: [],
+  selected: false,
+  colors: { light: '#81BCF4', dark: '#000842' },
+  font: {
+    family: 'London Underground',
+    src: '/fonts/projects/icrs/London-Underground-Regular.ttf',
+    fallback: 'system-ui, sans-serif',
+  },
+  cover: {
+    kind: 'image',
+    src: '/posters/icrs/cover-800.avif',
+    alt: 'ICRS brand kit spread: logo, palette, typefaces and sample post layouts on a light blue ground.',
+    width: 5240,
+    height: 2804,
+    srcSet: [
+      { src: '/posters/icrs/cover-800.avif', width: 800 },
+      { src: '/posters/icrs/cover-1600.avif', width: 1600 },
+      { src: '/posters/icrs/cover-2400.avif', width: 2400 },
+    ],
+  },
+  groups: [
+    {
+      id: 'challenge',
+      heading: 'Challenge',
+      summary:
+        'Rebranding Imperial College’s Robotics Society. Unifying communications into one adaptable brand that appeals to new members while preserving the creative spirit of a 500-member strong student society.',
+      meta: {
+        date: 'August 2025',
+        scope: 'Brand Design + Identity',
+        role: 'Solo',
+        collaborators: [],
+      },
+      blocks: [
+        {
+          kind: 'image',
+          id: 'settinggoals',
+          src: 'https://media.noahhh.com/icrs/settinggoals.svg',
+          alt: 'Outlined ‘Setting Goals’ lettering beside a target listing the eight brand goals, from ‘Retain fun’ to ‘Appeal to new members’.',
+          width: 758,
+          height: 336,
+        },
+        {
+          kind: 'text',
+          for: 'settinggoals',
+          body: 'Establishing the society’s goals was the clear first step. Enabling me to build up context of the desired outcome. Eight total goals were created, with the overall focus placed on unification, while maintaining the creative spirit of the university society.',
+        },
+      ],
+    },
+    {
+      id: 'process',
+      heading: 'Process',
+      blocks: [
+        {
+          kind: 'gallery',
+          caption:
+            'My first action was splitting the existing logo, drastically improving adaptability.\nThe wordmark scales better, and is easily incorporated in text dominant items.\nThe character (Harry) is given more life to be a flexible symbol and mascot of the society.\nThe badge is still a strong symbol, and well suited for situations like profile pictures.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/icrs/logo.svg',
+              alt: 'The original ICRS badge logo split into three: the ICRS wordmark, the robot character Harry, and the badge combination.',
+              width: 1386,
+              height: 604,
+            },
+          ],
+        },
+        {
+          kind: 'gallery',
+          caption:
+            'Along with pure black and white, light blue and dark grey were retained from the original palette. The additions were: Dark Blue to better increase contrast while not steering too far away from the existing branding, and ALERT: a bright yellow that is able to cut through the blues + achromatics.',
+          images: [
+            {
+              src: 'https://media.noahhh.com/icrs/colour.svg',
+              alt: 'Colour palette of pure white, light blue, dark grey, dark blue and pure black crossed by an alert-yellow band, with four colour-ratio examples below.',
+              width: 1403,
+              height: 422,
+            },
+          ],
+        },
+        {
+          kind: 'image',
+          id: 'primary-typeface',
+          src: 'https://media.noahhh.com/icrs/primary-typeface.svg',
+          alt: 'Type specimen for Geist Mono, the main typeface, showing its weights and Normal, CAPITALS and S P A C E D formatting.',
+          width: 1032,
+          height: 384,
+        },
+        {
+          kind: 'text',
+          for: 'primary-typeface',
+          body: 'Three typefaces were selected in total, with the primary - Geist Mono - being used for 80% of communications.',
+        },
+        {
+          kind: 'text',
+          for: 'secondary-typefaces',
+          body: 'The non mono variant increases formality for official documents, and the tertiary typeface - London Underground - acts as a key contrast for graphics.',
+        },
+        {
+          kind: 'image',
+          id: 'secondary-typefaces',
+          src: 'https://media.noahhh.com/icrs/secondary-typefaces.svg',
+          alt: 'Specimens for the secondary typeface, Geist Medium, and the tertiary typeface, London Underground Regular.',
+          width: 474,
+          height: 267,
+        },
+        {
+          kind: 'image',
+          id: 'graphic-style',
+          src: 'https://media.noahhh.com/icrs/graphic-style.svg',
+          alt: 'Six-panel graphic style sheet: display typography, stroke, grid, strong and sharp layout, hatching and shading, and wireframing.',
+          width: 669,
+          height: 315,
+        },
+        {
+          kind: 'text',
+          for: 'graphic-style',
+          body: 'Graphic style was developed next, built from a strong grid system, I devised several elements that would take advantage of the high contrast palette and emphasise the technical aesthetic of robotics as an industry.',
+        },
+      ],
+    },
+    {
+      id: 'outcome',
+      heading: 'Outcome',
+      blocks: [
+        {
+          kind: 'text',
+          for: 'assets',
+          body: 'Based on the brand kit and guidelines, I created sample assets, including post templates, banners, and layouts that demonstrate the specified colour ratio and layout.',
+        },
+        {
+          kind: 'image',
+          id: 'assets',
+          src: 'https://media.noahhh.com/icrs/assets.svg',
+          alt: 'Sample assets: a post template, event and alert banners, a profile badge and a wireframe post layout.',
+          width: 532,
+          height: 337,
+        },
+        {
+          kind: 'showcase',
+          image: {
+            src: 'https://media.noahhh.com/icrs/collage-1600.avif',
+            alt: 'Grid of ICRS society posters in blue, yellow, black and white, mixing photos and robot graphics.',
+            width: 4044,
+            height: 3237,
+          },
+          body: 'A collage of my favourite posters produced for society communications.\nThis shows how unique images and graphics are incorporated into the stricter system rules.',
+        },
+        {
+          kind: 'pdf',
+          href: 'https://media.noahhh.com/icrs/ICRS-Brandkit.pdf',
+          label: 'Brand kit',
+        },
+      ],
+    },
+  ],
+};
+
+export const projects: Project[] = [icHack26, gizmophone, buskRadio, panelcal, bietub, icrs];
 
 export function getProject(slug: string | undefined): Project | undefined {
   const project = projects.find((p) => p.slug === slug);

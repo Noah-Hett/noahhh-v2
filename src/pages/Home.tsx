@@ -100,6 +100,7 @@ const COLLAGE_PICKS: string[] = [
   'https://media.noahhh.com/bietub/in_environment-1600.avif',
   'https://media.noahhh.com/bietub/app_aqi-1600.avif',
   'https://media.noahhh.com/bietub/packaging2-800.avif',
+  'https://media.noahhh.com/icrs/collage-1600.avif',
 ];
 
 function projectImages(p: Project): ViewMoreItem[] {
