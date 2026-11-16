@@ -65,7 +65,7 @@ function ProjectRoute() {
 // Project pages close with the ContactSection end prompt — the big
 // footer never renders there. Footer follows the displayed route (not the
 // URL) so it swaps under full cover and never flashes.
-function Shell() {
+export function Shell() {
   const location = useLocation();
   const navigationType = useNavigationType();
 

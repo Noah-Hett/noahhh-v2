@@ -1,0 +1,6 @@
+# Everything is public. (AI crawlers are also gated by Cloudflare's bot
+# settings for the zone — this file can't override a block there.)
+User-agent: *
+Allow: /
+
+Sitemap: https://noahhh.com/sitemap.xml
